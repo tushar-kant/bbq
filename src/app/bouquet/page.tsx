@@ -346,26 +346,33 @@ export default function Home() {
                   exit={{ opacity: 0, x: 20 }}
                   className="space-y-6 flex flex-col h-full"
                 >
-                  <div className="flex justify-between items-center">
-                    <h2 className="text-3xl font-medium font-serif text-pink-500">Arrange Your Bouquet</h2>
-                    <p className="text-sm font-medium text-muted-foreground uppercase tracking-widest">Drag to move • Tap to rotate</p>
-                  </div>
+
                   <BouquetCanvas
                     items={bouquetItems}
                     setItems={setBouquetItems}
                     isEditable={true}
                   />
 
+                  <p className="text-center text-xs text-muted-foreground mb-2">NB: Drag to move • Tap to rotate</p>
                   <div className="flex gap-3 justify-center">
                     <button
                       onClick={() => {
-                        setBouquetItems(prev => prev.map(item => ({
-                          ...item,
-                          x: 30 + Math.random() * 40,
-                          y: 30 + Math.random() * 40,
-                          rotation: Math.random() * 60 - 30,
-                          scale: 0.9 + Math.random() * 0.3
-                        })));
+                        setBouquetItems(prev => prev.map(item => {
+                          // Tighter cluster (35-65% width)
+                          const x = 35 + Math.random() * 30;
+                          const dist = Math.abs(x - 50);
+                          // Lower down: 55-75% Y range to sit closer to the ribbon
+                          const y = 55 + (dist * 0.5) + (Math.random() * 20);
+
+                          const rotation = (x - 50) * 2 + (Math.random() * 10 - 5);
+                          return {
+                            ...item,
+                            x,
+                            y,
+                            rotation,
+                            scale: 0.85 + Math.random() * 0.3
+                          };
+                        }));
                       }}
                       className="flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-card hover:bg-secondary hover:text-foreground text-muted-foreground transition-colors text-xs font-medium uppercase tracking-wider"
                     >
