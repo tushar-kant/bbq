@@ -6,7 +6,7 @@ import { FlowerSelector } from "@/components/FlowerSelector";
 import { BouquetCanvas } from "@/components/BouquetCanvas";
 import { LetterInput } from "@/components/LetterInput";
 import { BouquetItem, FLOWERS } from "@/lib/flowers";
-import { ChevronRight, ChevronLeft, Share2, Copy, Sparkles, Wand2, Mail, Shuffle, Leaf, Sprout } from "lucide-react";
+import { ChevronRight, ChevronLeft, Share2, Copy, Sparkles, Wand2, Mail, Shuffle, Leaf, Sprout, Plus } from "lucide-react";
 import Image from "next/image";
 import confetti from "canvas-confetti";
 
@@ -23,6 +23,7 @@ export default function Home() {
   const [isSaving, setIsSaving] = useState(false);
   const [shareUrl, setShareUrl] = useState<string | null>(null);
   const [flowerCounts, setFlowerCounts] = useState<Record<string, number>>({});
+  const [canvasBackground, setCanvasBackground] = useState<string>("");
 
   // Delivery Details
   const [senderName, setSenderName] = useState("");
@@ -370,8 +371,41 @@ export default function Home() {
                       items={bouquetItems}
                       setItems={setBouquetItems}
                       isEditable={!isGenerating}
+                      background={canvasBackground}
                     />
                   )}
+
+                  <div className="flex flex-wrap gap-2 justify-center py-2 px-1">
+                    {[
+                      { name: "Default", value: "" },
+                      { name: "Soft Pink", value: "linear-gradient(135deg, #fff5f5 0%, #ffe3e3 100%)" },
+                      { name: "Deep Rose", value: "linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%)" },
+                      { name: "Velvet Night", value: "#1a1a1a" },
+                      { name: "Midnight", value: "linear-gradient(to top, #30cfd0 0%, #330867 100%)" },
+                      { name: "Sweet Morning", value: "linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%)" },
+                      { name: "Gold Dust", value: "linear-gradient(to right, #f83600 0%, #f9d423 100%)" },
+                      { name: "Minty", value: "linear-gradient(to top, #9be15d 0%, #00e3ae 100%)" }
+                    ].map((bg) => (
+                      <button
+                        key={bg.name}
+                        onClick={() => setCanvasBackground(bg.value)}
+                        className={`w-8 h-8 rounded-full border-2 transition-all hover:scale-110 shadow-sm ${canvasBackground === bg.value ? 'border-primary ring-2 ring-primary/20' : 'border-border'}`}
+                        style={{ background: bg.value || 'rgba(255,255,255,0.1)', backdropFilter: bg.value ? 'none' : 'blur(12px)' }}
+                        title={bg.name}
+                      />
+                    ))}
+
+                    <div className="relative group">
+                      <input
+                        type="color"
+                        onChange={(e) => setCanvasBackground(e.target.value)}
+                        className="w-8 h-8 rounded-full border-2 border-border cursor-pointer opacity-0 absolute inset-0 z-20"
+                      />
+                      <div className={`w-8 h-8 rounded-full border-2 border-border flex items-center justify-center bg-card group-hover:scale-110 transition-all ${!['', '#1a1a1a'].includes(canvasBackground) && !canvasBackground.includes('gradient') ? 'ring-2 ring-primary/20 border-primary' : ''}`}>
+                        <Plus className="w-4 h-4 text-muted-foreground" />
+                      </div>
+                    </div>
+                  </div>
 
                   <p className="text-center text-xs text-muted-foreground mb-2">NB: Drag to move • Tap to rotate</p>
                   <div className="flex gap-3 justify-center">
@@ -494,6 +528,6 @@ export default function Home() {
           </div>
         )}
       </div>
-    </main>
+    </main >
   );
 }

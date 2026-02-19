@@ -11,9 +11,10 @@ interface BouquetCanvasProps {
     items: BouquetItem[];
     setItems: (items: BouquetItem[]) => void;
     isEditable?: boolean;
+    background?: string;
 }
 
-export const BouquetCanvas = ({ items, setItems, isEditable = true }: BouquetCanvasProps) => {
+export const BouquetCanvas = ({ items, setItems, isEditable = true, background }: BouquetCanvasProps) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const [selectedId, setSelectedId] = useState<string | null>(null);
 
@@ -29,7 +30,8 @@ export const BouquetCanvas = ({ items, setItems, isEditable = true }: BouquetCan
     return (
         <div
             ref={containerRef}
-            className={`relative w-full h-[50vh] rounded-3xl overflow-hidden shadow-2xl border border-border bg-card/60 backdrop-blur-xl ${!isEditable ? 'pointer-events-none' : ''}`}
+            className={`relative w-full h-[50vh] rounded-3xl overflow-hidden shadow-2xl border border-border ${!background ? 'bg-card/60 backdrop-blur-xl' : ''} ${!isEditable ? 'pointer-events-none' : ''}`}
+            style={background ? { background: background } : {}}
             onClick={() => setSelectedId(null)}
         >
             {/* Premium Design Elements */}
