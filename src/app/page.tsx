@@ -1,124 +1,81 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Sparkles, Flower2, Heart } from "lucide-react";
+import { Sparkles, Heart, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { ThreeRose } from "@/components/ThreeRose";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-background relative overflow-hidden flex flex-col items-center pt-32 p-4">
-      {/* Background Decor */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 left-0 w-full h-full bg-[url('/grid.svg')] opacity-5" />
-        <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-primary/10 rounded-full blur-[120px] animate-float" />
-        <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-accent/20 rounded-full blur-[120px] animate-float decoration-clone" style={{ animationDelay: "2s" }} />
+    <main className="min-h-screen bg-[#130306] relative overflow-hidden flex flex-col text-white">
+      {/* 3D Heart Background */}
+      <div className="absolute inset-0 z-0 opacity-80">
+        <ThreeRose />
       </div>
 
-      <div className="max-w-4xl w-full text-center space-y-12 relative z-10">
+      {/* Gradient Overlay for Text Readability */}
+      <div className="absolute inset-0 z-0 bg-gradient-to-b from-black/30 via-transparent to-black/60 pointer-events-none" />
+
+      {/* Hero Content */}
+      <div className="relative z-10 flex-grow flex flex-col items-center justify-center px-6 pt-32 pb-12 text-center">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="space-y-6"
+          transition={{ duration: 1, ease: "easeOut" }}
+          className="space-y-8 max-w-3xl"
         >
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md text-sm font-medium text-pink-200/80 tracking-wide uppercase">
+            <Sparkles className="w-3 h-3" /> Digital Affection
+          </div>
 
-
-          <h1 className="text-6xl md:text-8xl font-serif font-medium tracking-tight text-foreground">
-            A Bouquet <br />
-            <span className="text-gradient font-bold italic">Just For You</span>
+          <h1 className="text-6xl md:text-8xl lg:text-9xl font-serif font-medium tracking-tight text-white drop-shadow-[0_0_15px_rgba(255,107,157,0.3)]">
+            Eternal <br />
+            <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-pink-300 via-rose-400 to-pink-300 animate-shimmer bg-[length:200%_auto]">
+              Love
+            </span>
           </h1>
 
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto font-light leading-relaxed">
-            Create a timeless digital arrangement, write a heartfelt letter, and wrap it in a surprise.
+          <p className="text-lg md:text-2xl text-white/70 max-w-xl mx-auto font-light leading-relaxed tracking-wide">
+            Craft a bouquet that never fades. <br className="hidden md:block" />
+            Send a timeless message wrapped in digital wonder.
           </p>
-        </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.4, duration: 0.5 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-6"
-        >
-          <Link href="/bouquet">
-            <button className="group relative px-8 py-4 bg-primary text-white rounded-full font-bold text-lg shadow-xl shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-1 transition-all overflow-hidden">
-              <span className="relative z-10 flex items-center gap-2">
-                Start Creating <Heart className="w-5 h-5 fill-current" />
-              </span>
-              <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-            </button>
-          </Link>
-
-          <button className="px-8 py-4 bg-white/50 border border-border text-foreground font-medium rounded-full hover:bg-white transition-colors">
-            View Gallery
-          </button>
+          <div className="pt-8 flex flex-col sm:flex-row items-center justify-center gap-6">
+            <Link href="/bouquet">
+              <button className="group relative px-10 py-5 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-full text-lg font-medium transition-all hover:bg-white/20 hover:scale-105 hover:border-pink-300/50 hover:shadow-[0_0_30px_rgba(255,107,157,0.4)]">
+                <span className="flex items-center gap-3">
+                  Create Your Gift <Heart className="w-5 h-5 fill-pink-500 text-pink-500 animate-pulse" />
+                </span>
+              </button>
+            </Link>
+          </div>
         </motion.div>
       </div>
 
-      {/* Features Section */}
-      <section className="relative z-10 w-full max-w-6xl mx-auto px-4 py-24">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <FeatureCard
-            icon={<Flower2 className="w-8 h-8 text-rose-500" />}
-            title="Custom Arrangements"
-            description="Pick from dozens of flowers to create a unique bouquet that speaks your heart."
-            delay={0.2}
-          />
-          <FeatureCard
-            icon={<Sparkles className="w-8 h-8 text-amber-500" />}
-            title="Scheduled Surprise"
-            description="Schedule your gift to arrive at the perfect moment via email."
-            delay={0.4}
-          />
-          <FeatureCard
-            icon={<Heart className="w-8 h-8 text-pink-500" />}
-            title="Heartfelt Notes"
-            description="Attach a personal letter and a secret scratch-card message."
-            delay={0.6}
-          />
+      {/* Minimal Footer / Features */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.5, duration: 1 }}
+        className="relative z-10 w-full max-w-7xl mx-auto px-6 pb-8 pt-20 grid grid-cols-1 md:grid-cols-3 gap-6 text-center md:text-left"
+      >
+        <div className="p-6 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/5 hover:border-white/10 transition-colors group">
+          <h3 className="text-lg font-serif font-medium text-pink-200 mb-2 group-hover:text-pink-100 transition-colors">Custom Arrangements</h3>
+          <p className="text-sm text-white/50 leading-relaxed">Design a unique bouquet with flowers that speak your heart.</p>
         </div>
-      </section>
-
-      {/* How It Works */}
-      <section className="relative z-10 w-full bg-white/30 dark:bg-black/20 backdrop-blur-sm rounded-3xl p-12 max-w-6xl mx-auto mb-24 border border-white/20">
-        <h2 className="text-3xl md:text-4xl font-serif font-bold text-center mb-16">How It Works</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
-          <Step number="1" title="Pick Your Blooms" description="Select flowers, leaves, and charms to build your base." />
-          <Step number="2" title="Stylize & Arrange" description="Drag, rotate, and scale items to perfect your composition." />
-          <Step number="3" title="Send with Love" description="Add your message and share via Link, Email, or WhatsApp." />
+        <div className="p-6 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/5 hover:border-white/10 transition-colors group">
+          <h3 className="text-lg font-serif font-medium text-pink-200 mb-2 group-hover:text-pink-100 transition-colors">Interactive 3D</h3>
+          <p className="text-sm text-white/50 leading-relaxed">A premium immersive experience that brings your gift to life.</p>
         </div>
-      </section>
+        <div className="p-6 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/5 hover:border-white/10 transition-colors group">
+          <h3 className="text-lg font-serif font-medium text-pink-200 mb-2 group-hover:text-pink-100 transition-colors">Digital Delivery</h3>
+          <p className="text-sm text-white/50 leading-relaxed">Schedule your surprise to arrive at the perfect moment.</p>
+        </div>
+      </motion.div>
 
-      <footer className="text-sm text-muted-foreground/60 pb-8">
-        Crafted with love by FORU
-      </footer>
+      <div className="relative z-10 text-center py-6 text-xs text-white/20 uppercase tracking-widest">
+        Made with Love by FORU
+      </div>
     </main>
   );
 }
-
-const FeatureCard = ({ icon, title, description, delay }: { icon: any, title: string, description: string, delay: number }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true }}
-    transition={{ delay, duration: 0.5 }}
-    className="glass p-8 rounded-3xl border border-white/20 hover:border-primary/20 transition-all hover:-translate-y-2"
-  >
-    <div className="w-16 h-16 bg-white/50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-6 shadow-sm">
-      {icon}
-    </div>
-    <h3 className="text-xl font-bold font-serif mb-3">{title}</h3>
-    <p className="text-muted-foreground leading-relaxed">
-      {description}
-    </p>
-  </motion.div>
-);
-
-const Step = ({ number, title, description }: { number: string, title: string, description: string }) => (
-  <div className="flex flex-col items-center gap-4 group">
-    <div className="w-12 h-12 rounded-full bg-primary text-white font-bold text-xl flex items-center justify-center shadow-lg shadow-primary/20 group-hover:scale-110 transition-transform">
-      {number}
-    </div>
-    <h3 className="text-xl font-bold">{title}</h3>
-    <p className="text-muted-foreground max-w-xs mx-auto">{description}</p>
-  </div>
-);
