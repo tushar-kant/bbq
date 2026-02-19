@@ -97,8 +97,14 @@ export const BouquetCanvas = ({ items, setItems, isEditable = true }: BouquetCan
             })}
 
             {items.length === 0 && isEditable && (
-                <div className="absolute inset-0 flex items-center justify-center text-muted-foreground/50 pointer-events-none">
-                    <p className="text-xl font-medium animate-pulse">Drag flowers here to arrange</p>
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-8 pointer-events-none">
+                    <div className="w-full max-w-md bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20 shadow-2xl skew-y-1 transform hover:skew-y-0 transition-transform duration-500">
+                        <h3 className="text-3xl font-serif font-bold text-primary mb-4 italic drop-shadow-md">A Message For You</h3>
+                        <p className="text-white/90 text-lg font-medium leading-relaxed drop-shadow-sm">
+                            Start dragging flowers to create <br /> your bouquet!
+                        </p>
+                        <div className="mt-6 text-4xl animate-bounce">💌</div>
+                    </div>
                 </div>
             )}
         </div>

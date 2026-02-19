@@ -112,7 +112,7 @@ export const SharedBouquetView = ({ data }: SharedViewProps) => {
                                 </h3>
 
                                 <div className="font-serif text-lg md:text-xl leading-relaxed text-foreground/80 whitespace-pre-wrap text-center">
-                                    {data.letter || "Start dragging flowers to create your bouquet!"}
+                                    {data.letter || "Thank You!"}
                                 </div>
 
                                 <div className="mt-8 flex justify-center">

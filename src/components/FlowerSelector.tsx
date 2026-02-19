@@ -23,8 +23,8 @@ export const FlowerSelector = ({ flowerCounts, onUpdateCount, maxTotal }: Flower
         <div className="space-y-8 py-6">
             <div className="flex justify-between items-center mb-4">
                 <h2 className="text-2xl font-bold font-serif text-primary">Pick Your Blooms</h2>
-                <span className={`text-sm font-medium px-3 py-1 rounded-full ${currentTotal >= 7 ? 'bg-green-100 text-green-700' : 'bg-primary/10 text-primary'}`}>
-                    {currentTotal} / {maxTotal} Items (Min 7)
+                <span className={`text-sm font-medium px-3 py-1 rounded-full ${currentTotal >= 2 ? 'bg-green-100 text-green-700' : 'bg-primary/10 text-primary'}`}>
+                    {currentTotal} / {maxTotal} Items (Min 2)
                 </span>
             </div>
 

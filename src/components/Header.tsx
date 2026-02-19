@@ -3,6 +3,7 @@
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { Moon, Sun, Flame, Sparkles, LogOut, User } from "lucide-react";
+import Link from "next/link";
 import { useSession, signOut, signIn } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -24,20 +25,21 @@ export const Header = () => {
 
     return (
         <header className="fixed top-0 w-full z-50 px-6 py-4 flex justify-between items-center glass border-b border-border/50">
-            <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="flex items-center gap-2 cursor-pointer"
-                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            >
-                <div className="relative">
-                    <Flame className="text-primary w-6 h-6" />
-                    <Sparkles className="text-accent w-4 h-4 absolute -top-1 -right-2 animate-pulse" />
-                </div>
-                <span className="font-bold font-[var(--font-playfair)] text-xl hidden md:block">
-                    FORU
-                </span>
-            </motion.div>
+            <Link href="/" className="flex items-center gap-2 cursor-pointer">
+                <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    className="flex items-center gap-2"
+                >
+                    <div className="relative">
+                        <Flame className="text-primary w-6 h-6" />
+                        <Sparkles className="text-accent w-4 h-4 absolute -top-1 -right-2 animate-pulse" />
+                    </div>
+                    <span className="font-bold font-[var(--font-playfair)] text-xl hidden md:block">
+                        FORU
+                    </span>
+                </motion.div>
+            </Link>
 
             <div className="flex items-center gap-4">
                 {/* Theme Toggle */}

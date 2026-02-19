@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Gift, Heart, Cake } from "lucide-react";
+import { Gift, Heart, Cake, Calendar, Mail, User } from "lucide-react";
 
 interface LetterInputProps {
     letter: string;
@@ -12,9 +12,29 @@ interface LetterInputProps {
     setTheme: (theme: string) => void;
     scratchMessage: string;
     setScratchMessage: (msg: string) => void;
+    senderName: string;
+    setSenderName: (name: string) => void;
+    recipientName: string;
+    setRecipientName: (name: string) => void;
+    recipientEmail: string;
+    setRecipientEmail: (email: string) => void;
+    scheduledAt: string;
+    setScheduledAt: (date: string) => void;
+    isScheduled: boolean;
+    setIsScheduled: (val: boolean) => void;
 }
 
-export const LetterInput = ({ letter, setLetter, giftType, setGiftType, theme, setTheme, scratchMessage, setScratchMessage }: LetterInputProps) => {
+export const LetterInput = ({
+    letter, setLetter,
+    giftType, setGiftType,
+    theme, setTheme,
+    scratchMessage, setScratchMessage,
+    senderName, setSenderName,
+    recipientName, setRecipientName,
+    recipientEmail, setRecipientEmail,
+    scheduledAt, setScheduledAt,
+    isScheduled, setIsScheduled
+}: LetterInputProps) => {
     return (
         <div className="space-y-8 glass p-8 rounded-3xl">
             <div className="flex gap-4 mb-4">
@@ -35,6 +55,84 @@ export const LetterInput = ({ letter, setLetter, giftType, setGiftType, theme, s
             </div>
 
             <div className="space-y-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+                            <User className="w-4 h-4" /> From (Your Name)
+                        </label>
+                        <input
+                            type="text"
+                            value={senderName}
+                            onChange={(e) => setSenderName(e.target.value)}
+                            placeholder="e.g. Secret Admirer"
+                            className="w-full bg-white/50 dark:bg-white/5 border border-border rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none transition-all placeholder:text-muted-foreground/50"
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+                            <User className="w-4 h-4" /> To (Recipient Name)
+                        </label>
+                        <input
+                            type="text"
+                            value={recipientName}
+                            onChange={(e) => setRecipientName(e.target.value)}
+                            placeholder="e.g. My Valentine"
+                            className="w-full bg-white/50 dark:bg-white/5 border border-border rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none transition-all placeholder:text-muted-foreground/50"
+                        />
+                    </div>
+                </div>
+
+                <div className="mb-6 space-y-4">
+                    <div className="flex gap-4 p-1 bg-muted/20 rounded-xl">
+                        <button
+                            onClick={() => setIsScheduled(false)}
+                            className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all ${!isScheduled ? 'bg-primary text-white shadow-md' : 'text-muted-foreground hover:bg-white/50'}`}
+                        >
+                            Create Link Only
+                        </button>
+                        <button
+                            onClick={() => setIsScheduled(true)}
+                            className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all ${isScheduled ? 'bg-primary text-white shadow-md' : 'text-muted-foreground hover:bg-white/50'}`}
+                        >
+                            Schedule Delivery
+                        </button>
+                    </div>
+
+                    {isScheduled && (
+                        <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2"
+                        >
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+                                    <Mail className="w-4 h-4 text-primary" /> Recipient Email *
+                                </label>
+                                <input
+                                    type="email"
+                                    required
+                                    value={recipientEmail}
+                                    onChange={(e) => setRecipientEmail(e.target.value)}
+                                    placeholder="recipient@example.com"
+                                    className="w-full bg-white/50 dark:bg-white/5 border border-border rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none transition-all placeholder:text-muted-foreground/50 border-primary/30"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+                                    <Calendar className="w-4 h-4 text-primary" /> Schedule Time *
+                                </label>
+                                <input
+                                    type="datetime-local"
+                                    required
+                                    value={scheduledAt}
+                                    onChange={(e) => setScheduledAt(e.target.value)}
+                                    className="w-full bg-white/50 dark:bg-white/5 border border-border rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none transition-all placeholder:text-muted-foreground/50 text-muted-foreground border-primary/30"
+                                />
+                            </div>
+                        </motion.div>
+                    )}
+                </div>
+
                 <label className="text-sm font-medium text-muted-foreground uppercase tracking-widest">
                     Write a Heartfelt Note
                 </label>

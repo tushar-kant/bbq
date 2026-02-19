@@ -6,7 +6,7 @@ import { FlowerSelector } from "@/components/FlowerSelector";
 import { BouquetCanvas } from "@/components/BouquetCanvas";
 import { LetterInput } from "@/components/LetterInput";
 import { BouquetItem } from "@/lib/flowers";
-import { ChevronRight, ChevronLeft, Share2, Copy, Sparkles, Wand2 } from "lucide-react";
+import { ChevronRight, ChevronLeft, Share2, Copy, Sparkles, Wand2, Mail } from "lucide-react";
 import confetti from "canvas-confetti";
 
 export default function Home() {
@@ -20,6 +20,13 @@ export default function Home() {
   const [shareUrl, setShareUrl] = useState<string | null>(null);
   // Replace simple array with Record
   const [flowerCounts, setFlowerCounts] = useState<Record<string, number>>({});
+
+  // Delivery Details
+  const [senderName, setSenderName] = useState("");
+  const [recipientName, setRecipientName] = useState("");
+  const [recipientEmail, setRecipientEmail] = useState("");
+  const [scheduledAt, setScheduledAt] = useState("");
+  const [isScheduled, setIsScheduled] = useState(false);
 
   const handleFlowerUpdate = (id: string, newCount: number) => {
     const currentCount = flowerCounts[id] || 0;
@@ -64,13 +71,17 @@ export default function Home() {
   const totalItems = Object.values(flowerCounts).reduce((a, b) => a + b, 0);
 
   const handleNext = () => {
-    if (step === 1 && totalItems < 7) return alert("Please select at least 7 items for a full bouquet! 🌸");
+    if (step === 1 && totalItems < 2) return alert("Please select at least 2 items for a full bouquet! 🌸");
     setStep(step + 1);
   };
 
   const handleBack = () => setStep(step - 1);
 
   const handleSaveAndShare = async () => {
+    if (isScheduled && (!recipientEmail || !scheduledAt)) {
+      return alert("Please provide both Recipient Email and Schedule Time for scheduled delivery! 📅");
+    }
+
     setIsSaving(true);
     try {
       const res = await fetch("/api/bouquet", {
@@ -81,7 +92,11 @@ export default function Home() {
           letter,
           theme,
           giftType,
-          scratchMessage
+          scratchMessage,
+          senderName,
+          recipientName,
+          recipientEmail,
+          scheduledAt
         }),
       });
 
@@ -164,13 +179,24 @@ export default function Home() {
                 </button>
               </div>
 
-              <button
-                onClick={() => window.open(`mailto:?subject=A Bouquet For You 🌸&body=I made this for you: ${shareUrl}`, '_blank')}
-                className="text-primary font-medium hover:underline flex items-center gap-2"
-              >
-                <Share2 className="w-4 h-4" />
-                Share via Email
-              </button>
+
+              <div className="flex flex-col sm:flex-row gap-4 items-center justify-center mt-6">
+                <button
+                  onClick={() => window.open(`mailto:?subject=A Bouquet For You 🌸&body=I made this for you: ${shareUrl}`, '_blank')}
+                  className="text-primary font-medium hover:underline flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-lg"
+                >
+                  <Mail className="w-4 h-4" />
+                  Share via Email
+                </button>
+
+                <button
+                  onClick={() => window.open(`https://wa.me/?text=I made a digital bouquet for you! 🌸 ${shareUrl}`, '_blank')}
+                  className="text-green-600 font-medium hover:underline flex items-center gap-2 bg-green-50 px-4 py-2 rounded-lg"
+                >
+                  <Share2 className="w-4 h-4" />
+                  Share via WhatsApp
+                </button>
+              </div>
 
               <button onClick={() => window.location.reload()} className="text-sm text-muted-foreground mt-8 hover:text-foreground">
                 Create Another
@@ -232,6 +258,16 @@ export default function Home() {
                     setTheme={setTheme}
                     scratchMessage={scratchMessage}
                     setScratchMessage={setScratchMessage}
+                    senderName={senderName}
+                    setSenderName={setSenderName}
+                    recipientName={recipientName}
+                    setRecipientName={setRecipientName}
+                    recipientEmail={recipientEmail}
+                    setRecipientEmail={setRecipientEmail}
+                    scheduledAt={scheduledAt}
+                    setScheduledAt={setScheduledAt}
+                    isScheduled={isScheduled}
+                    setIsScheduled={setIsScheduled}
                   />
                 </motion.div>
               )}
@@ -254,7 +290,7 @@ export default function Home() {
             {step < 3 ? (
               <button
                 onClick={handleNext}
-                disabled={totalItems < 7}
+                disabled={totalItems < 2}
                 className="px-8 py-3 bg-primary text-white font-bold rounded-xl hover:bg-primary/90 flex items-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-primary/25"
               >
                 Next
@@ -273,6 +309,6 @@ export default function Home() {
           </div>
         )}
       </div>
-    </main>
+    </main >
   );
 }

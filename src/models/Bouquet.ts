@@ -15,6 +15,14 @@ const BouquetSchema = new mongoose.Schema({
     theme: { type: String, default: "love" }, // love, birthday
     giftType: { type: String, default: "none" }, // envelope, scratch
     scratchMessage: String,
+
+    // Scheduling & Sharing
+    recipientName: String,
+    recipientEmail: String,
+    senderName: String,
+    scheduledAt: Date, // If null/undefined, send immediately or is considered "shared manually"
+    isSent: { type: Boolean, default: false }, // For tracking scheduled emails
+
     createdAt: { type: Date, default: Date.now },
 });
 
