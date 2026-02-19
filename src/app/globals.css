@@ -1,26 +1,119 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fffafa;
+  /* Snow White / Blush */
+  --foreground: #2d1b24;
+  /* Deep Burgundyish Charcoal */
+  --card: #ffffff;
+  --card-foreground: #2d1b24;
+  --popover: #ffffff;
+  --popover-foreground: #2d1b24;
+  --primary: #ff85a2;
+  /* Soft Pink Rose */
+  --primary-foreground: #ffffff;
+  --secondary: #fce4ec;
+  /* Very light pink */
+  --secondary-foreground: #c2185b;
+  /* Magentish */
+  --muted: #fef1f3;
+  --muted-foreground: #8a6d7a;
+  --accent: #f8bbd0;
+  /* Soft Peach Pink */
+  --accent-foreground: #c2185b;
+  --destructive: #ff4d4d;
+  --destructive-foreground: #ffffff;
+  --border: #fce4ec;
+  --input: #fce4ec;
+  --ring: #ff85a2;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  --animate-shimmer: shimmer 2s linear infinite;
+  --animate-float: float 6s ease-in-out infinite;
+
+  @keyframes shimmer {
+    from {
+      background-position: 200% 0;
+    }
+
+    to {
+      background-position: -200% 0;
+    }
+  }
+
+  @keyframes float {
+
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-10px);
+    }
   }
 }
 
+
+html.dark {
+  --background: #1a0b12;
+  /* Deep Plum Black */
+  --foreground: #fce4ec;
+  --card: #25141c;
+  --card-foreground: #fce4ec;
+  --popover: #25141c;
+  --popover-foreground: #fce4ec;
+  --primary: #ff85a2;
+  --primary-foreground: #1a0b12;
+  --secondary: #3d1c2a;
+  --secondary-foreground: #fce4ec;
+  --muted: #2d1b24;
+  --muted-foreground: #b39da6;
+  --accent: #4d2636;
+  --accent-foreground: #ff85a2;
+  --border: #3d1c2a;
+  --input: #3d1c2a;
+  --ring: #ff85a2;
+}
+
+
+
+
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.girly-gradient {
+  background: linear-gradient(135deg, #ff85a2 0%, #ffc1e3 100%);
+}
+
+.girly-text-gradient {
+  background: linear-gradient(135deg, #ff85a2 0%, #c2185b 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
