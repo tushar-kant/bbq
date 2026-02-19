@@ -79,7 +79,7 @@ export default function Home() {
 
   const handleNext = () => {
     if (creationType === "bouquet") {
-      if (step === 1 && totalItems < 2) return alert("Please select at least 2 items for a full bouquet! 🌸");
+      if (step === 1 && totalItems < 3) return alert("Please select at least 3 flowers for a full bouquet! 🌸");
       setStep(step + 1);
     }
   };
@@ -475,7 +475,7 @@ export default function Home() {
             {step < 3 ? (
               <button
                 onClick={handleNext}
-                disabled={creationType === 'bouquet' && totalItems < 2}
+                disabled={creationType === 'bouquet' && totalItems < 3}
                 className="px-6 py-2 text-sm bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold rounded-full hover:shadow-[0_0_20px_rgba(236,72,153,0.4)] hover:scale-105 flex items-center gap-1.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:shadow-none"
               >
                 Next

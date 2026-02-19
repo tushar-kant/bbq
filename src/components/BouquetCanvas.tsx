@@ -32,9 +32,35 @@ export const BouquetCanvas = ({ items, setItems, isEditable = true }: BouquetCan
             className={`relative w-full h-[50vh] rounded-3xl overflow-hidden shadow-2xl border border-border bg-card/60 backdrop-blur-xl ${!isEditable ? 'pointer-events-none' : ''}`}
             onClick={() => setSelectedId(null)}
         >
-            {/* Background patterns */}
+            {/* Premium Design Elements */}
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,currentColor_1px,transparent_1px)] bg-[length:24px_24px] opacity-10 text-muted-foreground pointer-events-none" />
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-pink-500/5 to-pink-500/10 pointer-events-none" />
+
+            {/* Soft Vignette */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle,transparent_20%,rgba(0,0,0,0.05))] pointer-events-none" />
+
+            {/* Dynamic Light Rays / Glow */}
+            <div className="absolute top-0 left-1/4 w-1/2 h-full bg-gradient-to-b from-primary/5 to-transparent blur-[120px] pointer-events-none animate-pulse" />
+
+            {/* Grain Texture Overlay */}
+            <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')] mix-blend-overlay" />
+
+            {/* Floating Design Particles/Petals */}
+            <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                {[...Array(6)].map((_, i) => (
+                    <div
+                        key={i}
+                        className="absolute animate-float opacity-20 text-xs"
+                        style={{
+                            left: `${Math.random() * 100}%`,
+                            top: `${Math.random() * 100}%`,
+                            animationDelay: `${i * 2}s`,
+                            animationDuration: `${10 + Math.random() * 10}s`
+                        }}
+                    >
+                        {i % 2 === 0 ? '✨' : '🌸'}
+                    </div>
+                ))}
+            </div>
 
             {/* Stems Layer */}
             <BouquetStems items={items} />
