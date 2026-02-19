@@ -1,31 +1,52 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fffafa;
-  /* Snow White / Blush */
-  --foreground: #2d1b24;
-  /* Deep Burgundyish Charcoal */
+  --background: #fffcfd;
+  /* Petal White */
+  --foreground: #2d181e;
+  /* Deep Rose Charcoal */
   --card: #ffffff;
-  --card-foreground: #2d1b24;
+  --card-foreground: #2d181e;
   --popover: #ffffff;
-  --popover-foreground: #2d1b24;
-  --primary: #ff85a2;
-  /* Soft Pink Rose */
+  --popover-foreground: #2d181e;
+  --primary: #ff6b9d;
+  /* Vibrant Rose */
   --primary-foreground: #ffffff;
-  --secondary: #fce4ec;
-  /* Very light pink */
-  --secondary-foreground: #c2185b;
-  /* Magentish */
-  --muted: #fef1f3;
+  --secondary: #f0fdf4;
+  /* Soft Mint / Leaf */
+  --secondary-foreground: #166534;
+  /* Leaf Green */
+  --muted: #fef2f2;
   --muted-foreground: #8a6d7a;
-  --accent: #f8bbd0;
-  /* Soft Peach Pink */
-  --accent-foreground: #c2185b;
-  --destructive: #ff4d4d;
+  --accent: #f9a8d4;
+  /* Soft Cherry Blossom */
+  --accent-foreground: #9d174d;
+  --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: #fce4ec;
-  --input: #fce4ec;
-  --ring: #ff85a2;
+  --border: #fce7f3;
+  --input: #fce7f3;
+  --ring: #ff6b9d;
+}
+
+html.dark {
+  --background: #0f0508;
+  /* Midnight Garden */
+  --foreground: #fdf2f8;
+  --card: #1a0a0f;
+  --card-foreground: #fdf2f8;
+  --popover: #1a0a0f;
+  --popover-foreground: #fdf2f8;
+  --primary: #ff6b9d;
+  --primary-foreground: #0f0508;
+  --secondary: #064e3b;
+  --secondary-foreground: #d1fae5;
+  --muted: #2d1b22;
+  --muted-foreground: #b39da6;
+  --accent: #9d174d;
+  --accent-foreground: #f9a8d4;
+  --border: #3d1c25;
+  --input: #3d1c25;
+  --ring: #ff6b9d;
 }
 
 @theme inline {
@@ -43,6 +64,7 @@
 
   --animate-shimmer: shimmer 2s linear infinite;
   --animate-float: float 6s ease-in-out infinite;
+  --animate-sway: sway 4s ease-in-out infinite;
 
   @keyframes shimmer {
     from {
@@ -65,40 +87,27 @@
       transform: translateY(-10px);
     }
   }
+
+  @keyframes sway {
+
+    0%,
+    100% {
+      transform: rotate(-1deg);
+    }
+
+    50% {
+      transform: rotate(1deg);
+    }
+  }
 }
-
-
-html.dark {
-  --background: #1a0b12;
-  /* Deep Plum Black */
-  --foreground: #fce4ec;
-  --card: #25141c;
-  --card-foreground: #fce4ec;
-  --popover: #25141c;
-  --popover-foreground: #fce4ec;
-  --primary: #ff85a2;
-  --primary-foreground: #1a0b12;
-  --secondary: #3d1c2a;
-  --secondary-foreground: #fce4ec;
-  --muted: #2d1b24;
-  --muted-foreground: #b39da6;
-  --accent: #4d2636;
-  --accent-foreground: #ff85a2;
-  --border: #3d1c2a;
-  --input: #3d1c2a;
-  --ring: #ff85a2;
-}
-
-
-
 
 body {
   background-color: var(--background);
   color: var(--foreground);
   font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
   transition: background-color 0.5s ease, color 0.5s ease;
+  overflow-x: hidden;
 }
-
 
 .glass {
   background: rgba(255, 255, 255, 0.05);
@@ -107,13 +116,22 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.girly-gradient {
-  background: linear-gradient(135deg, #ff85a2 0%, #ffc1e3 100%);
+.floral-gradient {
+  background: linear-gradient(135deg, #ff6b9d 0%, #f9a8d4 100%);
 }
 
-.girly-text-gradient {
-  background: linear-gradient(135deg, #ff85a2 0%, #c2185b 100%);
+.text-gradient {
+  background: linear-gradient(135deg, #ff6b9d 0%, #9d174d 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+.scratch-surface {
+  background: linear-gradient(45deg, #d1d5db 25%, #9ca3af 50%, #d1d5db 75%);
+  cursor: crosshair;
+}
+
+.flower-shadow {
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
 }
