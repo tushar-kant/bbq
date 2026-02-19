@@ -5,8 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FlowerSelector } from "@/components/FlowerSelector";
 import { BouquetCanvas } from "@/components/BouquetCanvas";
 import { LetterInput } from "@/components/LetterInput";
-import { BouquetItem } from "@/lib/flowers";
-import { ChevronRight, ChevronLeft, Share2, Copy, Sparkles, Wand2, Mail } from "lucide-react";
+import { BouquetItem, FLOWERS } from "@/lib/flowers";
+import { ChevronRight, ChevronLeft, Share2, Copy, Sparkles, Wand2, Mail, Shuffle, Leaf } from "lucide-react";
 import confetti from "canvas-confetti";
 
 export default function Home() {
@@ -355,6 +355,25 @@ export default function Home() {
                     setItems={setBouquetItems}
                     isEditable={true}
                   />
+
+                  <div className="flex gap-3 justify-center">
+                    <button
+                      onClick={() => {
+                        setBouquetItems(prev => prev.map(item => ({
+                          ...item,
+                          x: 30 + Math.random() * 40,
+                          y: 30 + Math.random() * 40,
+                          rotation: Math.random() * 60 - 30,
+                          scale: 0.9 + Math.random() * 0.3
+                        })));
+                      }}
+                      className="flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-card hover:bg-secondary hover:text-foreground text-muted-foreground transition-colors text-xs font-medium uppercase tracking-wider"
+                    >
+                      <Shuffle className="w-3.5 h-3.5" />
+                      Rearrange
+                    </button>
+
+                  </div>
                 </motion.div>
               )}
 
@@ -400,10 +419,10 @@ export default function Home() {
 
         {/* Navigation Buttons */}
         {!shareUrl && creationType && (
-          <div className="flex justify-between mt-4 pt-4 border-t border-white/10">
+          <div className="flex justify-between mt-4 pt-4 border-t border-border">
             <button
               onClick={handleBack}
-              className="px-4 py-2 text-sm rounded-full font-medium flex items-center gap-1.5 transition-colors hover:bg-white/10 text-white/50 hover:text-white"
+              className="px-4 py-2 text-sm rounded-full font-medium flex items-center gap-1.5 transition-colors hover:bg-secondary text-muted-foreground hover:text-foreground"
             >
               <ChevronLeft className="w-3.5 h-3.5" />
               Back
