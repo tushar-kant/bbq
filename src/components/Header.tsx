@@ -50,6 +50,17 @@ export const Header = () => {
                 </motion.div>
             </Link>
 
+            <nav className="hidden md:flex items-center gap-8 ml-8">
+                <Link href="/garden" className={`text-[10px] font-bold uppercase tracking-[0.2em] transition-all hover:text-primary ${pathname === '/garden' ? 'text-primary' : 'text-foreground/60'}`}>
+                    Garden
+                </Link>
+                <Link href="/bouquet" className={`text-[10px] font-bold uppercase tracking-[0.2em] transition-all hover:text-primary ${pathname === '/bouquet' ? 'text-primary' : 'text-foreground/60'}`}>
+                    Create
+                </Link>
+            </nav>
+
+            <div className="flex-grow" />
+
             <div className="flex items-center gap-4 text-foreground">
                 {/* Theme Toggle */}
                 <button

@@ -1,16 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSearchParams } from "next/navigation";
 import { FlowerSelector } from "@/components/FlowerSelector";
 import { BouquetCanvas } from "@/components/BouquetCanvas";
 import { LetterInput } from "@/components/LetterInput";
 import { BouquetItem, FLOWERS } from "@/lib/flowers";
-import { ChevronRight, ChevronLeft, Share2, Copy, Sparkles, Wand2, Mail, Shuffle, Leaf, Sprout, Plus } from "lucide-react";
+import { ChevronRight, ChevronLeft, Share2, Copy, Sparkles, Wand2, Mail, Shuffle, Leaf, Sprout, Plus, Loader2, Flower2, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import confetti from "canvas-confetti";
 
-export default function Home() {
+function BouquetCreator() {
+  const searchParams = useSearchParams();
+  const editId = searchParams.get("edit");
   const [creationType, setCreationType] = useState<"bouquet" | "message" | null>(null);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -32,6 +35,37 @@ export default function Home() {
   const [scheduledAt, setScheduledAt] = useState("");
   const [isScheduled, setIsScheduled] = useState(false);
   const [secretCode, setSecretCode] = useState("");
+  const [isLoadingEdit, setIsLoadingEdit] = useState(false);
+
+  useEffect(() => {
+    if (editId) {
+      const fetchBouquet = async () => {
+        setIsLoadingEdit(true);
+        try {
+          const res = await fetch(`/api/bouquet?id=${editId}`);
+          if (res.ok) {
+            const data = await res.json();
+            setBouquetItems(data.items || []);
+            setCanvasBackground(data.canvasBackground || "");
+
+            // Reconstruct flowerCounts
+            const counts: Record<string, number> = {};
+            (data.items || []).forEach((item: BouquetItem) => {
+              counts[item.flowerId] = (counts[item.flowerId] || 0) + 1;
+            });
+            setFlowerCounts(counts);
+            setCreationType("bouquet");
+            setStep(1);
+          }
+        } catch (error) {
+          console.error("Error loading bouquet for edit:", error);
+        } finally {
+          setIsLoadingEdit(false);
+        }
+      };
+      fetchBouquet();
+    }
+  }, [editId]);
 
   const handleFlowerUpdate = (id: string, newCount: number) => {
     const currentCount = flowerCounts[id] || 0;
@@ -188,91 +222,90 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0, filter: "blur(10px)" }}
-              className="flex flex-col items-center justify-center min-h-[50vh] w-full"
+              className="flex flex-col items-center justify-center min-h-[60vh] w-full"
             >
               <motion.div
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.2 }}
-                className="text-center mb-10 space-y-4"
+                transition={{ delay: 0.1 }}
+                className="text-center mb-12 space-y-4"
               >
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-border bg-card/50 backdrop-blur-md text-xs font-medium text-pink-500 tracking-wide uppercase shadow-sm">
-                  <Sparkles className="w-3 h-3" /> Start Creating
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-pink-500/20 bg-pink-500/5 backdrop-blur-xl text-[10px] font-bold text-pink-500 tracking-[0.2em] uppercase shadow-sm mx-auto">
+                  <Sparkles className="w-3 h-3 animate-pulse" /> Create Something Eternal
                 </div>
-                <h1 className="text-5xl md:text-7xl font-serif font-medium text-transparent bg-clip-text bg-gradient-to-b from-foreground to-muted-foreground tracking-tight py-2">
-                  Choose Your Gift
+                <h1 className="text-4xl md:text-6xl font-serif font-medium text-foreground tracking-tight">
+                  Choose Your <span className="italic text-pink-500">Expression</span>
                 </h1>
-                <p className="text-lg text-muted-foreground font-light max-w-lg mx-auto">
-                  Select how you want to express your affection today.
+                <p className="text-muted-foreground/80 font-light max-w-md mx-auto text-sm md:text-base leading-relaxed">
+                  Every gift carries a whisper of the heart. Select your medium and begin your journey.
                 </p>
               </motion.div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl px-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl px-6">
                 {/* Virtual Bouquet Card */}
                 <motion.button
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.3 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
                   onClick={() => handleStart('bouquet')}
-                  className="group relative h-[340px] w-full rounded-[2.5rem] overflow-hidden transition-all duration-500 hover:shadow-lg hover:shadow-pink-500/20 border border-border bg-card/30 backdrop-blur-sm"
+                  className="group relative h-[280px] w-full rounded-[2rem] overflow-hidden transition-all duration-500 hover:shadow-[0_20px_50px_-15px_rgba(236,72,153,0.15)] border border-white/10 bg-card/40 backdrop-blur-xl"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-b from-white/5 via-transparent to-transparent opacity-50 transition-colors" />
+                  <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-pink-500/5 to-transparent opacity-50" />
 
-                  {/* Hover Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-pink-500/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-
-                  <div className="relative h-full flex flex-col items-center justify-center p-10 z-10">
-                    <div className="mb-8 relative">
-                      <div className="absolute inset-0 bg-pink-500/20 blur-2xl rounded-full group-hover:bg-pink-500/30 transition-all duration-500" />
-                      <div className="w-24 h-24 bg-card/50 rounded-full border border-border flex items-center justify-center relative backdrop-blur-md group-hover:scale-110 transition-transform duration-500 shadow-inner">
-                        <Sparkles className="w-10 h-10 text-pink-400 group-hover:text-pink-500 transition-colors" />
+                  <div className="relative h-full flex flex-col items-center justify-center p-8 z-10">
+                    <div className="mb-6 relative">
+                      <div className="absolute inset-0 bg-pink-500/20 blur-2xl rounded-full scale-150 opacity-0 group-hover:opacity-100 transition-all duration-700" />
+                      <div className="w-20 h-20 bg-white/5 rounded-3xl border border-white/10 flex items-center justify-center relative backdrop-blur-2xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-xl ring-1 ring-white/20">
+                        <Flower2 className="w-9 h-9 text-pink-400 group-hover:text-pink-500 transition-colors duration-500" />
                       </div>
                     </div>
 
-                    <h3 className="text-3xl font-serif font-medium text-foreground mb-3 group-hover:scale-105 transition-transform duration-300">Virtual Bouquet</h3>
-                    <p className="text-muted-foreground font-light leading-relaxed max-w-xs group-hover:text-foreground/80 transition-colors">
-                      Arrange stylized 3D flowers into a timeless composition.
+                    <h3 className="text-2xl font-serif font-medium text-foreground mb-2">3D Arrangement</h3>
+                    <p className="text-muted-foreground/70 text-sm font-light leading-snug max-w-[200px] group-hover:text-foreground/90 transition-colors">
+                      Sculpt beautiful blooms into a timeless digital bouquet.
                     </p>
 
-                    <div className="mt-8 px-6 py-2 rounded-full border border-border text-sm text-muted-foreground group-hover:bg-foreground group-hover:text-background transition-all">
-                      Start Designing
+                    <div className="mt-8 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-500">
+                      <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-pink-500">
+                        Select Ritual <ArrowRight className="w-3 h-3" />
+                      </div>
                     </div>
                   </div>
                 </motion.button>
 
                 {/* Digital Letter Card */}
                 <motion.button
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.4 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
                   onClick={() => handleStart('message')}
-                  className="group relative h-[340px] w-full rounded-[2.5rem] overflow-hidden transition-all duration-500 hover:shadow-lg hover:shadow-amber-500/20 border border-border bg-card/30 backdrop-blur-sm"
+                  className="group relative h-[280px] w-full rounded-[2rem] overflow-hidden transition-all duration-500 hover:shadow-[0_20px_50px_-15px_rgba(168,85,247,0.15)] border border-white/10 bg-card/40 backdrop-blur-xl"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-b from-white/5 via-transparent to-transparent opacity-50 transition-colors" />
+                  <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-purple-500/5 to-transparent opacity-50" />
 
-                  {/* Hover Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-
-                  <div className="relative h-full flex flex-col items-center justify-center p-10 z-10">
-                    <div className="mb-8 relative">
-                      <div className="absolute inset-0 bg-amber-500/20 blur-2xl rounded-full group-hover:bg-amber-500/30 transition-all duration-500" />
-                      <div className="w-24 h-24 bg-card/50 rounded-full border border-border flex items-center justify-center relative backdrop-blur-md group-hover:scale-110 transition-transform duration-500 shadow-inner">
-                        <Mail className="w-10 h-10 text-amber-400 group-hover:text-amber-500 transition-colors" />
+                  <div className="relative h-full flex flex-col items-center justify-center p-8 z-10">
+                    <div className="mb-6 relative">
+                      <div className="absolute inset-0 bg-purple-500/20 blur-2xl rounded-full scale-150 opacity-0 group-hover:opacity-100 transition-all duration-700" />
+                      <div className="w-20 h-20 bg-white/5 rounded-3xl border border-white/10 flex items-center justify-center relative backdrop-blur-2xl group-hover:scale-110 group-hover:-rotate-6 transition-all duration-500 shadow-xl ring-1 ring-white/20">
+                        <Mail className="w-9 h-9 text-purple-400 group-hover:text-purple-500 transition-colors duration-500" />
                       </div>
                     </div>
 
-                    <h3 className="text-3xl font-serif font-medium text-foreground mb-3 group-hover:scale-105 transition-transform duration-300">Digital Letter</h3>
-                    <p className="text-muted-foreground font-light leading-relaxed max-w-xs group-hover:text-foreground/80 transition-colors">
-                      Write a heartfelt message sealed with a secret code.
+                    <h3 className="text-2xl font-serif font-medium text-foreground mb-2">Poetry & Prose</h3>
+                    <p className="text-muted-foreground/70 text-sm font-light leading-snug max-w-[200px] group-hover:text-foreground/90 transition-colors">
+                      A sealed digital message for their eyes only.
                     </p>
 
-                    <div className="mt-8 px-6 py-2 rounded-full border border-border text-sm text-muted-foreground group-hover:bg-foreground group-hover:text-background transition-all">
-                      Write Now
+                    <div className="mt-8 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-500">
+                      <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-purple-500">
+                        Begin Writing <ArrowRight className="w-3 h-3" />
+                      </div>
                     </div>
                   </div>
                 </motion.button>
               </div>
             </motion.div>
+
           ) : shareUrl ? (
             <motion.div
               key="share"
@@ -532,3 +565,17 @@ export default function Home() {
     </main >
   );
 }
+
+export default function Home() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-4">
+        <Loader2 className="w-12 h-12 text-pink-500 animate-spin" />
+        <p className="text-muted-foreground animate-pulse font-serif italic">Preparing your floral canvas...</p>
+      </div>
+    }>
+      <BouquetCreator />
+    </Suspense>
+  );
+}
+

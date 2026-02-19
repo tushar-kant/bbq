@@ -40,3 +40,45 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: "Failed to create bouquet" }, { status: 500 });
     }
 }
+
+export async function GET(req: Request) {
+    try {
+        await dbConnect();
+        const { searchParams } = new URL(req.url);
+        const id = searchParams.get("id");
+
+        if (id) {
+            const bouquet = await Bouquet.findById(id).lean();
+            if (!bouquet) {
+                return NextResponse.json({ error: "Bouquet not found" }, { status: 404 });
+            }
+            return NextResponse.json(bouquet);
+        }
+
+        const page = parseInt(searchParams.get("page") || "1");
+        const limit = parseInt(searchParams.get("limit") || "15");
+        const skip = (page - 1) * limit;
+
+        const [bouquets, total] = await Promise.all([
+            Bouquet.find({ type: 'bouquet', "items.0": { $exists: true } })
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(limit)
+                .lean(),
+            Bouquet.countDocuments({ type: 'bouquet', "items.0": { $exists: true } })
+        ]);
+
+        return NextResponse.json({
+            bouquets,
+            total,
+            page,
+            totalPages: Math.ceil(total / limit),
+            hasMore: skip + bouquets.length < total
+        });
+    } catch (error) {
+        console.error("Error fetching bouquets:", error);
+        return NextResponse.json({ error: "Failed to fetch bouquets" }, { status: 500 });
+    }
+}
+
+
