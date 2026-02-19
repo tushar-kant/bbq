@@ -6,7 +6,7 @@ import { FlowerSelector } from "@/components/FlowerSelector";
 import { BouquetCanvas } from "@/components/BouquetCanvas";
 import { LetterInput } from "@/components/LetterInput";
 import { BouquetItem, FLOWERS } from "@/lib/flowers";
-import { ChevronRight, ChevronLeft, Share2, Copy, Sparkles, Wand2, Mail, Shuffle, Leaf } from "lucide-react";
+import { ChevronRight, ChevronLeft, Share2, Copy, Sparkles, Wand2, Mail, Shuffle, Leaf, Sprout } from "lucide-react";
 import Image from "next/image";
 import confetti from "canvas-confetti";
 
@@ -390,7 +390,8 @@ export default function Home() {
                             y,
                             rotation,
                             scale: 0.85 + Math.random() * 0.3,
-                            stemBend: (Math.random() * 40 - 20)
+                            stemBend: (Math.random() * 40 - 20),
+                            stemType: Math.floor(Math.random() * 3)
                           };
                         }));
                       }}
@@ -399,6 +400,21 @@ export default function Home() {
                     >
                       <Shuffle className="w-3.5 h-3.5" />
                       Rearrange
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setBouquetItems(prev => prev.map(item => ({
+                          ...item,
+                          stemBend: (Math.random() * 60 - 30),
+                          stemType: Math.floor(Math.random() * 3)
+                        })));
+                      }}
+                      className="flex items-center gap-2 px-4 py-2 rounded-full border border-green-500/20 bg-green-500/5 hover:bg-green-500/10 text-green-600 dark:text-green-400 transition-colors text-xs font-medium uppercase tracking-wider"
+                      disabled={isGenerating || !!generatedImage}
+                    >
+                      <Sprout className="w-3.5 h-3.5" />
+                      Greenery
                     </button>
 
                   </div>

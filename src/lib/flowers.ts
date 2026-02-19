@@ -21,10 +21,13 @@ export const FLOWERS: Flower[] = [
     { id: "lavender", name: "Lavender", color: "#a78bfa", emoji: "🪻", category: "flower" },
     { id: "daisy", name: "Daisy", color: "#fef3c7", emoji: "🌼", category: "flower" },
     { id: "hibiscus", name: "Hibiscus", color: "#f43f5e", emoji: "🌺", category: "flower" },
-
+    { id: "sunflower", name: "Sunflower", color: "#fbaf24", emoji: "🌻", category: "flower" },
+    { id: "lavender", name: "Lavender", color: "#a78bfa", emoji: "🪻", category: "flower" },
+    { id: "bluebell", name: "Bluebell", color: "#60a5fa", emoji: "🔔", category: "flower" },
 
     // Leaves & Foliage
     { id: "leaf-1", name: "Green Leaf", color: "#22c55e", emoji: "🌿", category: "leaf" },
+    { id: "eucalyptus", name: "Eucalyptus", color: "#94a3b8", emoji: "🌿", category: "leaf" },
     { id: "leaf-2", name: "Leafy Stem", color: "#15803d", emoji: "🍃", category: "leaf" },
 
     // Accessories
@@ -41,4 +44,5 @@ export interface BouquetItem {
     rotation: number;
     scale: number;
     stemBend?: number;
+    stemType?: number;
 }

@@ -34,12 +34,14 @@ export const BouquetStems = ({ items }: BouquetStemsProps) => {
 
                 const rng = getSeededRandom(item.id + (item.stemBend || 0));
                 const stems = [];
+                const type = item.stemType || 0;
 
                 // 1. MAIN THICK STEM
+                const mainControlX = type === 2 ? item.x : item.x + (item.stemBend || 0) * 0.5;
                 stems.push(
                     <path
                         key={`main-${item.id}`}
-                        d={`M ${item.x} ${item.y} Q ${item.x + (item.stemBend || 0) * 0.5} 90, 50 105`}
+                        d={`M ${item.x} ${item.y} Q ${mainControlX} 90, 50 105`}
                         fill="none"
                         stroke="url(#stem-gradient)"
                         strokeWidth="4"
@@ -49,31 +51,30 @@ export const BouquetStems = ({ items }: BouquetStemsProps) => {
                     />
                 );
 
-                // 2. LONG GRASSY STEMS (20-30 per flower) - "More 200%" & "Really long"
-                const numLongStems = 20 + Math.floor(rng() * 10);
+                // 2. LONG GRASSY STEMS (Varies by type)
+                const numLongStems = type === 2 ? 12 : (20 + Math.floor(rng() * 10));
                 for (let i = 0; i < numLongStems; i++) {
-                    const isMegaLong = rng() > 0.6; // 40% are super long
-                    // Mega long stems go way up (negative Y offset)
+                    const isMegaLong = rng() > 0.6;
                     const heightOffset = isMegaLong ? -(10 + rng() * 30) : (rng() * 30 - 15);
 
-                    const endX = item.x + (rng() * 60 - 30); // Wider spread
+                    const endX = item.x + (rng() * 60 - 30);
                     const endY = item.y + heightOffset;
 
-                    // "Curved to left and to right"
                     const curveDir = rng() > 0.5 ? 1 : -1;
-                    const curveIntensity = 20 + rng() * 40; // More dramatic curves
+                    const baseIntensity = type === 1 ? 40 : (type === 2 ? 5 : 20);
+                    const curveIntensity = baseIntensity + rng() * (type === 1 ? 60 : 30);
 
                     const startX = 50 + (rng() * 20 - 10);
                     const midX = (startX + endX) / 2;
                     const controlX = midX + (curveIntensity * curveDir);
+                    const controlY = type === 2 ? 90 : 70;
 
                     stems.push(
                         <path
                             key={`long-${item.id}-${i}`}
-                            d={`M ${endX} ${endY} Q ${controlX} 70, ${startX} 105`}
+                            d={`M ${endX} ${endY} Q ${controlX} ${controlY}, ${startX} 105`}
                             fill="none"
                             stroke={rng() > 0.6 ? "#14532d" : "#166534"}
-                            // "Few thick, few thin"
                             strokeWidth={rng() > 0.8 ? (3 + rng()) : (0.5 + rng() * 0.5)}
                             strokeLinecap="round"
                             opacity={isMegaLong ? 0.9 : 0.6}
@@ -82,21 +83,19 @@ export const BouquetStems = ({ items }: BouquetStemsProps) => {
                     );
                 }
 
-                // 3. SHORT CURVED LEAVES (20-30 per flower) - "More foliage density"
-                const numLeaves = 20 + Math.floor(rng() * 10);
+                // 3. SHORT CURVED LEAVES (Varies by type)
+                const numLeaves = type === 2 ? 12 : (20 + Math.floor(rng() * 10));
                 for (let i = 0; i < numLeaves; i++) {
-                    const t = 0.1 + rng() * 0.8; // Spread along almost full stem length
-
-                    // Lerp position roughly towards center bottom
+                    const t = 0.1 + rng() * 0.8;
                     const stemX = item.x + (50 - item.x) * t;
                     const stemY = item.y + (100 - item.y) * t;
 
-                    // Leaf direction
                     const side = rng() > 0.5 ? 1 : -1;
-                    const len = 5 + rng() * 15; // Varying lengths
+                    const lenBase = type === 1 ? 10 : (type === 2 ? 4 : 5);
+                    const len = lenBase + rng() * (type === 1 ? 20 : 10);
 
                     const leafEndX = stemX + (len * side);
-                    const leafEndY = stemY - (rng() * 10); // Upward angle
+                    const leafEndY = stemY - (rng() * (type === 1 ? 15 : 10));
 
                     const cpX = stemX + (len * 0.3 * side);
                     const cpY = stemY + (rng() * 5);
