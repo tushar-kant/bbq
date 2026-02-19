@@ -7,10 +7,13 @@ import { BouquetCanvas } from "@/components/BouquetCanvas";
 import { LetterInput } from "@/components/LetterInput";
 import { BouquetItem, FLOWERS } from "@/lib/flowers";
 import { ChevronRight, ChevronLeft, Share2, Copy, Sparkles, Wand2, Mail, Shuffle, Leaf } from "lucide-react";
+import Image from "next/image";
 import confetti from "canvas-confetti";
 
 export default function Home() {
   const [creationType, setCreationType] = useState<"bouquet" | "message" | null>(null);
+  const [generatedImage, setGeneratedImage] = useState<string | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
   const [step, setStep] = useState(1);
   const [bouquetItems, setBouquetItems] = useState<BouquetItem[]>([]);
   const [letter, setLetter] = useState("");
@@ -347,11 +350,28 @@ export default function Home() {
                   className="space-y-6 flex flex-col h-full"
                 >
 
-                  <BouquetCanvas
-                    items={bouquetItems}
-                    setItems={setBouquetItems}
-                    isEditable={true}
-                  />
+                  {generatedImage ? (
+                    <div className="relative w-full h-[50vh] rounded-3xl overflow-hidden shadow-2xl border border-border bg-card/60 backdrop-blur-xl group">
+                      <Image
+                        src={generatedImage}
+                        alt="AI Generated Bouquet"
+                        fill
+                        className="object-cover transition-transform duration-700 group-hover:scale-105"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        priority
+                        unoptimized
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-8 pointer-events-none">
+                        <span className="text-white font-serif italic text-lg tracking-wide">AI Masterpiece</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <BouquetCanvas
+                      items={bouquetItems}
+                      setItems={setBouquetItems}
+                      isEditable={!isGenerating}
+                    />
+                  )}
 
                   <p className="text-center text-xs text-muted-foreground mb-2">NB: Drag to move • Tap to rotate</p>
                   <div className="flex gap-3 justify-center">
@@ -363,18 +383,19 @@ export default function Home() {
                           const dist = Math.abs(x - 50);
                           // Lower down: 55-75% Y range to sit closer to the ribbon
                           const y = 55 + (dist * 0.5) + (Math.random() * 20);
-
                           const rotation = (x - 50) * 2 + (Math.random() * 10 - 5);
                           return {
                             ...item,
                             x,
                             y,
                             rotation,
-                            scale: 0.85 + Math.random() * 0.3
+                            scale: 0.85 + Math.random() * 0.3,
+                            stemBend: (Math.random() * 40 - 20)
                           };
                         }));
                       }}
-                      className="flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-card hover:bg-secondary hover:text-foreground text-muted-foreground transition-colors text-xs font-medium uppercase tracking-wider"
+                      className="flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-card hover:bg-secondary hover:text-foreground text-muted-foreground transition-colors text-xs font-medium uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed"
+                      disabled={isGenerating || !!generatedImage}
                     >
                       <Shuffle className="w-3.5 h-3.5" />
                       Rearrange

@@ -3,6 +3,7 @@
 import { BouquetItem } from "@/lib/flowers";
 import { useState, useRef } from "react";
 
+import { BouquetStems } from "./bouquet/BouquetStems";
 import { BouquetWrapper } from "./bouquet/BouquetWrapper";
 import { BouquetFlower } from "./bouquet/BouquetFlower";
 
@@ -35,7 +36,8 @@ export const BouquetCanvas = ({ items, setItems, isEditable = true }: BouquetCan
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,currentColor_1px,transparent_1px)] bg-[length:24px_24px] opacity-10 text-muted-foreground pointer-events-none" />
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-pink-500/5 to-pink-500/10 pointer-events-none" />
 
-            {/* Stems Layer (Removed) */}
+            {/* Stems Layer */}
+            <BouquetStems items={items} />
 
             {/* Wrapper/Ribbon */}
             <BouquetWrapper items={items} />
