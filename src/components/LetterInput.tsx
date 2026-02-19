@@ -24,6 +24,7 @@ interface LetterInputProps {
     setIsScheduled: (val: boolean) => void;
     secretCode: string;
     setSecretCode: (code: string) => void;
+    creationType: "bouquet" | "message";
 }
 
 export const LetterInput = ({
@@ -36,28 +37,31 @@ export const LetterInput = ({
     recipientEmail, setRecipientEmail,
     scheduledAt, setScheduledAt,
     isScheduled, setIsScheduled,
-    secretCode, setSecretCode
+    secretCode, setSecretCode,
+    creationType
 }: LetterInputProps) => {
     return (
         <div className="space-y-8 glass p-8 rounded-3xl">
+            {/* Same as before... */}
             <div className="flex gap-4 mb-4">
                 <button
                     onClick={() => setTheme("love")}
                     className={`flex-1 flex gap-2 justify-center items-center py-3 rounded-xl border transition-all ${theme === "love" ? "border-primary bg-primary/10 text-primary font-bold" : "border-border hover:bg-white"}`}
                 >
                     <Heart className="w-5 h-5 fill-current" />
-                    <span>Love</span>
+                    <span>Love Theme</span>
                 </button>
                 <button
                     onClick={() => setTheme("birthday")}
                     className={`flex-1 flex gap-2 justify-center items-center py-3 rounded-xl border transition-all ${theme === "birthday" ? "border-primary bg-primary/10 text-primary font-bold" : "border-border hover:bg-white"}`}
                 >
                     <Cake className="w-5 h-5" />
-                    <span>Birthday</span>
+                    <span>Birthday Theme</span>
                 </button>
             </div>
 
             <div className="space-y-2">
+                {/* ... inputs ... */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                     <div className="space-y-2">
                         <label className="text-sm font-medium text-muted-foreground uppercase tracking-widest flex items-center gap-2">
@@ -183,7 +187,7 @@ export const LetterInput = ({
                         className={`p-4 rounded-xl border cursor-pointer transition-all ${giftType === "none" ? "border-primary bg-primary/10 ring-1 ring-primary" : "border-border hover:bg-white dark:hover:bg-white/5"}`}
                     >
                         <div className="font-bold text-muted-foreground mb-1">None</div>
-                        <p className="text-xs text-muted-foreground">Just the bouquet and letter.</p>
+                        <p className="text-xs text-muted-foreground">{creationType === 'message' ? 'Just the written letter.' : 'Just the bouquet and letter.'}</p>
                     </div>
                 </div>
 
