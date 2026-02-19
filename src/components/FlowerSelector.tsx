@@ -61,9 +61,13 @@ export const FlowerSelector = ({ flowerCounts, onUpdateCount, maxTotal }: Flower
                                         }}
                                     />
 
-                                    <span className="text-3xl filter drop-shadow-sm group-hover:drop-shadow-md transition-all pointer-events-none">
-                                        {flower.emoji}
-                                    </span>
+                                    {flower.image ? (
+                                        <img src={flower.image} alt={flower.name} className="w-10 h-10 object-contain drop-shadow-sm group-hover:drop-shadow-md transition-all pointer-events-none" />
+                                    ) : (
+                                        <span className="text-3xl filter drop-shadow-sm group-hover:drop-shadow-md transition-all pointer-events-none">
+                                            {flower.emoji}
+                                        </span>
+                                    )}
                                     <span className={`text-[10px] font-medium pointer-events-none transition-colors ${isSelected ? "text-primary" : "text-muted-foreground group-hover:text-foreground"}`}>{flower.name}</span>
 
                                     <AnimatePresence>

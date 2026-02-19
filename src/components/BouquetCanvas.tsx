@@ -44,7 +44,7 @@ export const BouquetCanvas = ({ items, setItems, isEditable = true }: BouquetCan
                 </defs>
                 {items.map((item) => {
                     const flower = FLOWERS.find((f) => f.id === item.flowerId);
-                    if (!flower || (flower.category !== 'flower' && flower.category !== 'leaf')) return null;
+                    if (!flower || flower.category !== 'flower') return null;
 
                     // Simple quadratic curve from item position to bottom center
                     // We need to convert % to approximate relative coordinates for path if we want simple strings, 
@@ -139,10 +139,19 @@ export const BouquetCanvas = ({ items, setItems, isEditable = true }: BouquetCan
                             if (isEditable) setSelectedId(item.id);
                         }}
                     >
-                        {/* Center the emoji on the anchor point */}
-                        <div className={`text-7xl md:text-8xl filter drop-shadow-2xl select-none transform-gpu -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${isSelected ? 'brightness-110 drop-shadow-[0_0_15px_rgba(255,255,255,0.4)]' : ''}`}>
-                            {flower.emoji}
-                        </div>
+                        {/* Center the emoji or image on the anchor point */}
+                        {flower.image ? (
+                            <img
+                                src={flower.image}
+                                alt={flower.name}
+                                className={`w-36 h-36 object-contain filter drop-shadow-2xl select-none transform-gpu -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${isSelected ? 'brightness-110 drop-shadow-[0_0_15px_rgba(255,255,255,0.4)]' : ''}`}
+                                draggable={false}
+                            />
+                        ) : (
+                            <div className={`text-7xl md:text-8xl filter drop-shadow-2xl select-none transform-gpu -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${isSelected ? 'brightness-110 drop-shadow-[0_0_15px_rgba(255,255,255,0.4)]' : ''}`}>
+                                {flower.emoji}
+                            </div>
+                        )}
 
                         {/* Controls for Selected Item */}
                         {isEditable && isSelected && (
