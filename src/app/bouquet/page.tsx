@@ -126,7 +126,8 @@ export default function Home() {
           senderName,
           recipientName,
           recipientEmail,
-          scheduledAt
+          scheduledAt,
+          canvasBackground
         }),
       });
 

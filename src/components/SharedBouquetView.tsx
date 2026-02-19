@@ -17,6 +17,8 @@ interface SharedViewProps {
         scratchMessage?: string;
         secretCode?: string;
         type?: "bouquet" | "message";
+        canvasBackground?: string;
+        recipientName?: string;
     };
 }
 
@@ -45,7 +47,10 @@ export const SharedBouquetView = ({ data }: SharedViewProps) => {
     };
 
     return (
-        <div className={`min-h-screen flex flex-col items-center justify-center p-4 overflow-hidden relative ${data.theme === 'love' ? 'bg-gradient-to-br from-rose-100 via-rose-50 to-white dark:from-[#2d121b] dark:via-[#1a0b12] dark:to-black' : 'bg-gradient-to-br from-yellow-100 via-amber-50 to-white dark:from-[#2d2512] dark:via-[#1a150b] dark:to-black'}`}>
+        <div
+            className={`min-h-screen flex flex-col items-center justify-center p-4 overflow-hidden relative transition-colors duration-1000 ${!data.canvasBackground ? (data.theme === 'love' ? 'bg-gradient-to-br from-rose-100 via-rose-50 to-white dark:from-[#2d121b] dark:via-[#1a0b12] dark:to-black' : 'bg-gradient-to-br from-yellow-100 via-amber-50 to-white dark:from-[#2d2512] dark:via-[#1a150b] dark:to-black') : ''}`}
+            style={data.canvasBackground ? { background: data.canvasBackground } : {}}
+        >
             {/* Background Decor */}
             <div className="absolute inset-0 pointer-events-none overflow-hidden">
                 <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-primary/20 rounded-full blur-[120px] animate-float opacity-40" />
@@ -65,6 +70,7 @@ export const SharedBouquetView = ({ data }: SharedViewProps) => {
                             type={data.giftType}
                             message={data.scratchMessage}
                             code={data.secretCode}
+                            recipientName={data.recipientName}
                             onReveal={handleReveal}
                         />
                         <p className="text-center mt-8 text-black/60 dark:text-white/60 animate-pulse text-sm font-bold tracking-widest uppercase drop-shadow-sm">
@@ -93,6 +99,7 @@ export const SharedBouquetView = ({ data }: SharedViewProps) => {
                                         items={data.items}
                                         setItems={() => { }}
                                         isEditable={false}
+                                        background={data.canvasBackground}
                                     />
                                 </div>
 
@@ -130,7 +137,7 @@ export const SharedBouquetView = ({ data }: SharedViewProps) => {
                                         </div>
 
                                         <h3 className="font-serif text-3xl md:text-4xl text-primary font-bold mb-8 italic text-center tracking-wide leading-tight drop-shadow-sm">
-                                            {data.type === 'message' ? 'A Special Letter' : 'A Message For You'}
+                                            {data.type === 'message' ? 'A Special Letter' : `Dear ${data.recipientName || 'You'}`}
                                         </h3>
 
                                         <div className="font-serif text-lg md:text-xl leading-relaxed text-[#4a4a4a] dark:text-neutral-300 whitespace-pre-wrap text-center max-w-md mx-auto">

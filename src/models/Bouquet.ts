@@ -10,8 +10,11 @@ const BouquetSchema = new mongoose.Schema({
             y: Number,
             rotation: Number,
             scale: Number,
+            stemBend: Number,
+            stemType: Number,
         },
     ],
+    canvasBackground: String,
     letter: String,
     theme: { type: String, default: "love" }, // love, birthday
     giftType: { type: String, default: "none" }, // envelope, scratch, code 

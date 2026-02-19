@@ -11,11 +11,18 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { id } = await params;
 
+    let recipient = "You";
+    try {
+        await dbConnect();
+        const bouquet = await Bouquet.findById(id).select('recipientName').lean();
+        if (bouquet?.recipientName) recipient = bouquet.recipientName;
+    } catch (e) { }
+
     return {
-        title: `A Blooms For You | FORU`,
-        description: "Someone made a special bouquet just for you. Open to see your surprise! 🌸",
+        title: `A Gift for ${recipient} | FORU`,
+        description: `${recipient}, someone made a special bouquet just for you. Open to see your surprise! 🌸`,
         openGraph: {
-            title: "A Special Bouquet For You 🌸",
+            title: `A Special Bouquet for ${recipient} 🌸`,
             description: "Tap to reveal your floral surprise & heartfelt message.",
             images: ["/og-bouquet.png"], // Placeholder
         }

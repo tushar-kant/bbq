@@ -9,10 +9,11 @@ interface GiftRevealProps {
     type: "envelope" | "scratch" | "code" | "none";
     message?: string;
     code?: string;
+    recipientName?: string;
     onReveal: () => void;
 }
 
-export const GiftReveal = ({ type, message, code, onReveal }: GiftRevealProps) => {
+export const GiftReveal = ({ type, message, code, recipientName, onReveal }: GiftRevealProps) => {
     const [isOpen, setIsOpen] = useState(false);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [isScratched, setIsScratched] = useState(false);
@@ -142,6 +143,11 @@ export const GiftReveal = ({ type, message, code, onReveal }: GiftRevealProps) =
                         <div className="w-72 h-48 bg-gradient-to-br from-primary to-accent shadow-2xl rounded-lg flex items-center justify-center relative overflow-hidden border-t-8 border-white/20">
                             <div className="absolute inset-0 pattern-grid opacity-10" />
                             <Mail className="w-20 h-20 text-white drop-shadow-md z-10" />
+                            {recipientName && (
+                                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10">
+                                    <p className="font-serif italic text-white/90 text-sm tracking-wide bg-black/10 px-3 py-0.5 rounded-full backdrop-blur-sm border border-white/10 uppercase font-bold text-[10px]">Dear {recipientName}</p>
+                                </div>
+                            )}
                             <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-white/20 rounded-full blur-2xl animate-pulse" />
                         </div>
 
