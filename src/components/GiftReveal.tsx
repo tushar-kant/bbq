@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
-import { Mail, ArrowDown } from "lucide-react";
+import { Mail, ArrowDown, Lock, Unlock } from "lucide-react";
 
 interface GiftRevealProps {
     type: "envelope" | "scratch" | "code" | "none";
@@ -179,38 +179,71 @@ export const GiftReveal = ({ type, message, code, onReveal }: GiftRevealProps) =
                 {type === "code" && !isOpen && (
                     <motion.div
                         key="code"
-                        initial={{ scale: 0.8, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1, x: shake ? [0, -10, 10, -10, 10, 0] : 0 }}
-                        exit={{ scale: 1.5, opacity: 0, rotate: -10 }}
-                        transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                        className="bg-white/10 backdrop-blur-xl p-8 rounded-3xl border border-white/30 shadow-2xl w-[320px] flex flex-col items-center gap-6"
+                        initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                        animate={{
+                            scale: 1,
+                            opacity: 1,
+                            y: 0,
+                            x: shake ? [0, -10, 10, -10, 10, 0] : 0,
+                            rotate: shake ? [0, -2, 2, -2, 2, 0] : 0
+                        }}
+                        exit={{ scale: 1.1, opacity: 0, filter: "blur(10px)" }}
+                        transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                        className="w-full max-w-[340px] px-4"
                     >
-                        <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mb-2 animate-bounce">
-                            <div className="text-4xl">🔒</div>
-                        </div>
+                        <div className="relative overflow-hidden bg-black/40 backdrop-blur-2xl p-8 rounded-[2rem] border border-white/10 shadow-2xl flex flex-col items-center gap-6">
+                            {/* Decorative background elements */}
+                            <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+                            <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+                            <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent pointer-events-none" />
 
-                        <div className="text-center">
-                            <h3 className="text-xl font-bold text-white mb-2 font-serif">Digital Safe</h3>
-                            <p className="text-white/70 text-sm">Enter the secret code to unlock.</p>
-                        </div>
+                            {/* Icon */}
+                            <div className="relative group">
+                                <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl group-hover:bg-primary/30 transition-colors duration-500" />
+                                <div className="relative w-20 h-20 bg-gradient-to-br from-white/10 to-white/5 rounded-full flex items-center justify-center border border-white/10 shadow-inner group-hover:scale-105 transition-transform duration-300">
+                                    <Lock className="w-8 h-8 text-white/90 drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]" />
+                                </div>
+                            </div>
 
-                        <div className="flex gap-2 w-full">
-                            <input
-                                type="password"
-                                value={inputCode}
-                                onChange={(e) => setInputCode(e.target.value)}
-                                onKeyDown={(e) => e.key === 'Enter' && handleUnlock()}
-                                placeholder="Enter Code"
-                                className="flex-1 bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-center text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-white/50 font-bold tracking-widest"
-                            />
-                            <button
-                                onClick={handleUnlock}
-                                className="bg-white text-primary font-bold px-4 py-3 rounded-xl hover:bg-white/90 transition-colors"
-                            >
-                                🔓
-                            </button>
+                            {/* Text */}
+                            <div className="text-center space-y-2 relative z-10">
+                                <h3 className="text-2xl font-bold text-white font-serif tracking-wide drop-shadow-sm">Digital Safe</h3>
+                                <p className="text-white/60 text-sm font-medium leading-relaxed">Enter the secret code to unlock<br />your message.</p>
+                            </div>
+
+                            {/* Input Area */}
+                            <div className="w-full space-y-4 relative z-10">
+                                <div className="relative group">
+                                    <input
+                                        type="password"
+                                        value={inputCode}
+                                        onChange={(e) => setInputCode(e.target.value)}
+                                        onKeyDown={(e) => e.key === 'Enter' && handleUnlock()}
+                                        placeholder="••••"
+                                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-4 text-center text-white placeholder:text-white/10 focus:outline-none focus:bg-white/10 focus:border-white/20 focus:ring-1 focus:ring-white/20 text-2xl font-bold tracking-[0.5em] transition-all"
+                                        autoFocus
+                                    />
+                                </div>
+
+                                <button
+                                    onClick={handleUnlock}
+                                    className="w-full bg-white text-black font-bold py-4 rounded-2xl hover:bg-gray-100 active:scale-[0.98] transition-all text-xs uppercase tracking-[0.15em] flex items-center justify-center gap-3 shadow-lg shadow-white/5"
+                                >
+                                    <span>Unlock to Read</span>
+                                    <Unlock className="w-3.5 h-3.5" />
+                                </button>
+                            </div>
+
+                            {shake && (
+                                <motion.p
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="text-red-300 text-xs font-bold flex items-center gap-2 bg-red-500/10 px-3 py-1 rounded-full border border-red-500/20"
+                                >
+                                    <span>⚠️</span> Incorrect Code
+                                </motion.p>
+                            )}
                         </div>
-                        {shake && <p className="text-red-300 text-xs font-bold animate-pulse">Incorrect Code!</p>}
                     </motion.div>
                 )}
             </AnimatePresence>
