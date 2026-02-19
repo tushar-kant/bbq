@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 const BouquetSchema = new mongoose.Schema({
+    type: { type: String, enum: ['bouquet', 'message'], default: 'bouquet' },
     items: [
         {
             id: String,
