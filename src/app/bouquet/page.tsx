@@ -11,7 +11,6 @@ import confetti from "canvas-confetti";
 
 export default function Home() {
   const [step, setStep] = useState(1);
-  const [selectedFlowers, setSelectedFlowers] = useState<string[]>([]);
   const [bouquetItems, setBouquetItems] = useState<BouquetItem[]>([]);
   const [letter, setLetter] = useState("");
   const [giftType, setGiftType] = useState("none");
@@ -19,29 +18,53 @@ export default function Home() {
   const [theme, setTheme] = useState("love");
   const [isSaving, setIsSaving] = useState(false);
   const [shareUrl, setShareUrl] = useState<string | null>(null);
+  // Replace simple array with Record
+  const [flowerCounts, setFlowerCounts] = useState<Record<string, number>>({});
 
-  const handleFlowerSelect = (id: string) => {
-    if (selectedFlowers.includes(id)) {
-      setSelectedFlowers(selectedFlowers.filter((f) => f !== id));
-    } else {
-      if (selectedFlowers.length < 10) {
-        setSelectedFlowers([...selectedFlowers, id]);
-        // Add to canvas immediately in a random pos for preview
-        const newItem: BouquetItem = {
+  const handleFlowerUpdate = (id: string, newCount: number) => {
+    const currentCount = flowerCounts[id] || 0;
+
+    // Update Counts State
+    setFlowerCounts(prev => ({ ...prev, [id]: newCount }));
+
+    // Sync Canvas Items
+    if (newCount > currentCount) {
+      // Add items
+      const toAdd = newCount - currentCount;
+      const newItems: BouquetItem[] = [];
+      for (let i = 0; i < toAdd; i++) {
+        newItems.push({
           id: Math.random().toString(36).substr(2, 9),
           flowerId: id,
-          x: 50 + (Math.random() * 20 - 10), // Center-ish
+          x: 50 + (Math.random() * 20 - 10), // Random center cluster
           y: 50 + (Math.random() * 20 - 10),
           rotation: Math.random() * 30 - 15,
-          scale: 1
-        };
-        setBouquetItems((prev) => [...prev, newItem]);
+          scale: 1 + (Math.random() * 0.2 - 0.1) // Slight size variation
+        });
       }
+      setBouquetItems(prev => [...prev, ...newItems]);
+    } else if (newCount < currentCount) {
+      // Remove items (LIFO or random? Let's remove distinct ones matching ID)
+      const toRemove = currentCount - newCount;
+      setBouquetItems(prev => {
+        const copy = [...prev];
+        let removed = 0;
+        // Filter out items from end to keep arrangement stable-ish
+        return copy.filter(item => {
+          if (item.flowerId === id && removed < toRemove) {
+            removed++;
+            return false;
+          }
+          return true;
+        });
+      });
     }
   };
 
+  const totalItems = Object.values(flowerCounts).reduce((a, b) => a + b, 0);
+
   const handleNext = () => {
-    if (step === 1 && selectedFlowers.length < 1) return alert("Pick at least one flower!");
+    if (step === 1 && totalItems < 7) return alert("Please select at least 7 items for a full bouquet! 🌸");
     setStep(step + 1);
   };
 
@@ -164,9 +187,9 @@ export default function Home() {
                   className="space-y-6"
                 >
                   <FlowerSelector
-                    selected={selectedFlowers}
-                    onSelect={handleFlowerSelect}
-                    max={10}
+                    flowerCounts={flowerCounts}
+                    onUpdateCount={handleFlowerUpdate}
+                    maxTotal={20}
                   />
                 </motion.div>
               )}
@@ -231,7 +254,7 @@ export default function Home() {
             {step < 3 ? (
               <button
                 onClick={handleNext}
-                disabled={selectedFlowers.length < 1}
+                disabled={totalItems < 7}
                 className="px-8 py-3 bg-primary text-white font-bold rounded-xl hover:bg-primary/90 flex items-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-primary/25"
               >
                 Next
