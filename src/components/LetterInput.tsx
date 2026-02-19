@@ -1,7 +1,8 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Gift, Heart, Cake, Calendar, Mail, User } from "lucide-react";
+import { useSession, signIn } from "next-auth/react";
 
 interface LetterInputProps {
     letter: string;
@@ -40,195 +41,204 @@ export const LetterInput = ({
     secretCode, setSecretCode,
     creationType
 }: LetterInputProps) => {
+    const { data: session } = useSession();
+
     return (
-        <div className="space-y-8 glass p-8 rounded-3xl">
-            {/* Same as before... */}
-            <div className="flex gap-4 mb-4">
+        <div className="space-y-5 p-6 rounded-[2rem] border border-white/10 bg-[#1a0508]/60 backdrop-blur-xl shadow-2xl">
+            <div className="flex gap-3 mb-2">
                 <button
                     onClick={() => setTheme("love")}
-                    className={`flex-1 flex gap-2 justify-center items-center py-3 rounded-xl border transition-all ${theme === "love" ? "border-primary bg-primary/10 text-primary font-bold" : "border-border hover:bg-white"}`}
+                    className={`flex-1 flex gap-2 justify-center items-center py-3 rounded-xl border transition-all duration-300 ${theme === "love" ? "border-pink-500/50 bg-pink-500/10 text-pink-200 shadow-[0_0_15px_-5px_rgba(236,72,153,0.3)]" : "border-white/10 text-white/50 hover:bg-white/5 hover:text-white"}`}
                 >
-                    <Heart className="w-5 h-5 fill-current" />
-                    <span>Love Theme</span>
+                    <Heart className={`w-4 h-4 ${theme === "love" ? "fill-current animate-pulse" : ""}`} />
+                    <span className="font-medium tracking-wide text-sm">Love Theme</span>
                 </button>
                 <button
                     onClick={() => setTheme("birthday")}
-                    className={`flex-1 flex gap-2 justify-center items-center py-3 rounded-xl border transition-all ${theme === "birthday" ? "border-primary bg-primary/10 text-primary font-bold" : "border-border hover:bg-white"}`}
+                    className={`flex-1 flex gap-2 justify-center items-center py-3 rounded-xl border transition-all duration-300 ${theme === "birthday" ? "border-amber-400/50 bg-amber-400/10 text-amber-200 shadow-[0_0_15px_-5px_rgba(251,191,36,0.3)]" : "border-white/10 text-white/50 hover:bg-white/5 hover:text-white"}`}
                 >
-                    <Cake className="w-5 h-5" />
-                    <span>Birthday Theme</span>
+                    <Cake className="w-4 h-4" />
+                    <span className="font-medium tracking-wide text-sm">Birthday Theme</span>
                 </button>
             </div>
 
-            <div className="space-y-2">
-                {/* ... inputs ... */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium text-muted-foreground uppercase tracking-widest flex items-center gap-2">
-                            <User className="w-4 h-4" /> From (Your Name)
+            <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                        <label className="text-[10px] font-bold text-pink-200/60 uppercase tracking-widest flex items-center gap-2 pl-1">
+                            <User className="w-3 h-3" /> From
                         </label>
                         <input
                             type="text"
                             value={senderName}
                             onChange={(e) => setSenderName(e.target.value)}
                             placeholder="e.g. Secret Admirer"
-                            className="w-full bg-white/50 dark:bg-white/5 border border-border rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none transition-all placeholder:text-muted-foreground/50"
+                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 focus:ring-1 focus:ring-pink-500/50 focus:border-pink-500/50 outline-none transition-all placeholder:text-white/20 text-white hover:bg-white/10 text-sm"
                         />
                     </div>
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium text-muted-foreground uppercase tracking-widest flex items-center gap-2">
-                            <User className="w-4 h-4" /> To (Recipient Name)
+                    <div className="space-y-1.5">
+                        <label className="text-[10px] font-bold text-pink-200/60 uppercase tracking-widest flex items-center gap-2 pl-1">
+                            <User className="w-3 h-3" /> To *
                         </label>
                         <input
                             type="text"
                             value={recipientName}
                             onChange={(e) => setRecipientName(e.target.value)}
                             placeholder="e.g. My Valentine"
-                            className="w-full bg-white/50 dark:bg-white/5 border border-border rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none transition-all placeholder:text-muted-foreground/50"
+                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 focus:ring-1 focus:ring-pink-500/50 focus:border-pink-500/50 outline-none transition-all placeholder:text-white/20 text-white hover:bg-white/10 text-sm"
                         />
                     </div>
                 </div>
 
-                <div className="mb-6 space-y-4">
-                    <div className="flex gap-4 p-1 bg-muted/20 rounded-xl">
+                <div className="space-y-3">
+                    <div className="flex gap-2 p-1 bg-black/20 rounded-xl border border-white/5">
                         <button
                             onClick={() => setIsScheduled(false)}
-                            className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all ${!isScheduled ? 'bg-primary text-white shadow-md' : 'text-muted-foreground hover:bg-white/50'}`}
+                            className={`flex-1 py-2 px-3 rounded-lg text-xs font-medium transition-all duration-300 ${!isScheduled ? 'bg-white/10 text-white shadow-lg border border-white/10' : 'text-white/40 hover:text-white/70 hover:bg-white/5'}`}
                         >
                             Create Link Only
                         </button>
                         <button
-                            onClick={() => setIsScheduled(true)}
-                            className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all ${isScheduled ? 'bg-primary text-white shadow-md' : 'text-muted-foreground hover:bg-white/50'}`}
+                            onClick={() => session ? setIsScheduled(true) : signIn("google")}
+                            className={`flex-1 py-2 px-3 rounded-lg text-xs font-medium transition-all duration-300 ${isScheduled ? 'bg-pink-500/20 text-pink-200 shadow-lg border border-pink-500/20' : 'text-white/40 hover:text-white/70 hover:bg-white/5'}`}
                         >
-                            Schedule Delivery
+                            {session ? "Schedule Delivery" : "Login to Schedule"}
                         </button>
                     </div>
 
-                    {isScheduled && (
-                        <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: 'auto' }}
-                            className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2"
-                        >
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium text-muted-foreground uppercase tracking-widest flex items-center gap-2">
-                                    <Mail className="w-4 h-4 text-primary" /> Recipient Email *
-                                </label>
-                                <input
-                                    type="email"
-                                    required
-                                    value={recipientEmail}
-                                    onChange={(e) => setRecipientEmail(e.target.value)}
-                                    placeholder="recipient@example.com"
-                                    className="w-full bg-white/50 dark:bg-white/5 border border-border rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none transition-all placeholder:text-muted-foreground/50 border-primary/30"
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium text-muted-foreground uppercase tracking-widest flex items-center gap-2">
-                                    <Calendar className="w-4 h-4 text-primary" /> Schedule Time *
-                                </label>
-                                <input
-                                    type="datetime-local"
-                                    required
-                                    value={scheduledAt}
-                                    onChange={(e) => setScheduledAt(e.target.value)}
-                                    className="w-full bg-white/50 dark:bg-white/5 border border-border rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none transition-all placeholder:text-muted-foreground/50 text-muted-foreground border-primary/30"
-                                />
-                            </div>
-                        </motion.div>
-                    )}
+                    <AnimatePresence>
+                        {isScheduled && (
+                            <motion.div
+                                initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                                animate={{ opacity: 1, height: 'auto', marginTop: 12 }}
+                                exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                                className="grid grid-cols-1 md:grid-cols-2 gap-4 overflow-hidden"
+                            >
+                                <div className="space-y-1.5">
+                                    <label className="text-[10px] font-bold text-pink-200/60 uppercase tracking-widest flex items-center gap-2 pl-1">
+                                        <Mail className="w-3 h-3" /> Email *
+                                    </label>
+                                    <input
+                                        type="email"
+                                        required
+                                        value={recipientEmail}
+                                        onChange={(e) => setRecipientEmail(e.target.value)}
+                                        placeholder="recipient@example.com"
+                                        className="w-full bg-white/5 border border-pink-500/20 rounded-xl px-4 py-2.5 focus:ring-1 focus:ring-pink-500/50 focus:border-pink-500/50 outline-none transition-all placeholder:text-white/20 text-white hover:bg-white/10 text-sm"
+                                    />
+                                </div>
+                                <div className="space-y-1.5">
+                                    <label className="text-[10px] font-bold text-pink-200/60 uppercase tracking-widest flex items-center gap-2 pl-1">
+                                        <Calendar className="w-3 h-3" /> Time *
+                                    </label>
+                                    <input
+                                        type="datetime-local"
+                                        required
+                                        value={scheduledAt}
+                                        onChange={(e) => setScheduledAt(e.target.value)}
+                                        className="w-full bg-white/5 border border-pink-500/20 rounded-xl px-4 py-2.5 focus:ring-1 focus:ring-pink-500/50 focus:border-pink-500/50 outline-none transition-all placeholder:text-white/20 text-white/80 hover:bg-white/10 scheme-dark text-sm"
+                                    />
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                 </div>
 
-                <label className="text-sm font-medium text-muted-foreground uppercase tracking-widest">
-                    Write a Heartfelt Note
-                </label>
-                <textarea
-                    value={letter}
-                    onChange={(e) => setLetter(e.target.value)}
-                    placeholder="Dear my love..."
-                    className="w-full h-40 bg-white/50 dark:bg-white/5 border border-border rounded-2xl p-4 focus:ring-2 focus:ring-primary outline-none transition-all placeholder:text-muted-foreground/50 resize-none font-serif text-lg leading-relaxed show-scroll text-foreground"
-                />
+                <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-pink-200/60 uppercase tracking-widest pl-1">
+                        Write a Heartfelt Note
+                    </label>
+                    <textarea
+                        value={letter}
+                        onChange={(e) => setLetter(e.target.value)}
+                        placeholder="Dear my love..."
+                        className="w-full h-32 bg-white/5 border border-white/10 rounded-xl p-4 focus:ring-1 focus:ring-pink-500/50 focus:border-pink-500/50 outline-none transition-all placeholder:text-white/20 resize-none font-serif text-base leading-relaxed show-scroll text-white/90 hover:bg-white/10"
+                    />
+                </div>
             </div>
 
-            <div className="space-y-4 pt-4 border-t border-border">
-                <label className="text-sm font-medium text-muted-foreground uppercase tracking-widest flex items-center gap-2">
-                    <Gift className="w-4 h-4" />
+            <div className="space-y-4 pt-4 border-t border-white/10">
+                <label className="text-[10px] font-bold text-pink-200/60 uppercase tracking-widest flex items-center gap-2 pl-1">
+                    <Gift className="w-3 h-3" />
                     Add a Secret Surprise
                 </label>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                     <div
                         onClick={() => setGiftType("envelope")}
-                        className={`p-4 rounded-xl border cursor-pointer transition-all ${giftType === "envelope" ? "border-primary bg-primary/10 ring-1 ring-primary" : "border-border hover:bg-white dark:hover:bg-white/5"}`}
+                        className={`p-3 rounded-xl border cursor-pointer transition-all duration-300 group ${giftType === "envelope" ? "border-pink-500/50 bg-pink-500/10 shadow-[0_0_15px_-5px_rgba(236,72,153,0.3)]" : "border-white/10 hover:bg-white/5 hover:border-white/20"}`}
                     >
-                        <div className="font-bold text-foreground mb-1">💌 Sealed Envelope</div>
-                        <p className="text-xs text-muted-foreground">Wrap your letter in a digital envelope they have to open.</p>
+                        <div className={`font-bold mb-0.5 text-sm group-hover:text-white transition-colors ${giftType === "envelope" ? "text-pink-200" : "text-white/70"}`}>💌 Envelope</div>
+                        <p className="text-[10px] text-white/40 group-hover:text-white/60 transition-colors leading-tight">Digital envelope.</p>
                     </div>
 
                     <div
                         onClick={() => setGiftType("scratch")}
-                        className={`p-4 rounded-xl border cursor-pointer transition-all ${giftType === "scratch" ? "border-primary bg-primary/10 ring-1 ring-primary" : "border-border hover:bg-white dark:hover:bg-white/5"}`}
+                        className={`p-3 rounded-xl border cursor-pointer transition-all duration-300 group ${giftType === "scratch" ? "border-amber-400/50 bg-amber-400/10 shadow-[0_0_15px_-5px_rgba(251,191,36,0.3)]" : "border-white/10 hover:bg-white/5 hover:border-white/20"}`}
                     >
-                        <div className="font-bold text-foreground mb-1">✨ Scratch Card</div>
-                        <p className="text-xs text-muted-foreground">Hide a special message under a scratch-off layer.</p>
+                        <div className={`font-bold mb-0.5 text-sm group-hover:text-white transition-colors ${giftType === "scratch" ? "text-amber-200" : "text-white/70"}`}>✨ Scratch</div>
+                        <p className="text-[10px] text-white/40 group-hover:text-white/60 transition-colors leading-tight">Scratch-off layer.</p>
                     </div>
 
                     <div
                         onClick={() => setGiftType("code")}
-                        className={`p-4 rounded-xl border cursor-pointer transition-all ${giftType === "code" ? "border-primary bg-primary/10 ring-1 ring-primary" : "border-border hover:bg-white dark:hover:bg-white/5"}`}
+                        className={`p-3 rounded-xl border cursor-pointer transition-all duration-300 group ${giftType === "code" ? "border-blue-400/50 bg-blue-400/10 shadow-[0_0_15px_-5px_rgba(96,165,250,0.3)]" : "border-white/10 hover:bg-white/5 hover:border-white/20"}`}
                     >
-                        <div className="font-bold text-foreground mb-1">🔒 Digital Safe</div>
-                        <p className="text-xs text-muted-foreground">Protect your message with a secret code/pin.</p>
+                        <div className={`font-bold mb-0.5 text-sm group-hover:text-white transition-colors ${giftType === "code" ? "text-blue-200" : "text-white/70"}`}>🔒 Safe</div>
+                        <p className="text-[10px] text-white/40 group-hover:text-white/60 transition-colors leading-tight">Secret code.</p>
                     </div>
 
                     <div
                         onClick={() => setGiftType("none")}
-                        className={`p-4 rounded-xl border cursor-pointer transition-all ${giftType === "none" ? "border-primary bg-primary/10 ring-1 ring-primary" : "border-border hover:bg-white dark:hover:bg-white/5"}`}
+                        className={`p-3 rounded-xl border cursor-pointer transition-all duration-300 group ${giftType === "none" ? "border-white/20 bg-white/5" : "border-white/10 hover:bg-white/5 hover:border-white/20"}`}
                     >
-                        <div className="font-bold text-muted-foreground mb-1">None</div>
-                        <p className="text-xs text-muted-foreground">{creationType === 'message' ? 'Just the written letter.' : 'Just the bouquet and letter.'}</p>
+                        <div className={`font-bold mb-0.5 text-sm group-hover:text-white transition-colors ${giftType === "none" ? "text-white" : "text-white/70"}`}>None</div>
+                        <p className="text-[10px] text-white/40 group-hover:text-white/60 transition-colors leading-tight">Directly visible.</p>
                     </div>
                 </div>
 
-                {giftType === "scratch" && (
-                    <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        className="pt-2"
-                    >
-                        <input
-                            type="text"
-                            value={scratchMessage}
-                            onChange={(e) => setScratchMessage(e.target.value)}
-                            placeholder="e.g. Will you be my Valentine? 💖"
-                            className="w-full bg-white dark:bg-white/10 border border-border rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none text-center font-bold text-foreground placeholder:font-normal placeholder:text-muted-foreground/50 transition-colors"
-                        />
-                    </motion.div>
-                )}
+                <AnimatePresence>
+                    {giftType === "scratch" && (
+                        <motion.div
+                            initial={{ height: 0, opacity: 0, marginTop: 0 }}
+                            animate={{ height: "auto", opacity: 1, marginTop: 12 }}
+                            exit={{ height: 0, opacity: 0, marginTop: 0 }}
+                            className="overflow-hidden"
+                        >
+                            <input
+                                type="text"
+                                value={scratchMessage}
+                                onChange={(e) => setScratchMessage(e.target.value)}
+                                placeholder="e.g. Will you be my Valentine? 💖"
+                                className="w-full bg-white/5 border border-amber-400/30 rounded-xl px-4 py-2.5 focus:ring-1 focus:ring-amber-400/50 focus:border-amber-400/50 outline-none text-center font-bold text-amber-100 placeholder:font-normal placeholder:text-white/20 transition-all hover:bg-white/10 text-sm"
+                            />
+                        </motion.div>
+                    )}
 
-                {giftType === "code" && (
-                    <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        className="pt-2 grid grid-cols-1 md:grid-cols-3 gap-4"
-                    >
-                        <input
-                            type="text"
-                            value={secretCode}
-                            onChange={(e) => setSecretCode(e.target.value)}
-                            placeholder="Set Code (e.g. 1234)"
-                            className="bg-white dark:bg-white/10 border border-border rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none text-center font-bold text-foreground placeholder:font-normal placeholder:text-muted-foreground/50 transition-colors"
-                        />
-                        <input
-                            type="text"
-                            value={scratchMessage}
-                            onChange={(e) => setScratchMessage(e.target.value)}
-                            placeholder="Secret Message to Hide..."
-                            className="md:col-span-2 bg-white dark:bg-white/10 border border-border rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none text-center font-bold text-foreground placeholder:font-normal placeholder:text-muted-foreground/50 transition-colors"
-                        />
-                    </motion.div>
-                )}
+                    {giftType === "code" && (
+                        <motion.div
+                            initial={{ height: 0, opacity: 0, marginTop: 0 }}
+                            animate={{ height: "auto", opacity: 1, marginTop: 12 }}
+                            exit={{ height: 0, opacity: 0, marginTop: 0 }}
+                            className="grid grid-cols-1 md:grid-cols-3 gap-3 overflow-hidden"
+                        >
+                            <input
+                                type="text"
+                                value={secretCode}
+                                onChange={(e) => setSecretCode(e.target.value)}
+                                placeholder="Set Code"
+                                className="bg-white/5 border border-blue-400/30 rounded-xl px-4 py-2.5 focus:ring-1 focus:ring-blue-400/50 focus:border-blue-400/50 outline-none text-center font-bold text-blue-100 placeholder:font-normal placeholder:text-white/20 transition-all hover:bg-white/10 text-sm"
+                            />
+                            <input
+                                type="text"
+                                value={scratchMessage}
+                                onChange={(e) => setScratchMessage(e.target.value)}
+                                placeholder="Secret Message to Hide..."
+                                className="md:col-span-2 bg-white/5 border border-blue-400/30 rounded-xl px-4 py-2.5 focus:ring-1 focus:ring-blue-400/50 focus:border-blue-400/50 outline-none text-center font-bold text-blue-100 placeholder:font-normal placeholder:text-white/20 transition-all hover:bg-white/10 text-sm"
+                            />
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </div>
         </div>
     );

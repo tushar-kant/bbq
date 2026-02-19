@@ -3,15 +3,12 @@
 import { motion } from "framer-motion";
 import { Sparkles, Heart, ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { ThreeRose } from "@/components/ThreeRose";
+
 
 export default function Home() {
   return (
     <main className="min-h-screen bg-[#130306] relative overflow-hidden flex flex-col text-white">
-      {/* 3D Heart Background */}
-      <div className="absolute inset-0 z-0 opacity-80">
-        <ThreeRose />
-      </div>
+      {/* 3D Heart Removed */}
 
       {/* Gradient Overlay for Text Readability */}
       <div className="absolute inset-0 z-0 bg-gradient-to-b from-black/30 via-transparent to-black/60 pointer-events-none" />

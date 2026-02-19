@@ -68,7 +68,7 @@ const HeartShape = () => {
                     iridescenceThicknessRange={[0, 1400]}
                     roughness={0.1}
                     color="#ff0022" // Vivid Red
-                    bg="#120508"
+                    background={new THREE.Color("#120508")}
                 />
             </mesh>
         </group>
@@ -85,8 +85,8 @@ export const ThreeRose = () => {
 
                 <PresentationControls
                     global
-                    config={{ mass: 2, tension: 500 }}
-                    snap={{ mass: 4, tension: 1500 }}
+
+                    snap={true}
                     rotation={[0, 0, 0]}
                     polar={[-Math.PI / 3, Math.PI / 3]}
                     azimuth={[-Math.PI / 1.4, Math.PI / 2]}
