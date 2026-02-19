@@ -17,19 +17,16 @@ export const Header = () => {
 
     useEffect(() => setMounted(true), []);
 
-    // On Home Page, we want a transparent header with white text/icons
-    // standard glass vs premium transparent
+    // On Home Page, we want a transparent header but text needs to differ based on theme
+    // Since home page now has theme support (light/dark bg), text should just be text-foreground
     const headerClass = isHomePage
-        ? "fixed top-0 w-full z-50 px-6 py-4 flex justify-between items-center transition-all duration-300 bg-transparent text-white"
+        ? "fixed top-0 w-full z-50 px-6 py-4 flex justify-between items-center transition-all duration-300 bg-transparent text-foreground"
         : "fixed top-0 w-full z-50 px-6 py-4 flex justify-between items-center glass border-b border-border/50 transition-all duration-300";
-
-    const iconClass = isHomePage ? "text-white" : "text-foreground";
-    const logoClass = isHomePage ? "text-white" : "text-primary"; // Flame color
 
     if (!mounted) return (
         <header className={headerClass}>
             <div className="flex items-center gap-2">
-                <span className={`font-bold font-[var(--font-playfair)] text-xl ${isHomePage ? "text-white" : ""}`}>FORU</span>
+                <span className="font-bold font-[var(--font-playfair)] text-xl text-foreground">FORU</span>
             </div>
             <div className="w-32 h-8 rounded-full bg-muted animate-pulse" />
         </header>
@@ -44,20 +41,20 @@ export const Header = () => {
                     className="flex items-center gap-2"
                 >
                     <div className="relative">
-                        <Flame className={`w-6 h-6 ${isHomePage ? "text-pink-300" : "text-primary"}`} />
-                        <Sparkles className={`w-4 h-4 absolute -top-1 -right-2 animate-pulse ${isHomePage ? "text-white" : "text-accent"}`} />
+                        <Flame className="w-6 h-6 text-primary" />
+                        <Sparkles className="w-4 h-4 absolute -top-1 -right-2 animate-pulse text-accent" />
                     </div>
-                    <span className={`font-bold font-[var(--font-playfair)] text-xl hidden md:block ${isHomePage ? "text-white" : "text-foreground"}`}>
+                    <span className="font-bold font-[var(--font-playfair)] text-xl hidden md:block text-foreground">
                         FORU
                     </span>
                 </motion.div>
             </Link>
 
-            <div className={`flex items-center gap-4 ${isHomePage ? "text-white header-home-items" : "text-foreground"}`}>
+            <div className="flex items-center gap-4 text-foreground">
                 {/* Theme Toggle */}
                 <button
                     onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
-                    className={`p-2 rounded-full transition-colors relative overflow-hidden group ${isHomePage ? "hover:bg-white/10 text-white" : "hover:bg-secondary text-foreground"}`}
+                    className="p-2 rounded-full transition-colors relative overflow-hidden group hover:bg-muted text-foreground"
                     aria-label="Toggle Theme"
                 >
                     <AnimatePresence mode="wait" initial={false}>
@@ -87,23 +84,23 @@ export const Header = () => {
 
 
                 {/* User Menu */}
-                <div className={`h-8 w-[1px] mx-2 ${isHomePage ? "bg-white/30" : "bg-border/50"}`} />
+                <div className="h-8 w-[1px] mx-2 bg-border" />
 
                 {session ? (
                     <div className="flex items-center gap-3">
                         <div className="hidden md:flex flex-col text-right">
                             <span className="text-xs font-bold leading-none">{session.user?.name}</span>
-                            <span className={`text-[10px] ${isHomePage ? "text-white/70" : "text-muted-foreground"}`}>Grill Master</span>
+                            <span className="text-[10px] text-muted-foreground">Grill Master</span>
                         </div>
                         {session.user?.image ? (
                             <img
                                 src={session.user.image}
                                 alt="User"
-                                className={`w-8 h-8 rounded-full shadow-sm ${isHomePage ? "border-white/30" : "border-primary/20"}`}
+                                className="w-8 h-8 rounded-full shadow-sm border-primary/20"
                             />
                         ) : (
-                            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isHomePage ? "bg-white/20" : "bg-primary/10"}`}>
-                                <User className={`w-4 h-4 ${isHomePage ? "text-white" : "text-primary"}`} />
+                            <div className="w-8 h-8 rounded-full flex items-center justify-center bg-primary/10">
+                                <User className="w-4 h-4 text-primary" />
                             </div>
                         )}
                         <button
