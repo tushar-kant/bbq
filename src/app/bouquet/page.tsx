@@ -27,6 +27,7 @@ export default function Home() {
   const [recipientEmail, setRecipientEmail] = useState("");
   const [scheduledAt, setScheduledAt] = useState("");
   const [isScheduled, setIsScheduled] = useState(false);
+  const [secretCode, setSecretCode] = useState("");
 
   const handleFlowerUpdate = (id: string, newCount: number) => {
     const currentCount = flowerCounts[id] || 0;
@@ -82,6 +83,10 @@ export default function Home() {
       return alert("Please provide both Recipient Email and Schedule Time for scheduled delivery! 📅");
     }
 
+    if (giftType === 'code' && !secretCode) {
+      return alert("Please set a Secret Code for the Digital Safe! 🔒");
+    }
+
     setIsSaving(true);
     try {
       const res = await fetch("/api/bouquet", {
@@ -93,6 +98,7 @@ export default function Home() {
           theme,
           giftType,
           scratchMessage,
+          secretCode,
           senderName,
           recipientName,
           recipientEmail,
@@ -268,6 +274,8 @@ export default function Home() {
                     setScheduledAt={setScheduledAt}
                     isScheduled={isScheduled}
                     setIsScheduled={setIsScheduled}
+                    secretCode={secretCode}
+                    setSecretCode={setSecretCode}
                   />
                 </motion.div>
               )}

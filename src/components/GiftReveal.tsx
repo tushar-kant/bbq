@@ -6,12 +6,13 @@ import confetti from "canvas-confetti";
 import { Mail, ArrowDown } from "lucide-react";
 
 interface GiftRevealProps {
-    type: "envelope" | "scratch" | "none";
+    type: "envelope" | "scratch" | "code" | "none";
     message?: string;
+    code?: string;
     onReveal: () => void;
 }
 
-export const GiftReveal = ({ type, message, onReveal }: GiftRevealProps) => {
+export const GiftReveal = ({ type, message, code, onReveal }: GiftRevealProps) => {
     const [isOpen, setIsOpen] = useState(false);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [isScratched, setIsScratched] = useState(false);
@@ -97,6 +98,32 @@ export const GiftReveal = ({ type, message, onReveal }: GiftRevealProps) => {
         setTimeout(onReveal, 800);
     };
 
+    const [inputCode, setInputCode] = useState("");
+    const [shake, setShake] = useState(false);
+
+    const handleUnlock = () => {
+        const normalizedInput = inputCode.trim().toLowerCase();
+        const normalizedCode = (code || "").trim().toLowerCase();
+
+        // If code is somehow missing/empty (legacy data), unlock with strict warning or just unlock
+        // Or if inputs match
+        if (normalizedInput === normalizedCode || !normalizedCode) {
+            setIsOpen(true);
+            confetti({
+                particleCount: 150,
+                spread: 100,
+                origin: { y: 0.7 },
+                colors: ['#34d399', '#10b981', '#ffffff'] // Green success
+            });
+            setTimeout(onReveal, 800);
+        } else {
+            console.log("Validation Failed:", { input: normalizedInput, expected: normalizedCode });
+            setShake(true);
+            setTimeout(() => setShake(false), 500);
+            setInputCode("");
+        }
+    };
+
     if (type === "none") return null;
 
     return (
@@ -146,6 +173,44 @@ export const GiftReveal = ({ type, message, onReveal }: GiftRevealProps) => {
                         <div className="absolute bottom-0 w-full text-center text-[10px] font-bold text-gray-400 pointer-events-none z-20 bg-white/80 py-1 uppercase tracking-widest">
                             Rub to Reveal Surprise
                         </div>
+                    </motion.div>
+                )}
+
+                {type === "code" && !isOpen && (
+                    <motion.div
+                        key="code"
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1, x: shake ? [0, -10, 10, -10, 10, 0] : 0 }}
+                        exit={{ scale: 1.5, opacity: 0, rotate: -10 }}
+                        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                        className="bg-white/10 backdrop-blur-xl p-8 rounded-3xl border border-white/30 shadow-2xl w-[320px] flex flex-col items-center gap-6"
+                    >
+                        <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mb-2 animate-bounce">
+                            <div className="text-4xl">🔒</div>
+                        </div>
+
+                        <div className="text-center">
+                            <h3 className="text-xl font-bold text-white mb-2 font-serif">Digital Safe</h3>
+                            <p className="text-white/70 text-sm">Enter the secret code to unlock.</p>
+                        </div>
+
+                        <div className="flex gap-2 w-full">
+                            <input
+                                type="password"
+                                value={inputCode}
+                                onChange={(e) => setInputCode(e.target.value)}
+                                onKeyDown={(e) => e.key === 'Enter' && handleUnlock()}
+                                placeholder="Enter Code"
+                                className="flex-1 bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-center text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-white/50 font-bold tracking-widest"
+                            />
+                            <button
+                                onClick={handleUnlock}
+                                className="bg-white text-primary font-bold px-4 py-3 rounded-xl hover:bg-white/90 transition-colors"
+                            >
+                                🔓
+                            </button>
+                        </div>
+                        {shake && <p className="text-red-300 text-xs font-bold animate-pulse">Incorrect Code!</p>}
                     </motion.div>
                 )}
             </AnimatePresence>

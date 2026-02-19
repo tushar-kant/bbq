@@ -13,8 +13,9 @@ interface SharedViewProps {
         items: BouquetItem[];
         letter: string;
         theme: string;
-        giftType: "envelope" | "scratch" | "none";
+        giftType: "envelope" | "scratch" | "code" | "none";
         scratchMessage?: string;
+        secretCode?: string;
     };
 }
 
@@ -60,10 +61,11 @@ export const SharedBouquetView = ({ data }: SharedViewProps) => {
                         <GiftReveal
                             type={data.giftType}
                             message={data.scratchMessage}
+                            code={data.secretCode}
                             onReveal={handleReveal}
                         />
                         <p className="text-center mt-8 text-muted-foreground animate-pulse text-sm font-medium tracking-widest uppercase">
-                            {data.giftType === 'envelope' ? 'Open for a surprise' : 'Scratch to reveal'}
+                            {data.giftType === 'envelope' ? 'Open for a surprise' : data.giftType === 'code' ? 'Unlock to read' : 'Scratch to reveal'}
                         </p>
                     </motion.div>
                 )}

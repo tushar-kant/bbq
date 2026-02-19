@@ -13,8 +13,9 @@ const BouquetSchema = new mongoose.Schema({
     ],
     letter: String,
     theme: { type: String, default: "love" }, // love, birthday
-    giftType: { type: String, default: "none" }, // envelope, scratch
+    giftType: { type: String, default: "none" }, // envelope, scratch, code 
     scratchMessage: String,
+    secretCode: String, // Password for locked message
 
     // Scheduling & Sharing
     recipientName: String,

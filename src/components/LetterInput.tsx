@@ -22,6 +22,8 @@ interface LetterInputProps {
     setScheduledAt: (date: string) => void;
     isScheduled: boolean;
     setIsScheduled: (val: boolean) => void;
+    secretCode: string;
+    setSecretCode: (code: string) => void;
 }
 
 export const LetterInput = ({
@@ -33,7 +35,8 @@ export const LetterInput = ({
     recipientName, setRecipientName,
     recipientEmail, setRecipientEmail,
     scheduledAt, setScheduledAt,
-    isScheduled, setIsScheduled
+    isScheduled, setIsScheduled,
+    secretCode, setSecretCode
 }: LetterInputProps) => {
     return (
         <div className="space-y-8 glass p-8 rounded-3xl">
@@ -166,6 +169,15 @@ export const LetterInput = ({
                         <div className="font-bold text-foreground mb-1">✨ Scratch Card</div>
                         <p className="text-xs text-muted-foreground">Hide a special message under a scratch-off layer.</p>
                     </div>
+
+                    <div
+                        onClick={() => setGiftType("code")}
+                        className={`p-4 rounded-xl border cursor-pointer transition-all ${giftType === "code" ? "border-primary bg-primary/10 ring-1 ring-primary" : "border-border hover:bg-white dark:hover:bg-white/5"}`}
+                    >
+                        <div className="font-bold text-foreground mb-1">🔒 Digital Safe</div>
+                        <p className="text-xs text-muted-foreground">Protect your message with a secret code/pin.</p>
+                    </div>
+
                     <div
                         onClick={() => setGiftType("none")}
                         className={`p-4 rounded-xl border cursor-pointer transition-all ${giftType === "none" ? "border-primary bg-primary/10 ring-1 ring-primary" : "border-border hover:bg-white dark:hover:bg-white/5"}`}
@@ -187,6 +199,29 @@ export const LetterInput = ({
                             onChange={(e) => setScratchMessage(e.target.value)}
                             placeholder="e.g. Will you be my Valentine? 💖"
                             className="w-full bg-white dark:bg-white/10 border border-border rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none text-center font-bold text-foreground placeholder:font-normal placeholder:text-muted-foreground/50 transition-colors"
+                        />
+                    </motion.div>
+                )}
+
+                {giftType === "code" && (
+                    <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        className="pt-2 grid grid-cols-1 md:grid-cols-3 gap-4"
+                    >
+                        <input
+                            type="text"
+                            value={secretCode}
+                            onChange={(e) => setSecretCode(e.target.value)}
+                            placeholder="Set Code (e.g. 1234)"
+                            className="bg-white dark:bg-white/10 border border-border rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none text-center font-bold text-foreground placeholder:font-normal placeholder:text-muted-foreground/50 transition-colors"
+                        />
+                        <input
+                            type="text"
+                            value={scratchMessage}
+                            onChange={(e) => setScratchMessage(e.target.value)}
+                            placeholder="Secret Message to Hide..."
+                            className="md:col-span-2 bg-white dark:bg-white/10 border border-border rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none text-center font-bold text-foreground placeholder:font-normal placeholder:text-muted-foreground/50 transition-colors"
                         />
                     </motion.div>
                 )}
