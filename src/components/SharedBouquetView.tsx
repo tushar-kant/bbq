@@ -43,7 +43,7 @@ export const SharedBouquetView = ({ data }: SharedViewProps) => {
     };
 
     return (
-        <div className={`min-h-screen flex flex-col items-center justify-center p-4 overflow-hidden relative ${data.theme === 'love' ? 'bg-rose-50' : 'bg-yellow-50'}`}>
+        <div className={`min-h-screen flex flex-col items-center justify-center p-4 overflow-hidden relative ${data.theme === 'love' ? 'bg-rose-50 dark:bg-[#1a0b12]' : 'bg-yellow-50 dark:bg-[#1a150b]'}`}>
             {/* Background Decor */}
             <div className="absolute inset-0 pointer-events-none overflow-hidden">
                 <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-primary/5 rounded-full blur-[120px] animate-float" />
