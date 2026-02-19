@@ -42,7 +42,7 @@ export const LetterInput = ({ letter, setLetter, giftType, setGiftType, theme, s
                     value={letter}
                     onChange={(e) => setLetter(e.target.value)}
                     placeholder="Dear my love..."
-                    className="w-full h-40 bg-white/50 border border-border rounded-2xl p-4 focus:ring-2 focus:ring-primary outline-none transition-all placeholder:text-muted-foreground/50 resize-none font-serif text-lg leading-relaxed show-scroll"
+                    className="w-full h-40 bg-white/50 dark:bg-white/5 border border-border rounded-2xl p-4 focus:ring-2 focus:ring-primary outline-none transition-all placeholder:text-muted-foreground/50 resize-none font-serif text-lg leading-relaxed show-scroll text-foreground"
                 />
             </div>
 
@@ -55,7 +55,7 @@ export const LetterInput = ({ letter, setLetter, giftType, setGiftType, theme, s
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div
                         onClick={() => setGiftType("envelope")}
-                        className={`p-4 rounded-xl border cursor-pointer transition-all ${giftType === "envelope" ? "border-primary bg-primary/5 ring-1 ring-primary" : "border-border hover:bg-white"}`}
+                        className={`p-4 rounded-xl border cursor-pointer transition-all ${giftType === "envelope" ? "border-primary bg-primary/10 ring-1 ring-primary" : "border-border hover:bg-white dark:hover:bg-white/5"}`}
                     >
                         <div className="font-bold text-foreground mb-1">💌 Sealed Envelope</div>
                         <p className="text-xs text-muted-foreground">Wrap your letter in a digital envelope they have to open.</p>
@@ -63,14 +63,14 @@ export const LetterInput = ({ letter, setLetter, giftType, setGiftType, theme, s
 
                     <div
                         onClick={() => setGiftType("scratch")}
-                        className={`p-4 rounded-xl border cursor-pointer transition-all ${giftType === "scratch" ? "border-primary bg-primary/5 ring-1 ring-primary" : "border-border hover:bg-white"}`}
+                        className={`p-4 rounded-xl border cursor-pointer transition-all ${giftType === "scratch" ? "border-primary bg-primary/10 ring-1 ring-primary" : "border-border hover:bg-white dark:hover:bg-white/5"}`}
                     >
                         <div className="font-bold text-foreground mb-1">✨ Scratch Card</div>
                         <p className="text-xs text-muted-foreground">Hide a special message under a scratch-off layer.</p>
                     </div>
                     <div
                         onClick={() => setGiftType("none")}
-                        className={`p-4 rounded-xl border cursor-pointer transition-all ${giftType === "none" ? "border-primary bg-primary/5 ring-1 ring-primary" : "border-border hover:bg-white"}`}
+                        className={`p-4 rounded-xl border cursor-pointer transition-all ${giftType === "none" ? "border-primary bg-primary/10 ring-1 ring-primary" : "border-border hover:bg-white dark:hover:bg-white/5"}`}
                     >
                         <div className="font-bold text-muted-foreground mb-1">None</div>
                         <p className="text-xs text-muted-foreground">Just the bouquet and letter.</p>
@@ -88,7 +88,7 @@ export const LetterInput = ({ letter, setLetter, giftType, setGiftType, theme, s
                             value={scratchMessage}
                             onChange={(e) => setScratchMessage(e.target.value)}
                             placeholder="e.g. Will you be my Valentine? 💖"
-                            className="w-full bg-white border border-border rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none text-center font-bold text-foreground placeholder:font-normal"
+                            className="w-full bg-white dark:bg-white/10 border border-border rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none text-center font-bold text-foreground placeholder:font-normal placeholder:text-muted-foreground/50 transition-colors"
                         />
                     </motion.div>
                 )}

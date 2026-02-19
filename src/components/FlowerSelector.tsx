@@ -2,7 +2,7 @@
 
 import { Flower, FLOWERS } from "@/lib/flowers";
 import { motion } from "framer-motion";
-import { Check, Leaf, Flower2 } from "lucide-react";
+import { Check, Leaf, Flower2, Sparkles } from "lucide-react";
 
 interface FlowerSelectorProps {
     selected: string[];
@@ -14,6 +14,7 @@ export const FlowerSelector = ({ selected, onSelect, max }: FlowerSelectorProps)
     const categories = {
         flowers: FLOWERS.filter((f) => f.category === "flower"),
         leaves: FLOWERS.filter((f) => f.category === "leaf"),
+        accessories: FLOWERS.filter((f) => f.category === "accessory"),
     };
 
     return (
@@ -28,7 +29,9 @@ export const FlowerSelector = ({ selected, onSelect, max }: FlowerSelectorProps)
             {Object.entries(categories).map(([key, items]) => (
                 <div key={key} className="space-y-4">
                     <div className="flex items-center gap-2 text-muted-foreground uppercase text-xs font-bold tracking-widest">
-                        {key === "flowers" ? <Flower2 className="w-4 h-4" /> : <Leaf className="w-4 h-4" />}
+                        {key === "flowers" && <Flower2 className="w-4 h-4" />}
+                        {key === "leaves" && <Leaf className="w-4 h-4" />}
+                        {key === "accessories" && <Sparkles className="w-4 h-4" />}
                         {key}
                     </div>
                     <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4">
@@ -45,10 +48,10 @@ export const FlowerSelector = ({ selected, onSelect, max }: FlowerSelectorProps)
                     relative aspect-square rounded-2xl flex flex-col items-center justify-center gap-2
                     border-2 transition-all duration-300 group
                     ${isSelected
-                                            ? "border-primary bg-primary/5 shadow-inner"
-                                            : "border-transparent bg-white/50 hover:bg-white hover:shadow-md hover:border-border"
+                                            ? "border-primary bg-primary/10 shadow-inner ring-1 ring-primary/50"
+                                            : "border-transparent bg-white/40 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 hover:shadow-md hover:border-primary/30"
                                         }
-                    ${(!isSelected && selected.length >= max) ? "opacity-50 cursor-not-allowed grayscale" : ""}
+                    ${(!isSelected && selected.length >= max) ? "opacity-30 cursor-not-allowed grayscale" : ""}
                   `}
                                 >
                                     <span className="text-4xl filter drop-shadow-sm group-hover:scale-110 transition-transform">
