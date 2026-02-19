@@ -44,18 +44,18 @@ export const LetterInput = ({
     const { data: session } = useSession();
 
     return (
-        <div className="space-y-5 p-6 rounded-[2rem] border border-white/10 bg-[#1a0508]/60 backdrop-blur-xl shadow-2xl">
+        <div className="space-y-5 p-6 rounded-[2rem] border border-border bg-card/60 backdrop-blur-xl shadow-2xl transition-colors">
             <div className="flex gap-3 mb-2">
                 <button
                     onClick={() => setTheme("love")}
-                    className={`flex-1 flex gap-2 justify-center items-center py-3 rounded-xl border transition-all duration-300 ${theme === "love" ? "border-pink-500/50 bg-pink-500/10 text-pink-200 shadow-[0_0_15px_-5px_rgba(236,72,153,0.3)]" : "border-white/10 text-white/50 hover:bg-white/5 hover:text-white"}`}
+                    className={`flex-1 flex gap-2 justify-center items-center py-3 rounded-xl border transition-all duration-300 ${theme === "love" ? "border-pink-500/50 bg-pink-500/10 text-pink-600 dark:text-pink-200 shadow-[0_0_15px_-5px_rgba(236,72,153,0.3)]" : "border-border text-muted-foreground hover:bg-secondary/50 hover:text-foreground"}`}
                 >
                     <Heart className={`w-4 h-4 ${theme === "love" ? "fill-current animate-pulse" : ""}`} />
                     <span className="font-medium tracking-wide text-sm">Love Theme</span>
                 </button>
                 <button
                     onClick={() => setTheme("birthday")}
-                    className={`flex-1 flex gap-2 justify-center items-center py-3 rounded-xl border transition-all duration-300 ${theme === "birthday" ? "border-amber-400/50 bg-amber-400/10 text-amber-200 shadow-[0_0_15px_-5px_rgba(251,191,36,0.3)]" : "border-white/10 text-white/50 hover:bg-white/5 hover:text-white"}`}
+                    className={`flex-1 flex gap-2 justify-center items-center py-3 rounded-xl border transition-all duration-300 ${theme === "birthday" ? "border-amber-400/50 bg-amber-400/10 text-amber-600 dark:text-amber-200 shadow-[0_0_15px_-5px_rgba(251,191,36,0.3)]" : "border-border text-muted-foreground hover:bg-secondary/50 hover:text-foreground"}`}
                 >
                     <Cake className="w-4 h-4" />
                     <span className="font-medium tracking-wide text-sm">Birthday Theme</span>
@@ -65,7 +65,7 @@ export const LetterInput = ({
             <div className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-pink-200/60 uppercase tracking-widest flex items-center gap-2 pl-1">
+                        <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2 pl-1">
                             <User className="w-3 h-3" /> From
                         </label>
                         <input
@@ -73,11 +73,11 @@ export const LetterInput = ({
                             value={senderName}
                             onChange={(e) => setSenderName(e.target.value)}
                             placeholder="e.g. Secret Admirer"
-                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 focus:ring-1 focus:ring-pink-500/50 focus:border-pink-500/50 outline-none transition-all placeholder:text-white/20 text-white hover:bg-white/10 text-sm"
+                            className="w-full bg-secondary/30 border border-border rounded-xl px-4 py-2.5 focus:ring-1 focus:ring-primary/50 focus:border-primary/50 outline-none transition-all placeholder:text-muted-foreground/50 text-foreground hover:bg-secondary/50 text-sm"
                         />
                     </div>
                     <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-pink-200/60 uppercase tracking-widest flex items-center gap-2 pl-1">
+                        <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2 pl-1">
                             <User className="w-3 h-3" /> To *
                         </label>
                         <input
@@ -85,22 +85,22 @@ export const LetterInput = ({
                             value={recipientName}
                             onChange={(e) => setRecipientName(e.target.value)}
                             placeholder="e.g. My Valentine"
-                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 focus:ring-1 focus:ring-pink-500/50 focus:border-pink-500/50 outline-none transition-all placeholder:text-white/20 text-white hover:bg-white/10 text-sm"
+                            className="w-full bg-secondary/30 border border-border rounded-xl px-4 py-2.5 focus:ring-1 focus:ring-primary/50 focus:border-primary/50 outline-none transition-all placeholder:text-muted-foreground/50 text-foreground hover:bg-secondary/50 text-sm"
                         />
                     </div>
                 </div>
 
                 <div className="space-y-3">
-                    <div className="flex gap-2 p-1 bg-black/20 rounded-xl border border-white/5">
+                    <div className="flex gap-2 p-1 bg-muted/30 rounded-xl border border-border">
                         <button
                             onClick={() => setIsScheduled(false)}
-                            className={`flex-1 py-2 px-3 rounded-lg text-xs font-medium transition-all duration-300 ${!isScheduled ? 'bg-white/10 text-white shadow-lg border border-white/10' : 'text-white/40 hover:text-white/70 hover:bg-white/5'}`}
+                            className={`flex-1 py-2 px-3 rounded-lg text-xs font-medium transition-all duration-300 ${!isScheduled ? 'bg-background text-foreground shadow-sm border border-border' : 'text-muted-foreground hover:text-foreground hover:bg-background/50'}`}
                         >
                             Create Link Only
                         </button>
                         <button
                             onClick={() => session ? setIsScheduled(true) : signIn("google")}
-                            className={`flex-1 py-2 px-3 rounded-lg text-xs font-medium transition-all duration-300 ${isScheduled ? 'bg-pink-500/20 text-pink-200 shadow-lg border border-pink-500/20' : 'text-white/40 hover:text-white/70 hover:bg-white/5'}`}
+                            className={`flex-1 py-2 px-3 rounded-lg text-xs font-medium transition-all duration-300 ${isScheduled ? 'bg-primary/10 text-primary shadow-sm border border-primary/20' : 'text-muted-foreground hover:text-foreground hover:bg-background/50'}`}
                         >
                             {session ? "Schedule Delivery" : "Login to Schedule"}
                         </button>
@@ -115,7 +115,7 @@ export const LetterInput = ({
                                 className="grid grid-cols-1 md:grid-cols-2 gap-4 overflow-hidden"
                             >
                                 <div className="space-y-1.5">
-                                    <label className="text-[10px] font-bold text-pink-200/60 uppercase tracking-widest flex items-center gap-2 pl-1">
+                                    <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2 pl-1">
                                         <Mail className="w-3 h-3" /> Email *
                                     </label>
                                     <input
@@ -124,11 +124,11 @@ export const LetterInput = ({
                                         value={recipientEmail}
                                         onChange={(e) => setRecipientEmail(e.target.value)}
                                         placeholder="recipient@example.com"
-                                        className="w-full bg-white/5 border border-pink-500/20 rounded-xl px-4 py-2.5 focus:ring-1 focus:ring-pink-500/50 focus:border-pink-500/50 outline-none transition-all placeholder:text-white/20 text-white hover:bg-white/10 text-sm"
+                                        className="w-full bg-secondary/30 border border-border rounded-xl px-4 py-2.5 focus:ring-1 focus:ring-primary/50 focus:border-primary/50 outline-none transition-all placeholder:text-muted-foreground/50 text-foreground hover:bg-secondary/50 text-sm"
                                     />
                                 </div>
                                 <div className="space-y-1.5">
-                                    <label className="text-[10px] font-bold text-pink-200/60 uppercase tracking-widest flex items-center gap-2 pl-1">
+                                    <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2 pl-1">
                                         <Calendar className="w-3 h-3" /> Time *
                                     </label>
                                     <input
@@ -136,7 +136,7 @@ export const LetterInput = ({
                                         required
                                         value={scheduledAt}
                                         onChange={(e) => setScheduledAt(e.target.value)}
-                                        className="w-full bg-white/5 border border-pink-500/20 rounded-xl px-4 py-2.5 focus:ring-1 focus:ring-pink-500/50 focus:border-pink-500/50 outline-none transition-all placeholder:text-white/20 text-white/80 hover:bg-white/10 scheme-dark text-sm"
+                                        className="w-full bg-secondary/30 border border-border rounded-xl px-4 py-2.5 focus:ring-1 focus:ring-primary/50 focus:border-primary/50 outline-none transition-all placeholder:text-muted-foreground/50 text-foreground hover:bg-secondary/50 text-sm [color-scheme:light] dark:[color-scheme:dark]"
                                     />
                                 </div>
                             </motion.div>
@@ -145,20 +145,20 @@ export const LetterInput = ({
                 </div>
 
                 <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold text-pink-200/60 uppercase tracking-widest pl-1">
+                    <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest pl-1">
                         Write a Heartfelt Note
                     </label>
                     <textarea
                         value={letter}
                         onChange={(e) => setLetter(e.target.value)}
                         placeholder="Dear my love..."
-                        className="w-full h-32 bg-white/5 border border-white/10 rounded-xl p-4 focus:ring-1 focus:ring-pink-500/50 focus:border-pink-500/50 outline-none transition-all placeholder:text-white/20 resize-none font-serif text-base leading-relaxed show-scroll text-white/90 hover:bg-white/10"
+                        className="w-full h-32 bg-secondary/30 border border-border rounded-xl p-4 focus:ring-1 focus:ring-primary/50 focus:border-primary/50 outline-none transition-all placeholder:text-muted-foreground/50 resize-none font-serif text-base leading-relaxed show-scroll text-foreground hover:bg-secondary/50"
                     />
                 </div>
             </div>
 
-            <div className="space-y-4 pt-4 border-t border-white/10">
-                <label className="text-[10px] font-bold text-pink-200/60 uppercase tracking-widest flex items-center gap-2 pl-1">
+            <div className="space-y-4 pt-4 border-t border-border">
+                <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2 pl-1">
                     <Gift className="w-3 h-3" />
                     Add a Secret Surprise
                 </label>
@@ -166,34 +166,34 @@ export const LetterInput = ({
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                     <div
                         onClick={() => setGiftType("envelope")}
-                        className={`p-3 rounded-xl border cursor-pointer transition-all duration-300 group ${giftType === "envelope" ? "border-pink-500/50 bg-pink-500/10 shadow-[0_0_15px_-5px_rgba(236,72,153,0.3)]" : "border-white/10 hover:bg-white/5 hover:border-white/20"}`}
+                        className={`p-3 rounded-xl border cursor-pointer transition-all duration-300 group ${giftType === "envelope" ? "border-pink-500/50 bg-pink-500/10 shadow-[0_0_15px_-5px_rgba(236,72,153,0.3)]" : "border-border hover:bg-secondary/50 hover:border-primary/30"}`}
                     >
-                        <div className={`font-bold mb-0.5 text-sm group-hover:text-white transition-colors ${giftType === "envelope" ? "text-pink-200" : "text-white/70"}`}>💌 Envelope</div>
-                        <p className="text-[10px] text-white/40 group-hover:text-white/60 transition-colors leading-tight">Digital envelope.</p>
+                        <div className={`font-bold mb-0.5 text-sm transition-colors ${giftType === "envelope" ? "text-pink-600 dark:text-pink-200" : "text-muted-foreground group-hover:text-foreground"}`}>💌 Envelope</div>
+                        <p className="text-[10px] text-muted-foreground group-hover:text-muted-foreground/80 transition-colors leading-tight">Digital envelope.</p>
                     </div>
 
                     <div
                         onClick={() => setGiftType("scratch")}
-                        className={`p-3 rounded-xl border cursor-pointer transition-all duration-300 group ${giftType === "scratch" ? "border-amber-400/50 bg-amber-400/10 shadow-[0_0_15px_-5px_rgba(251,191,36,0.3)]" : "border-white/10 hover:bg-white/5 hover:border-white/20"}`}
+                        className={`p-3 rounded-xl border cursor-pointer transition-all duration-300 group ${giftType === "scratch" ? "border-amber-400/50 bg-amber-400/10 shadow-[0_0_15px_-5px_rgba(251,191,36,0.3)]" : "border-border hover:bg-secondary/50 hover:border-amber-400/30"}`}
                     >
-                        <div className={`font-bold mb-0.5 text-sm group-hover:text-white transition-colors ${giftType === "scratch" ? "text-amber-200" : "text-white/70"}`}>✨ Scratch</div>
-                        <p className="text-[10px] text-white/40 group-hover:text-white/60 transition-colors leading-tight">Scratch-off layer.</p>
+                        <div className={`font-bold mb-0.5 text-sm transition-colors ${giftType === "scratch" ? "text-amber-600 dark:text-amber-200" : "text-muted-foreground group-hover:text-foreground"}`}>✨ Scratch</div>
+                        <p className="text-[10px] text-muted-foreground group-hover:text-muted-foreground/80 transition-colors leading-tight">Scratch-off layer.</p>
                     </div>
 
                     <div
                         onClick={() => setGiftType("code")}
-                        className={`p-3 rounded-xl border cursor-pointer transition-all duration-300 group ${giftType === "code" ? "border-blue-400/50 bg-blue-400/10 shadow-[0_0_15px_-5px_rgba(96,165,250,0.3)]" : "border-white/10 hover:bg-white/5 hover:border-white/20"}`}
+                        className={`p-3 rounded-xl border cursor-pointer transition-all duration-300 group ${giftType === "code" ? "border-blue-400/50 bg-blue-400/10 shadow-[0_0_15px_-5px_rgba(96,165,250,0.3)]" : "border-border hover:bg-secondary/50 hover:border-blue-400/30"}`}
                     >
-                        <div className={`font-bold mb-0.5 text-sm group-hover:text-white transition-colors ${giftType === "code" ? "text-blue-200" : "text-white/70"}`}>🔒 Safe</div>
-                        <p className="text-[10px] text-white/40 group-hover:text-white/60 transition-colors leading-tight">Secret code.</p>
+                        <div className={`font-bold mb-0.5 text-sm transition-colors ${giftType === "code" ? "text-blue-600 dark:text-blue-200" : "text-muted-foreground group-hover:text-foreground"}`}>🔒 Safe</div>
+                        <p className="text-[10px] text-muted-foreground group-hover:text-muted-foreground/80 transition-colors leading-tight">Secret code.</p>
                     </div>
 
                     <div
                         onClick={() => setGiftType("none")}
-                        className={`p-3 rounded-xl border cursor-pointer transition-all duration-300 group ${giftType === "none" ? "border-white/20 bg-white/5" : "border-white/10 hover:bg-white/5 hover:border-white/20"}`}
+                        className={`p-3 rounded-xl border cursor-pointer transition-all duration-300 group ${giftType === "none" ? "border-border bg-card shadow-sm" : "border-border hover:bg-secondary/50 hover:border-primary/30"}`}
                     >
-                        <div className={`font-bold mb-0.5 text-sm group-hover:text-white transition-colors ${giftType === "none" ? "text-white" : "text-white/70"}`}>None</div>
-                        <p className="text-[10px] text-white/40 group-hover:text-white/60 transition-colors leading-tight">Directly visible.</p>
+                        <div className={`font-bold mb-0.5 text-sm transition-colors ${giftType === "none" ? "text-foreground" : "text-muted-foreground group-hover:text-foreground"}`}>None</div>
+                        <p className="text-[10px] text-muted-foreground group-hover:text-muted-foreground/80 transition-colors leading-tight">Directly visible.</p>
                     </div>
                 </div>
 
@@ -210,7 +210,7 @@ export const LetterInput = ({
                                 value={scratchMessage}
                                 onChange={(e) => setScratchMessage(e.target.value)}
                                 placeholder="e.g. Will you be my Valentine? 💖"
-                                className="w-full bg-white/5 border border-amber-400/30 rounded-xl px-4 py-2.5 focus:ring-1 focus:ring-amber-400/50 focus:border-amber-400/50 outline-none text-center font-bold text-amber-100 placeholder:font-normal placeholder:text-white/20 transition-all hover:bg-white/10 text-sm"
+                                className="w-full bg-secondary/30 border border-amber-400/30 rounded-xl px-4 py-2.5 focus:ring-1 focus:ring-amber-400/50 focus:border-amber-400/50 outline-none text-center font-bold text-amber-600 dark:text-amber-100 placeholder:font-normal placeholder:text-muted-foreground/50 transition-all hover:bg-secondary/50 text-sm"
                             />
                         </motion.div>
                     )}
@@ -227,14 +227,14 @@ export const LetterInput = ({
                                 value={secretCode}
                                 onChange={(e) => setSecretCode(e.target.value)}
                                 placeholder="Set Code"
-                                className="bg-white/5 border border-blue-400/30 rounded-xl px-4 py-2.5 focus:ring-1 focus:ring-blue-400/50 focus:border-blue-400/50 outline-none text-center font-bold text-blue-100 placeholder:font-normal placeholder:text-white/20 transition-all hover:bg-white/10 text-sm"
+                                className="bg-secondary/30 border border-blue-400/30 rounded-xl px-4 py-2.5 focus:ring-1 focus:ring-blue-400/50 focus:border-blue-400/50 outline-none text-center font-bold text-blue-600 dark:text-blue-100 placeholder:font-normal placeholder:text-muted-foreground/50 transition-all hover:bg-secondary/50 text-sm"
                             />
                             <input
                                 type="text"
                                 value={scratchMessage}
                                 onChange={(e) => setScratchMessage(e.target.value)}
                                 placeholder="Secret Message to Hide..."
-                                className="md:col-span-2 bg-white/5 border border-blue-400/30 rounded-xl px-4 py-2.5 focus:ring-1 focus:ring-blue-400/50 focus:border-blue-400/50 outline-none text-center font-bold text-blue-100 placeholder:font-normal placeholder:text-white/20 transition-all hover:bg-white/10 text-sm"
+                                className="md:col-span-2 bg-secondary/30 border border-blue-400/30 rounded-xl px-4 py-2.5 focus:ring-1 focus:ring-blue-400/50 focus:border-blue-400/50 outline-none text-center font-bold text-blue-600 dark:text-blue-100 placeholder:font-normal placeholder:text-muted-foreground/50 transition-all hover:bg-secondary/50 text-sm"
                             />
                         </motion.div>
                     )}
