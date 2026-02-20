@@ -1,12 +1,13 @@
 "use client";
 
 import { Suspense, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { LetterInput } from "@/components/LetterInput";
-import { Sparkles, Wand2, Copy, Mail, Share2, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
+import { Sparkles, Wand2, Copy, Mail, Share2, Loader2, ChevronLeft, ChevronRight, Eye, X } from "lucide-react";
 import confetti from "canvas-confetti";
 
 import { HeartLoader } from "@/components/HeartLoader";
+import { SharedBouquetView } from "@/components/SharedBouquetView";
 
 function LetterCreator() {
     const [creationType] = useState<"bouquet" | "message">("message");
@@ -15,7 +16,9 @@ function LetterCreator() {
     const [giftType, setGiftType] = useState("none");
     const [scratchMessage, setScratchMessage] = useState("");
     const [theme, setTheme] = useState("love");
+    const [cardStyle, setCardStyle] = useState("classic");
     const [isSaving, setIsSaving] = useState(false);
+    const [isPreviewing, setIsPreviewing] = useState(false);
     const [shareUrl, setShareUrl] = useState<string | null>(null);
 
     // Delivery Details
@@ -58,7 +61,8 @@ function LetterCreator() {
                     recipientName,
                     recipientEmail,
                     scheduledAt,
-                    canvasBackground: ""
+                    canvasBackground: "",
+                    cardStyle
                 }),
             });
 
@@ -91,7 +95,43 @@ function LetterCreator() {
 
     return (
         <main className="min-h-screen bg-background relative overflow-hidden flex flex-col text-foreground pb-10 transition-colors duration-500">
-            <div className="absolute inset-0 pointer-events-none">
+            <AnimatePresence>
+                {isPreviewing && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 50 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 50, scale: 0.95 }}
+                        className="fixed inset-0 z-[99999] bg-background overflow-y-auto"
+                    >
+                        <button
+                            onClick={() => setIsPreviewing(false)}
+                            className="absolute top-20 right-6 sm:top-6 sm:right-6 z-[99999] bg-black/50 hover:bg-black/70 text-white p-3 rounded-full backdrop-blur-md transition-all flex items-center gap-2 group shadow-xl border border-white/10"
+                        >
+                            <X className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                            <span className="text-sm font-bold tracking-widest uppercase origin-right pr-2">Close</span>
+                        </button>
+
+                        <div className="pointer-events-none absolute inset-0 z-[250] shadow-[inset_0_0_100px_rgba(0,0,0,0.5)]" />
+
+                        <SharedBouquetView
+                            data={{
+                                type: creationType,
+                                items: [],
+                                letter: letter.trim() || "It's a digital message for you 💌",
+                                theme,
+                                giftType: giftType as "envelope" | "scratch" | "code" | "none",
+                                scratchMessage,
+                                secretCode,
+                                recipientName: recipientName || 'You',
+                                canvasBackground: "",
+                                cardStyle
+                            }}
+                        />
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            <div className="absolute inset-0 pointer-events-none z-0">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,_rgba(168,85,247,0.1),_transparent_70%)]" />
                 <div className="absolute top-0 left-0 w-full h-full bg-[url('/grid.svg')] opacity-[0.03] dark:opacity-[0.05]" />
                 <div className="absolute top-[-20%] right-[-10%] w-[500px] h-[500px] bg-purple-500/5 dark:bg-purple-500/10 rounded-full blur-[120px] animate-pulse" />
@@ -99,6 +139,7 @@ function LetterCreator() {
             </div>
 
             <div className="container mx-auto px-4 py-8 flex-1 flex flex-col max-w-5xl relative z-10">
+
                 {!shareUrl && (
                     <div className="flex gap-3 mb-8 items-center justify-center">
                         <div className="h-1.5 rounded-full w-12 bg-purple-500 shadow-[0_0_10px_rgba(168,85,247,0.5)] transition-all duration-500" />
@@ -170,6 +211,8 @@ function LetterCreator() {
                             setGiftType={setGiftType}
                             theme={theme}
                             setTheme={setTheme}
+                            cardStyle={cardStyle}
+                            setCardStyle={setCardStyle}
                             scratchMessage={scratchMessage}
                             setScratchMessage={setScratchMessage}
                             senderName={senderName}
@@ -195,14 +238,23 @@ function LetterCreator() {
                                 Back
                             </button>
 
-                            <button
-                                onClick={handleSaveAndShare}
-                                disabled={isSaving}
-                                className="px-6 py-2 text-sm bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold rounded-full hover:shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:scale-105 flex items-center gap-1.5 transition-all disabled:opacity-50 disabled:grayscale"
-                            >
-                                {isSaving ? <Wand2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
-                                Create Gift
-                            </button>
+                            <div className="flex gap-3 items-center">
+                                <button
+                                    onClick={() => setIsPreviewing(true)}
+                                    className="px-6 py-2 text-sm bg-secondary text-foreground font-bold rounded-full hover:bg-secondary/70 flex items-center gap-2 transition-all border border-border"
+                                >
+                                    <Eye className="w-4 h-4" />
+                                    Preview
+                                </button>
+                                <button
+                                    onClick={handleSaveAndShare}
+                                    disabled={isSaving}
+                                    className="px-6 py-2 text-sm bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold rounded-full hover:shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:scale-105 flex items-center gap-1.5 transition-all disabled:opacity-50 disabled:grayscale"
+                                >
+                                    {isSaving ? <Wand2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
+                                    Create Gift
+                                </button>
+                            </div>
                         </div>
                     </div>
                 )}

@@ -7,11 +7,12 @@ import { FlowerSelector } from "@/components/FlowerSelector";
 import { BouquetCanvas } from "@/components/BouquetCanvas";
 import { LetterInput } from "@/components/LetterInput";
 import { BouquetItem, FLOWERS } from "@/lib/flowers";
-import { ChevronRight, ChevronLeft, Share2, Copy, Sparkles, Wand2, Mail, Shuffle, Leaf, Sprout, Plus, Loader2, Flower2, ArrowRight } from "lucide-react";
+import { ChevronRight, ChevronLeft, Share2, Copy, Sparkles, Wand2, Mail, Shuffle, Leaf, Sprout, Plus, Loader2, Flower2, ArrowRight, Eye, X } from "lucide-react";
 import Image from "next/image";
 import confetti from "canvas-confetti";
 
 import { HeartLoader } from "@/components/HeartLoader";
+import { SharedBouquetView } from "@/components/SharedBouquetView";
 
 function BouquetCreator() {
   const searchParams = useSearchParams();
@@ -25,7 +26,9 @@ function BouquetCreator() {
   const [giftType, setGiftType] = useState("none");
   const [scratchMessage, setScratchMessage] = useState("");
   const [theme, setTheme] = useState("love");
+  const [cardStyle, setCardStyle] = useState("classic");
   const [isSaving, setIsSaving] = useState(false);
+  const [isPreviewing, setIsPreviewing] = useState(false);
   const [shareUrl, setShareUrl] = useState<string | null>(null);
   const [flowerCounts, setFlowerCounts] = useState<Record<string, number>>({});
   const [canvasBackground, setCanvasBackground] = useState<string>("");
@@ -163,7 +166,8 @@ function BouquetCreator() {
           recipientName,
           recipientEmail,
           scheduledAt,
-          canvasBackground
+          canvasBackground,
+          cardStyle
         }),
       });
 
@@ -196,7 +200,43 @@ function BouquetCreator() {
 
   return (
     <main className="min-h-screen bg-background relative overflow-hidden flex flex-col text-foreground pb-10 transition-colors duration-500">
-      <div className="absolute inset-0 pointer-events-none">
+      <AnimatePresence>
+        {isPreviewing && (
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50, scale: 0.95 }}
+            className="fixed inset-0 z-[99999] bg-background overflow-y-auto"
+          >
+            <button
+              onClick={() => setIsPreviewing(false)}
+              className="absolute top-20 right-6 sm:top-6 sm:right-6 z-[99999] bg-black/50 hover:bg-black/70 text-white p-3 rounded-full backdrop-blur-md transition-all flex items-center gap-2 group shadow-xl border border-white/10"
+            >
+              <X className="w-5 h-5 group-hover:scale-110 transition-transform" />
+              <span className="text-sm font-bold tracking-widest uppercase origin-right pr-2">Close</span>
+            </button>
+
+            <div className="pointer-events-none absolute inset-0 z-[250] shadow-[inset_0_0_100px_rgba(0,0,0,0.5)]" />
+
+            <SharedBouquetView
+              data={{
+                type: creationType || 'bouquet',
+                items: creationType === 'bouquet' ? bouquetItems : [],
+                letter: letter.trim() || "It's a flower for my flower 🌸",
+                theme,
+                giftType: giftType as "envelope" | "scratch" | "code" | "none",
+                scratchMessage,
+                secretCode,
+                recipientName: recipientName || 'My Valentine',
+                canvasBackground,
+                cardStyle
+              }}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div className="absolute inset-0 pointer-events-none z-0">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,_rgba(255,107,157,0.1),_transparent_70%)]" />
         <div className="absolute top-0 left-0 w-full h-full bg-[url('/grid.svg')] opacity-[0.03] dark:opacity-[0.05]" />
         <div className="absolute top-[-20%] right-[-10%] w-[500px] h-[500px] bg-pink-500/5 dark:bg-pink-500/10 rounded-full blur-[120px] animate-pulse" />
@@ -204,6 +244,7 @@ function BouquetCreator() {
       </div>
 
       <div className="container mx-auto px-4 py-8 flex-1 flex flex-col max-w-5xl relative z-10">
+
         {!shareUrl && (
           <div className="flex gap-3 mb-8 items-center justify-center">
             {[1, 2, 3].map((s) => (
@@ -418,6 +459,8 @@ function BouquetCreator() {
                     setGiftType={setGiftType}
                     theme={theme}
                     setTheme={setTheme}
+                    cardStyle={cardStyle}
+                    setCardStyle={setCardStyle}
                     scratchMessage={scratchMessage}
                     setScratchMessage={setScratchMessage}
                     senderName={senderName}
@@ -460,14 +503,23 @@ function BouquetCreator() {
                 <ChevronRight className="w-3.5 h-3.5" />
               </button>
             ) : (
-              <button
-                onClick={handleSaveAndShare}
-                disabled={isSaving}
-                className="px-6 py-2 text-sm bg-gradient-to-r from-pink-500 to-amber-500 text-white font-bold rounded-full hover:shadow-[0_0_20px_rgba(251,191,36,0.4)] hover:scale-105 flex items-center gap-1.5 transition-all disabled:opacity-50 disabled:grayscale"
-              >
-                {isSaving ? <Wand2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
-                Create Gift
-              </button>
+              <div className="flex gap-3 items-center">
+                <button
+                  onClick={() => setIsPreviewing(true)}
+                  className="px-6 py-2 text-sm bg-secondary text-foreground font-bold rounded-full hover:bg-secondary/70 flex items-center gap-2 transition-all border border-border"
+                >
+                  <Eye className="w-4 h-4" />
+                  Preview
+                </button>
+                <button
+                  onClick={handleSaveAndShare}
+                  disabled={isSaving}
+                  className="px-6 py-2 text-sm bg-gradient-to-r from-pink-500 to-amber-500 text-white font-bold rounded-full hover:shadow-[0_0_20px_rgba(251,191,36,0.4)] hover:scale-105 flex items-center gap-1.5 transition-all disabled:opacity-50 disabled:grayscale"
+                >
+                  {isSaving ? <Wand2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
+                  Create Gift
+                </button>
+              </div>
             )}
           </div>
         )}

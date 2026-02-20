@@ -20,6 +20,7 @@ const BouquetSchema = new mongoose.Schema({
     giftType: { type: String, default: "none" }, // envelope, scratch, code 
     scratchMessage: String,
     secretCode: String, // Password for locked message
+    cardStyle: { type: String, default: 'classic' },
 
     // Scheduling & Sharing
     recipientName: String,

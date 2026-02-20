@@ -11,6 +11,8 @@ interface LetterInputProps {
     setGiftType: (gift: string) => void;
     theme: string;
     setTheme: (theme: string) => void;
+    cardStyle: string;
+    setCardStyle: (style: string) => void;
     scratchMessage: string;
     setScratchMessage: (msg: string) => void;
     senderName: string;
@@ -32,6 +34,7 @@ export const LetterInput = ({
     letter, setLetter,
     giftType, setGiftType,
     theme, setTheme,
+    cardStyle, setCardStyle,
     scratchMessage, setScratchMessage,
     senderName, setSenderName,
     recipientName, setRecipientName,
@@ -154,6 +157,121 @@ export const LetterInput = ({
                         placeholder="Dear my love..."
                         className="w-full h-32 bg-secondary/30 border border-border rounded-xl p-4 focus:ring-1 focus:ring-primary/50 focus:border-primary/50 outline-none transition-all placeholder:text-muted-foreground/50 resize-none font-serif text-base leading-relaxed show-scroll text-foreground hover:bg-secondary/50"
                     />
+                </div>
+
+                <div className="space-y-1.5 pt-2">
+                    <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest pl-1">
+                        Card Style
+                    </label>
+                    <div className="flex gap-2 p-1 bg-muted/30 rounded-xl border border-border overflow-x-auto no-scrollbar">
+                        {[
+                            { id: "classic", label: "Classic" },
+                            { id: "midnight", label: "Midnight" },
+                            { id: "glass", label: "Frosted Glass" },
+                            { id: "botanic", label: "Botanic" }
+                        ].map((style) => (
+                            <button
+                                key={style.id}
+                                onClick={() => setCardStyle(style.id)}
+                                className={`flex-1 py-2 px-3 rounded-lg text-xs font-medium transition-all duration-300 min-w-[80px] ${cardStyle === style.id ? 'bg-primary text-white shadow-sm' : 'text-muted-foreground hover:text-foreground hover:bg-background/50'}`}
+                            >
+                                {style.label}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                <div className="pt-4 mt-2">
+                    <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest pl-1 mb-3 block text-center">
+                        Live Preview
+                    </label>
+                    <div className="perspective-1000 max-w-sm mx-auto">
+                        <div className={`
+                            p-6 relative overflow-hidden transition-all duration-1000 outline-none
+                            ${(!cardStyle || cardStyle === 'classic') ? "bg-[#fffbf0] dark:bg-[#1e1e1e] rounded-[2px] shadow-[0_10px_30px_-10px_rgba(0,0,0,0.15)] border border-[#eaddcf] dark:border-white/10" : ""}
+                            ${cardStyle === 'midnight' ? "bg-slate-900 border border-slate-700 rounded-3xl shadow-[0_0_30px_-10px_rgba(56,189,248,0.2)]" : ""}
+                            ${cardStyle === 'glass' ? "bg-black/5 dark:bg-white/10 backdrop-blur-xl border border-black/10 dark:border-white/20 rounded-3xl shadow-sm" : ""}
+                            ${cardStyle === 'botanic' ? "bg-[#f2fceb] dark:bg-[#1a2f1c] rounded-[2rem] shadow-[0_10px_30px_-10px_rgba(22,101,52,0.15)] border border-[#c1e1c1] dark:border-green-900/50" : ""}
+                        `}>
+                            {/* Textures & Effects based on style */}
+                            {(!cardStyle || cardStyle === 'classic') && (
+                                <>
+                                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')] opacity-50 mix-blend-multiply dark:mix-blend-overlay pointer-events-none" />
+                                    <div className="absolute top-3 left-3 w-8 h-8 border-t-2 border-l-2 border-primary/20 dark:border-primary/40 transition-colors" />
+                                    <div className="absolute top-3 right-3 w-8 h-8 border-t-2 border-r-2 border-primary/20 dark:border-primary/40 transition-colors" />
+                                    <div className="absolute bottom-3 left-3 w-8 h-8 border-b-2 border-l-2 border-primary/20 dark:border-primary/40 transition-colors" />
+                                    <div className="absolute bottom-3 right-3 w-8 h-8 border-b-2 border-r-2 border-primary/20 dark:border-primary/40 transition-colors" />
+                                </>
+                            )}
+
+                            {cardStyle === 'midnight' && (
+                                <>
+                                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30 pointer-events-none" />
+                                    <div className="absolute -top-12 -left-12 w-24 h-24 bg-blue-500/20 rounded-full blur-2xl pointer-events-none" />
+                                    <div className="absolute -bottom-12 -right-12 w-24 h-24 bg-purple-500/20 rounded-full blur-2xl pointer-events-none" />
+                                    <div className="absolute top-3 left-3 w-4 h-4 border-t border-l border-blue-400/30 rounded-tl-lg" />
+                                    <div className="absolute bottom-3 right-3 w-4 h-4 border-b border-r border-blue-400/30 rounded-br-lg" />
+                                </>
+                            )}
+
+                            {cardStyle === 'glass' && (
+                                <>
+                                    <div className="absolute top-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-black/20 dark:via-white/40 to-transparent" />
+                                    <div className="absolute bottom-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-black/10 dark:via-white/20 to-transparent" />
+                                </>
+                            )}
+
+                            {cardStyle === 'botanic' && (
+                                <>
+                                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')] opacity-60 mix-blend-multiply dark:mix-blend-overlay pointer-events-none" />
+                                    <div className="absolute -top-6 -right-6 text-6xl text-green-500/5 dark:text-green-500/10 transform rotate-45 pointer-events-none">🌿</div>
+                                    <div className="absolute -bottom-6 -left-6 text-6xl text-green-500/5 dark:text-green-500/10 transform -rotate-45 pointer-events-none">🌿</div>
+                                </>
+                            )}
+
+                            <div className="relative z-10 flex flex-col items-center">
+                                <div className="mb-3">
+                                    <span className={`text-2xl 
+                                        ${(!cardStyle || cardStyle === 'classic') && "text-primary/80"}
+                                        ${cardStyle === 'midnight' && "text-blue-400/80 drop-shadow-[0_0_8px_rgba(96,165,250,0.5)]"}
+                                        ${cardStyle === 'glass' && "text-foreground/80"}
+                                        ${cardStyle === 'botanic' && "text-green-600/80 dark:text-green-400/80"}
+                                    `}>
+                                        {cardStyle === 'botanic' ? '❅' : cardStyle === 'midnight' ? '✧' : '❦'}
+                                    </span>
+                                </div>
+
+                                <h3 className={`font-serif text-xl font-bold mb-4 italic text-center tracking-wide leading-tight drop-shadow-sm transition-colors
+                                    ${(!cardStyle || cardStyle === 'classic') && "text-primary"}
+                                    ${cardStyle === 'midnight' && "text-blue-100"}
+                                    ${cardStyle === 'glass' && "text-foreground"}
+                                    ${cardStyle === 'botanic' && "text-green-900 dark:text-green-100"}
+                                `}>
+                                    Dear {recipientName || 'You'}
+                                </h3>
+
+                                <div className={`font-serif text-xs leading-relaxed whitespace-pre-wrap text-center max-w-[200px] mx-auto transition-colors line-clamp-3
+                                    ${(!cardStyle || cardStyle === 'classic') && "text-[#4a4a4a] dark:text-neutral-300"}
+                                    ${cardStyle === 'midnight' && "text-blue-50/80"}
+                                    ${cardStyle === 'glass' && "text-foreground/90"}
+                                    ${cardStyle === 'botanic' && "text-green-800/80 dark:text-green-200/80"}
+                                `}>
+                                    {letter || "Start typing your note to see it here..."}
+                                </div>
+
+                                <div className="mt-4 flex justify-center opacity-60">
+                                    <span className={`text-lg transform rotate-180
+                                        ${(!cardStyle || cardStyle === 'classic') && "text-primary"}
+                                        ${cardStyle === 'midnight' && "text-blue-400"}
+                                        ${cardStyle === 'glass' && "text-foreground"}
+                                        ${cardStyle === 'botanic' && "text-green-600 dark:text-green-400"}
+                                    `}>
+                                        {cardStyle === 'botanic' ? '❅' : cardStyle === 'midnight' ? '✧' : '❦'}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 

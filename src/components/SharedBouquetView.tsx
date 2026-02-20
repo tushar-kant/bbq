@@ -21,6 +21,7 @@ interface SharedViewProps {
         type?: "bouquet" | "message";
         canvasBackground?: string;
         recipientName?: string;
+        cardStyle?: string;
     };
 }
 
@@ -123,31 +124,89 @@ export const SharedBouquetView = ({ data }: SharedViewProps) => {
                                 transition={{ delay: 0.3, duration: 0.8, type: "spring" }}
                                 className="w-full max-w-xl mx-4 perspective-1000"
                             >
-                                <div className="bg-[#fffbf0] dark:bg-[#1e1e1e] p-8 md:p-12 rounded-[2px] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.15)] border border-[#eaddcf] dark:border-white/10 relative overflow-hidden">
-                                    {/* Paper Texture Effect */}
-                                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')] opacity-50 mix-blend-multiply dark:mix-blend-overlay pointer-events-none" />
+                                <div className={`
+                                    p-8 md:p-12 relative overflow-hidden transition-all duration-1000
+                                    ${(!data.cardStyle || data.cardStyle === 'classic') ? "bg-[#fffbf0] dark:bg-[#1e1e1e] rounded-[2px] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.15)] border border-[#eaddcf] dark:border-white/10" : ""}
+                                    ${data.cardStyle === 'midnight' ? "bg-slate-900 border border-slate-700 rounded-3xl shadow-[0_0_50px_-12px_rgba(56,189,248,0.2)]" : ""}
+                                    ${data.cardStyle === 'glass' ? "bg-white/10 dark:bg-black/20 backdrop-blur-2xl border border-white/20 dark:border-white/10 rounded-3xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)]" : ""}
+                                    ${data.cardStyle === 'botanic' ? "bg-[#f2fceb] dark:bg-[#1a2f1c] rounded-[2rem] shadow-[0_20px_50px_-12px_rgba(22,101,52,0.15)] border border-[#c1e1c1] dark:border-green-900/50" : ""}
+                                `}>
+                                    {/* Textures & Effects based on style */}
+                                    {(!data.cardStyle || data.cardStyle === 'classic') && (
+                                        <>
+                                            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')] opacity-50 mix-blend-multiply dark:mix-blend-overlay pointer-events-none" />
+                                            <div className="absolute top-4 left-4 w-16 h-16 border-t-2 border-l-2 border-primary/20 dark:border-primary/40 transition-colors" />
+                                            <div className="absolute top-4 right-4 w-16 h-16 border-t-2 border-r-2 border-primary/20 dark:border-primary/40 transition-colors" />
+                                            <div className="absolute bottom-4 left-4 w-16 h-16 border-b-2 border-l-2 border-primary/20 dark:border-primary/40 transition-colors" />
+                                            <div className="absolute bottom-4 right-4 w-16 h-16 border-b-2 border-r-2 border-primary/20 dark:border-primary/40 transition-colors" />
+                                        </>
+                                    )}
 
-                                    {/* Decorative Borders/Corners */}
-                                    <div className="absolute top-4 left-4 w-16 h-16 border-t-2 border-l-2 border-primary/20 dark:border-primary/40" />
-                                    <div className="absolute top-4 right-4 w-16 h-16 border-t-2 border-r-2 border-primary/20 dark:border-primary/40" />
-                                    <div className="absolute bottom-4 left-4 w-16 h-16 border-b-2 border-l-2 border-primary/20 dark:border-primary/40" />
-                                    <div className="absolute bottom-4 right-4 w-16 h-16 border-b-2 border-r-2 border-primary/20 dark:border-primary/40" />
+                                    {data.cardStyle === 'midnight' && (
+                                        <>
+                                            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30 pointer-events-none" />
+                                            <div className="absolute -top-24 -left-24 w-48 h-48 bg-blue-500/20 rounded-full blur-3xl pointer-events-none" />
+                                            <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-purple-500/20 rounded-full blur-3xl pointer-events-none" />
+                                            <div className="absolute top-6 left-6 w-8 h-8 border-t border-l border-blue-400/30 rounded-tl-xl" />
+                                            <div className="absolute bottom-6 right-6 w-8 h-8 border-b border-r border-blue-400/30 rounded-br-xl" />
+                                        </>
+                                    )}
+
+                                    {data.cardStyle === 'glass' && (
+                                        <>
+                                            <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent dark:from-white/5 opacity-50 rounded-3xl pointer-events-none" />
+                                            <div className="absolute top-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+                                            <div className="absolute bottom-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+                                        </>
+                                    )}
+
+                                    {data.cardStyle === 'botanic' && (
+                                        <>
+                                            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')] opacity-60 mix-blend-multiply dark:mix-blend-overlay pointer-events-none" />
+                                            <div className="absolute -top-10 -right-10 text-9xl text-green-500/5 dark:text-green-500/10 transform rotate-45 pointer-events-none">🌿</div>
+                                            <div className="absolute -bottom-10 -left-10 text-9xl text-green-500/5 dark:text-green-500/10 transform -rotate-45 pointer-events-none">🌿</div>
+                                        </>
+                                    )}
 
                                     <div className="relative z-10 flex flex-col items-center">
                                         <div className="mb-6">
-                                            <span className="text-4xl text-primary/80">❦</span>
+                                            <span className={`text-4xl 
+                                                ${(!data.cardStyle || data.cardStyle === 'classic') && "text-primary/80"}
+                                                ${data.cardStyle === 'midnight' && "text-blue-400/80 drop-shadow-[0_0_8px_rgba(96,165,250,0.5)]"}
+                                                ${data.cardStyle === 'glass' && "text-foreground/80"}
+                                                ${data.cardStyle === 'botanic' && "text-green-600/80 dark:text-green-400/80"}
+                                            `}>
+                                                {data.cardStyle === 'botanic' ? '❅' : data.cardStyle === 'midnight' ? '✧' : '❦'}
+                                            </span>
                                         </div>
 
-                                        <h3 className="font-serif text-3xl md:text-4xl text-primary font-bold mb-8 italic text-center tracking-wide leading-tight drop-shadow-sm">
+                                        <h3 className={`font-serif text-3xl md:text-4xl font-bold mb-8 italic text-center tracking-wide leading-tight drop-shadow-sm transition-colors
+                                            ${(!data.cardStyle || data.cardStyle === 'classic') && "text-primary"}
+                                            ${data.cardStyle === 'midnight' && "text-blue-100"}
+                                            ${data.cardStyle === 'glass' && "text-foreground"}
+                                            ${data.cardStyle === 'botanic' && "text-green-900 dark:text-green-100"}
+                                        `}>
                                             {data.type === 'message' ? 'A Special Letter' : `Dear ${data.recipientName || 'You'}`}
                                         </h3>
 
-                                        <div className="font-serif text-lg md:text-xl leading-relaxed text-[#4a4a4a] dark:text-neutral-300 whitespace-pre-wrap text-center max-w-md mx-auto">
+                                        <div className={`font-serif text-lg md:text-xl leading-relaxed whitespace-pre-wrap text-center max-w-md mx-auto transition-colors
+                                            ${(!data.cardStyle || data.cardStyle === 'classic') && "text-[#4a4a4a] dark:text-neutral-300"}
+                                            ${data.cardStyle === 'midnight' && "text-blue-50/80"}
+                                            ${data.cardStyle === 'glass' && "text-foreground/90"}
+                                            ${data.cardStyle === 'botanic' && "text-green-800/80 dark:text-green-200/80"}
+                                        `}>
                                             {data.letter || "Thank You!"}
                                         </div>
 
                                         <div className="mt-10 flex justify-center opacity-60">
-                                            <span className="text-2xl text-primary transform rotate-180">❦</span>
+                                            <span className={`text-2xl transform rotate-180
+                                                ${(!data.cardStyle || data.cardStyle === 'classic') && "text-primary"}
+                                                ${data.cardStyle === 'midnight' && "text-blue-400"}
+                                                ${data.cardStyle === 'glass' && "text-foreground"}
+                                                ${data.cardStyle === 'botanic' && "text-green-600 dark:text-green-400"}
+                                            `}>
+                                                {data.cardStyle === 'botanic' ? '❅' : data.cardStyle === 'midnight' ? '✧' : '❦'}
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
