@@ -3,8 +3,9 @@
 import { Suspense, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { LetterInput } from "@/components/LetterInput";
-import { Sparkles, Wand2, Copy, Mail, Share2, Loader2, ChevronLeft, ChevronRight, Eye, X } from "lucide-react";
+import { Sparkles, Wand2, Copy, Mail, Share2, Loader2, ChevronLeft, ChevronRight, Eye, X, Download, Heart } from "lucide-react";
 import confetti from "canvas-confetti";
+import QRCode from "react-qr-code";
 
 import { HeartLoader } from "@/components/HeartLoader";
 import { SharedBouquetView } from "@/components/SharedBouquetView";
@@ -86,6 +87,30 @@ function LetterCreator() {
         }
     };
 
+    const downloadQRCode = () => {
+        const svg = document.getElementById("qr-code-svg");
+        if (!svg) return;
+        const svgData = new XMLSerializer().serializeToString(svg);
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        const img = new window.Image();
+        img.onload = () => {
+            canvas.width = 1000;
+            canvas.height = 1000;
+            if (ctx) {
+                ctx.fillStyle = "white";
+                ctx.fillRect(0, 0, 1000, 1000);
+                ctx.drawImage(img, 0, 0, 1000, 1000);
+            }
+            const pngFile = canvas.toDataURL("image/png");
+            const downloadLink = document.createElement("a");
+            downloadLink.download = "gift-qr.png";
+            downloadLink.href = pngFile;
+            downloadLink.click();
+        };
+        img.src = "data:image/svg+xml;base64," + btoa(svgData);
+    };
+
     const copyToClipboard = () => {
         if (shareUrl) {
             navigator.clipboard.writeText(shareUrl);
@@ -151,13 +176,10 @@ function LetterCreator() {
                         key="share"
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="flex flex-col items-center justify-center space-y-8 glass p-12 rounded-3xl text-center border-border"
+                        className="flex flex-col items-center justify-center space-y-3 md:space-y-4 glass p-4 md:p-8 rounded-3xl text-center border-border w-full max-w-lg mx-auto"
                     >
-                        <div className="w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center text-green-600 dark:text-green-400 mb-4 shadow-sm">
-                            <Sparkles className="w-10 h-10" />
-                        </div>
-                        <h2 className="text-4xl font-bold font-serif text-foreground">Letter Ready!</h2>
-                        <p className="text-muted-foreground max-w-md">
+                        <h2 className="text-2xl md:text-3xl font-bold font-serif text-foreground">Letter Ready!</h2>
+                        <p className="text-xs md:text-sm text-muted-foreground max-w-sm">
                             Your poetry has been sealed. Share this link with your special someone.
                         </p>
 
@@ -176,21 +198,44 @@ function LetterCreator() {
                             </button>
                         </div>
 
-                        <div className="flex flex-col sm:flex-row gap-4 items-center justify-center mt-6">
+                        <div className="relative group">
+                            <div className="bg-white p-2 rounded-xl shadow-sm border border-border w-fit mx-auto relative overflow-hidden">
+                                <QRCode
+                                    id="qr-code-svg"
+                                    value={shareUrl}
+                                    size={120}
+                                    level="H"
+                                    className="rounded-md"
+                                    fgColor="#27272a"
+                                />
+                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white p-1 rounded-full">
+                                    <Heart className="w-5 h-5 text-primary fill-primary" />
+                                </div>
+                            </div>
+                            <button
+                                onClick={downloadQRCode}
+                                className="absolute -right-2 -bottom-2 bg-primary text-white p-2 rounded-full shadow-lg hover:scale-110 transition-transform z-10 border-2 border-background"
+                                title="Download QR"
+                            >
+                                <Download className="w-3.5 h-3.5" />
+                            </button>
+                        </div>
+
+                        <div className="flex flex-row gap-2 items-center justify-center mt-2 w-full max-w-sm">
                             <button
                                 onClick={() => window.open(`mailto:?subject=A Letter For You &body=I wrote this for you: ${shareUrl}`, '_blank')}
-                                className="text-primary font-medium hover:underline flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-lg hover:bg-primary/20 transition-colors"
+                                className="flex-1 text-primary font-medium hover:underline flex items-center justify-center gap-1.5 bg-primary/10 px-3 py-2 rounded-lg hover:bg-primary/20 transition-colors text-xs"
                             >
-                                <Mail className="w-4 h-4" />
-                                Share via Email
+                                <Mail className="w-3.5 h-3.5" />
+                                Email
                             </button>
 
                             <button
                                 onClick={() => window.open(`https://wa.me/?text=I wrote a digital letter for you!  ${shareUrl}`, '_blank')}
-                                className="text-green-600 dark:text-green-400 font-medium hover:underline flex items-center gap-2 bg-green-50 dark:bg-green-900/20 px-4 py-2 rounded-lg hover:bg-green-100 dark:hover:bg-green-900/30 transition-colors"
+                                className="flex-1 text-green-600 dark:text-green-400 font-medium hover:underline flex items-center justify-center gap-1.5 bg-green-50 dark:bg-green-900/20 px-3 py-2 rounded-lg hover:bg-green-100 dark:hover:bg-green-900/30 transition-colors text-xs"
                             >
-                                <Share2 className="w-4 h-4" />
-                                Share via WhatsApp
+                                <Share2 className="w-3.5 h-3.5" />
+                                WhatsApp
                             </button>
                         </div>
 

@@ -29,7 +29,7 @@
 }
 
 html.dark {
-  --background: #130306;
+  --background: #0d0204;
   /* Very Deep Dark Red */
   /* Midnight Garden */
   --foreground: #fdf2f8;
@@ -37,17 +37,17 @@ html.dark {
   --card-foreground: #fdf2f8;
   --popover: #1a0a0f;
   --popover-foreground: #fdf2f8;
-  --primary: #ff6b9d;
+  --primary: #e22765;
   --primary-foreground: #0f0508;
   --secondary: #064e3b;
   --secondary-foreground: #d1fae5;
   --muted: #2d1b22;
   --muted-foreground: #b39da6;
-  --accent: #9d174d;
+  --accent: #851240;
   --accent-foreground: #f9a8d4;
   --border: #3d1c25;
   --input: #3d1c25;
-  --ring: #ff6b9d;
+  --ring: #ed4c82;
 }
 
 @theme inline {
