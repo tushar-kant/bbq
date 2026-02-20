@@ -77,7 +77,7 @@ export default function Home() {
           </p>
 
           <div className="pt-8 flex flex-col md:flex-row items-center justify-center gap-10">
-            <Link href="/bouquet">
+            <Link href="/create">
               <motion.button
                 whileHover={{ scale: 1.05, y: -4 }}
                 whileTap={{ scale: 0.98 }}
@@ -153,7 +153,11 @@ export default function Home() {
       <div className="relative z-10 text-center py-10">
         <div className="flex flex-col items-center gap-2">
           <div className="h-4 w-px bg-gradient-to-b from-pink-500 to-transparent mb-2" />
-          <span className="text-[10px] text-muted-foreground/50 uppercase tracking-[0.5em] font-bold">Orchestrated by FORU</span>
+          <Link href="/">
+            <span className="text-[10px] text-muted-foreground/50 uppercase tracking-[0.5em] font-bold hover:text-pink-500 transition-colors duration-300">
+              Orchestrated by FORU
+            </span>
+          </Link>
         </div>
       </div>
     </main>

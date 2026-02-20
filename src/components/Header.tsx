@@ -54,7 +54,7 @@ export const Header = () => {
                 <Link href="/garden" className={`text-[10px] font-bold uppercase tracking-[0.2em] transition-all hover:text-primary ${pathname === '/garden' ? 'text-primary' : 'text-foreground/60'}`}>
                     Garden
                 </Link>
-                <Link href="/bouquet" className={`text-[10px] font-bold uppercase tracking-[0.2em] transition-all hover:text-primary ${pathname === '/bouquet' ? 'text-primary' : 'text-foreground/60'}`}>
+                <Link href="/create" className={`text-[10px] font-bold uppercase tracking-[0.2em] transition-all hover:text-primary ${pathname === '/create' ? 'text-primary' : 'text-foreground/60'}`}>
                     Create
                 </Link>
             </nav>

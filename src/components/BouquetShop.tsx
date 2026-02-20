@@ -22,6 +22,8 @@ interface PaginationData {
     hasMore: boolean;
 }
 
+import { HeartLoader } from "./HeartLoader";
+
 export const BouquetShop = () => {
     const [bouquets, setBouquets] = useState<BouquetData[]>([]);
     const [loading, setLoading] = useState(true);
@@ -72,11 +74,8 @@ export const BouquetShop = () => {
 
     if (loading && bouquets.length === 0) {
         return (
-            <div className="w-full py-32 flex flex-col items-center justify-center gap-6">
-                <div className="relative">
-                    <div className="w-16 h-16 border-4 border-pink-500/10 border-t-pink-500 rounded-full animate-spin" />
-                    <Sparkles className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 text-pink-400 animate-pulse" />
-                </div>
+            <div className="w-full py-32 flex flex-col items-center justify-center gap-12">
+                <HeartLoader />
                 <p className="text-muted-foreground animate-pulse font-serif italic text-lg tracking-wide">Gathering the finest arrangements...</p>
             </div>
         );

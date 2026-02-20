@@ -7,6 +7,8 @@ import { GiftReveal } from "@/components/GiftReveal";
 import { BouquetItem } from "@/lib/flowers";
 import { Heart, Cake } from "lucide-react";
 import confetti from "canvas-confetti";
+import { HeartLoader } from "@/components/HeartLoader";
+import Link from "next/link";
 
 interface SharedViewProps {
     data: {
@@ -23,13 +25,13 @@ interface SharedViewProps {
 }
 
 export const SharedBouquetView = ({ data }: SharedViewProps) => {
-    const [stage, setStage] = useState<"gift" | "bouquet">("gift");
+    const [stage, setStage] = useState<"gift" | "bouquet">(data.giftType === "none" ? "bouquet" : "gift");
     const [showLetter, setShowLetter] = useState(false);
 
     useEffect(() => {
         if (data.giftType === "none") {
-            setStage("bouquet");
-            setTimeout(() => setShowLetter(true), 1000);
+            const letterTimer = setTimeout(() => setShowLetter(true), 1000);
+            return () => clearTimeout(letterTimer);
         }
     }, [data.giftType]);
 
@@ -158,7 +160,9 @@ export const SharedBouquetView = ({ data }: SharedViewProps) => {
                             transition={{ delay: 2 }}
                             className="text-xs font-medium text-muted-foreground/60 tracking-widest uppercase pb-8"
                         >
-                            Orchestrated by FORU
+                            <Link href="/" className="hover:text-pink-500 transition-colors duration-300">
+                                Orchestrated by FORU
+                            </Link>
                         </motion.footer>
                     </motion.div>
                 )}
