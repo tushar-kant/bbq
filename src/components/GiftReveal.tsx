@@ -3,10 +3,10 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
-import { Mail, ArrowDown, Lock, Unlock } from "lucide-react";
+import { Mail, ArrowDown, Lock, Unlock, Gift } from "lucide-react";
 
 interface GiftRevealProps {
-    type: "envelope" | "scratch" | "code" | "none";
+    type: "envelope" | "scratch" | "code" | "surprise" | "none";
     message?: string;
     code?: string;
     recipientName?: string;
@@ -99,6 +99,17 @@ export const GiftReveal = ({ type, message, code, recipientName, onReveal }: Gif
         setTimeout(onReveal, 800);
     };
 
+    const handleOpenSurprise = () => {
+        setIsOpen(true);
+        confetti({
+            particleCount: 200,
+            spread: 120,
+            origin: { y: 0.6 },
+            colors: ['#a855f7', '#ec4899', '#3b82f6', '#ffffff'] // colorful explosion
+        });
+        setTimeout(onReveal, 1000);
+    };
+
     const [inputCode, setInputCode] = useState("");
     const [shake, setShake] = useState(false);
 
@@ -178,6 +189,39 @@ export const GiftReveal = ({ type, message, code, recipientName, onReveal }: Gif
                         />
                         <div className="absolute bottom-0 w-full text-center text-[10px] font-bold text-gray-400 pointer-events-none z-20 bg-white/80 py-1 uppercase tracking-widest">
                             Rub to Reveal Surprise
+                        </div>
+                    </motion.div>
+                )}
+
+                {type === "surprise" && !isOpen && (
+                    <motion.div
+                        key="surprise"
+                        initial={{ scale: 0.8, rotate: -5, opacity: 0 }}
+                        animate={{ scale: 1, rotate: 0, opacity: 1 }}
+                        exit={{ scale: 1.5, opacity: 0, filter: "blur(10px)", y: -50 }}
+                        whileHover={{ scale: 1.05 }}
+                        onClick={handleOpenSurprise}
+                        className="cursor-pointer relative group perspective-1000"
+                    >
+                        <motion.div
+                            animate={{ rotate: [0, -2, 2, -2, 0] }}
+                            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                            className="w-56 h-56 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 shadow-[0_0_40px_rgba(168,85,247,0.4)] rounded-3xl flex items-center justify-center relative overflow-hidden border-4 border-white/20 group-hover:shadow-[0_0_60px_rgba(236,72,153,0.6)] transition-shadow duration-500"
+                        >
+                            <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-20" />
+                            <div className="absolute top-0 bottom-0 left-1/2 -ml-3 w-6 bg-white/20 shadow-[0_0_10px_rgba(255,255,255,0.5)]" />
+                            <div className="absolute left-0 right-0 top-1/2 -mt-3 h-6 bg-white/20 shadow-[0_0_10px_rgba(255,255,255,0.5)]" />
+                            <Gift className="w-24 h-24 text-white drop-shadow-[0_0_20px_rgba(255,255,255,0.8)] z-10" />
+                            {recipientName && (
+                                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 w-full px-4">
+                                    <p className="font-serif italic text-white text-xs tracking-wide bg-black/20 py-1 rounded-full backdrop-blur-md border border-white/20 uppercase font-bold drop-shadow-md text-center line-clamp-1">To {recipientName}</p>
+                                </div>
+                            )}
+                            <div className="absolute -top-10 -left-10 w-32 h-32 bg-white/30 rounded-full blur-2xl animate-pulse" />
+                        </motion.div>
+
+                        <div className="absolute -top-6 -right-6 bg-white text-purple-600 px-4 py-2 rounded-full text-sm font-black shadow-2xl transform rotate-12 group-hover:rotate-0 transition-transform flex items-center gap-1 border border-purple-500/20">
+                            Tap to Open ✨
                         </div>
                     </motion.div>
                 )}

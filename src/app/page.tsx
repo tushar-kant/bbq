@@ -71,34 +71,34 @@ export default function Home() {
             </span>
           </h1>
 
-          <p className="text-lg md:text-2xl text-muted-foreground/80 max-w-2xl mx-auto font-light leading-relaxed tracking-wide pt-2">
+          <p className="text-base md:text-xl text-muted-foreground/80 max-w-2xl mx-auto font-light leading-relaxed tracking-wide pt-4">
             Design breathtaking bouquets that <span className="text-foreground font-medium">defy time</span>.
             A luxury experience crafted for those who speak the language of beauty.
           </p>
 
-          <div className="pt-8 flex flex-col md:flex-row items-center justify-center gap-10">
+          <div className="pt-2 flex flex-col md:flex-row items-center justify-center gap-6">
             <Link href="/create">
               <motion.button
-                whileHover={{ scale: 1.05, y: -4 }}
+                whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.98 }}
-                className="group relative px-14 py-7 bg-foreground text-background rounded-full text-lg font-bold transition-all shadow-2xl shadow-foreground/20 overflow-hidden"
+                className="group relative px-8 py-4 bg-gradient-to-r from-pink-500 to-rose-600 text-white rounded-full text-sm md:text-base font-bold tracking-widest transition-all shadow-[0_0_30px_-5px_rgba(236,72,153,0.4)] overflow-hidden border border-pink-400/50"
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-pink-500/40 via-rose-500/40 to-pink-500/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <span className="flex items-center gap-4 relative z-10">
+                <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <span className="flex items-center gap-3 relative z-10 uppercase">
                   Begin Your Creation
-                  <Heart className="w-6 h-6 fill-pink-500 text-pink-500 group-hover:scale-125 transition-transform duration-500 animate-pulse" />
+                  <Heart className="w-4 h-4 fill-white text-white group-hover:scale-125 transition-transform duration-500" />
                 </span>
-                <div className="absolute top-0 -left-[100%] w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:animate-shimmer transition-all duration-1000" />
+                <div className="absolute top-0 -left-[100%] w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent group-hover:translate-x-[200%] transition-transform duration-1000 ease-in-out" />
               </motion.button>
             </Link>
 
             <Link href="/garden">
               <motion.button
-                whileHover={{ scale: 1.05, y: -4 }}
+                whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.98 }}
-                className="group px-12 py-7 border border-white/10 bg-white/5 backdrop-blur-3xl text-foreground rounded-full text-lg font-medium transition-all hover:bg-white/10 hover:border-pink-500/30 flex items-center gap-4 shadow-[0_20px_50px_rgba(0,0,0,0.1)]"
+                className="group px-8 py-4 border border-foreground/20 bg-background/50 backdrop-blur-xl text-foreground rounded-full text-sm md:text-base font-medium tracking-widest uppercase transition-all hover:bg-foreground/5 hover:border-pink-500/50 flex items-center gap-3 shadow-sm"
               >
-                Explore Garden <Flower2 className="w-6 h-6 text-pink-400 group-hover:rotate-[30deg] transition-transform duration-500" />
+                Explore Garden <Flower2 className="w-4 h-4 text-pink-500 group-hover:rotate-[30deg] transition-transform duration-500" />
               </motion.button>
             </Link>
           </div>

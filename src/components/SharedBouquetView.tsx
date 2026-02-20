@@ -15,7 +15,7 @@ interface SharedViewProps {
         items: BouquetItem[];
         letter: string;
         theme: string;
-        giftType: "envelope" | "scratch" | "code" | "none";
+        giftType: "envelope" | "scratch" | "code" | "surprise" | "none";
         scratchMessage?: string;
         secretCode?: string;
         type?: "bouquet" | "message";
@@ -77,7 +77,7 @@ export const SharedBouquetView = ({ data }: SharedViewProps) => {
                             onReveal={handleReveal}
                         />
                         <p className="text-center mt-8 text-black/60 dark:text-white/60 animate-pulse text-sm font-bold tracking-widest uppercase drop-shadow-sm">
-                            {data.giftType === 'envelope' ? 'Open for a surprise' : data.giftType === 'code' ? 'Unlock to read' : 'Scratch to reveal'}
+                            {data.giftType === 'envelope' ? 'Open for a surprise' : data.giftType === 'code' ? 'Unlock to read' : data.giftType === 'surprise' ? 'Open the gift box' : 'Scratch to reveal'}
                         </p>
                     </motion.div>
                 )}
@@ -130,6 +130,9 @@ export const SharedBouquetView = ({ data }: SharedViewProps) => {
                                     ${data.cardStyle === 'midnight' ? "bg-slate-900 border border-slate-700 rounded-3xl shadow-[0_0_50px_-12px_rgba(56,189,248,0.2)]" : ""}
                                     ${data.cardStyle === 'glass' ? "bg-white/10 dark:bg-black/20 backdrop-blur-2xl border border-white/20 dark:border-white/10 rounded-3xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)]" : ""}
                                     ${data.cardStyle === 'botanic' ? "bg-[#f2fceb] dark:bg-[#1a2f1c] rounded-[2rem] shadow-[0_20px_50px_-12px_rgba(22,101,52,0.15)] border border-[#c1e1c1] dark:border-green-900/50" : ""}
+                                    ${data.cardStyle === 'vintage' ? "bg-[#e3d5c8] dark:bg-[#3e2723] rounded-[2px] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.25)] border-4 border-double border-[#8d6e63] dark:border-[#795548]" : ""}
+                                    ${data.cardStyle === 'cyberpunk' ? "bg-black rounded-lg shadow-[0_0_30px_rgba(236,72,153,0.3)] border border-pink-500/50" : ""}
+                                    ${data.cardStyle === 'ocean' ? "bg-gradient-to-br from-cyan-900 via-blue-900 to-indigo-950 rounded-3xl shadow-[0_20px_50px_-12px_rgba(6,182,212,0.2)] border border-cyan-500/30" : ""}
                                 `}>
                                     {/* Textures & Effects based on style */}
                                     {(!data.cardStyle || data.cardStyle === 'classic') && (
@@ -168,6 +171,32 @@ export const SharedBouquetView = ({ data }: SharedViewProps) => {
                                         </>
                                     )}
 
+                                    {data.cardStyle === 'vintage' && (
+                                        <>
+                                            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/aged-paper.png')] opacity-80 mix-blend-multiply dark:mix-blend-overlay pointer-events-none" />
+                                            <div className="absolute top-4 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-[#8d6e63] to-transparent opacity-30" />
+                                            <div className="absolute bottom-4 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-[#8d6e63] to-transparent opacity-30" />
+                                        </>
+                                    )}
+
+                                    {data.cardStyle === 'cyberpunk' && (
+                                        <>
+                                            <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-20 pointer-events-none" />
+                                            <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-pink-500" />
+                                            <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-cyan-500" />
+                                            <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-cyan-500" />
+                                            <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-pink-500" />
+                                        </>
+                                    )}
+
+                                    {data.cardStyle === 'ocean' && (
+                                        <>
+                                            <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-cyan-400/10 to-transparent pointer-events-none" />
+                                            <div className="absolute -top-16 -left-16 w-32 h-32 bg-cyan-400/20 rounded-full blur-3xl pointer-events-none" />
+                                            <div className="absolute -bottom-16 -right-16 w-32 h-32 bg-blue-500/20 rounded-full blur-3xl pointer-events-none" />
+                                        </>
+                                    )}
+
                                     <div className="relative z-10 flex flex-col items-center">
                                         <div className="mb-6">
                                             <span className={`text-4xl 
@@ -175,8 +204,11 @@ export const SharedBouquetView = ({ data }: SharedViewProps) => {
                                                 ${data.cardStyle === 'midnight' && "text-blue-400/80 drop-shadow-[0_0_8px_rgba(96,165,250,0.5)]"}
                                                 ${data.cardStyle === 'glass' && "text-foreground/80"}
                                                 ${data.cardStyle === 'botanic' && "text-green-600/80 dark:text-green-400/80"}
+                                                ${data.cardStyle === 'vintage' && "text-[#5d4037] dark:text-[#d7ccc8]"}
+                                                ${data.cardStyle === 'cyberpunk' && "text-pink-500 drop-shadow-[0_0_8px_rgba(236,72,153,0.8)]"}
+                                                ${data.cardStyle === 'ocean' && "text-cyan-400 drop-shadow-[0_0_12px_rgba(34,211,238,0.5)]"}
                                             `}>
-                                                {data.cardStyle === 'botanic' ? '❅' : data.cardStyle === 'midnight' ? '✧' : '❦'}
+                                                {data.cardStyle === 'botanic' ? '❅' : data.cardStyle === 'midnight' ? '✧' : data.cardStyle === 'vintage' ? '✉' : data.cardStyle === 'cyberpunk' ? '⚡' : data.cardStyle === 'ocean' ? '≈' : '❦'}
                                             </span>
                                         </div>
 
@@ -185,6 +217,9 @@ export const SharedBouquetView = ({ data }: SharedViewProps) => {
                                             ${data.cardStyle === 'midnight' && "text-blue-100"}
                                             ${data.cardStyle === 'glass' && "text-foreground"}
                                             ${data.cardStyle === 'botanic' && "text-green-900 dark:text-green-100"}
+                                            ${data.cardStyle === 'vintage' && "text-[#4e342e] dark:text-[#efebe9]"}
+                                            ${data.cardStyle === 'cyberpunk' && "text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-cyan-400 font-sans tracking-widest not-italic"}
+                                            ${data.cardStyle === 'ocean' && "text-cyan-50"}
                                         `}>
                                             {data.type === 'message' ? 'A Special Letter' : `Dear ${data.recipientName || 'You'}`}
                                         </h3>
@@ -194,6 +229,9 @@ export const SharedBouquetView = ({ data }: SharedViewProps) => {
                                             ${data.cardStyle === 'midnight' && "text-blue-50/80"}
                                             ${data.cardStyle === 'glass' && "text-foreground/90"}
                                             ${data.cardStyle === 'botanic' && "text-green-800/80 dark:text-green-200/80"}
+                                            ${data.cardStyle === 'vintage' && "text-[#5d4037] dark:text-[#d7ccc8]"}
+                                            ${data.cardStyle === 'cyberpunk' && "text-pink-100 font-mono tracking-tight"}
+                                            ${data.cardStyle === 'ocean' && "text-cyan-100/90"}
                                         `}>
                                             {data.letter || "Thank You!"}
                                         </div>
@@ -204,8 +242,11 @@ export const SharedBouquetView = ({ data }: SharedViewProps) => {
                                                 ${data.cardStyle === 'midnight' && "text-blue-400"}
                                                 ${data.cardStyle === 'glass' && "text-foreground"}
                                                 ${data.cardStyle === 'botanic' && "text-green-600 dark:text-green-400"}
+                                                ${data.cardStyle === 'vintage' && "text-[#5d4037] dark:text-[#d7ccc8]"}
+                                                ${data.cardStyle === 'cyberpunk' && "text-cyan-500 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]"}
+                                                ${data.cardStyle === 'ocean' && "text-cyan-400 drop-shadow-[0_0_12px_rgba(34,211,238,0.5)]"}
                                             `}>
-                                                {data.cardStyle === 'botanic' ? '❅' : data.cardStyle === 'midnight' ? '✧' : '❦'}
+                                                {data.cardStyle === 'botanic' ? '❅' : data.cardStyle === 'midnight' ? '✧' : data.cardStyle === 'vintage' ? '✉' : data.cardStyle === 'cyberpunk' ? '⚡' : data.cardStyle === 'ocean' ? '≈' : '❦'}
                                             </span>
                                         </div>
                                     </div>

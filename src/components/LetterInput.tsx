@@ -168,7 +168,10 @@ export const LetterInput = ({
                             { id: "classic", label: "Classic" },
                             { id: "midnight", label: "Midnight" },
                             { id: "glass", label: "Frosted Glass" },
-                            { id: "botanic", label: "Botanic" }
+                            { id: "botanic", label: "Botanic" },
+                            { id: "vintage", label: "Vintage" },
+                            { id: "cyberpunk", label: "Cyberpunk" },
+                            { id: "ocean", label: "Ocean Deep" }
                         ].map((style) => (
                             <button
                                 key={style.id}
@@ -192,6 +195,9 @@ export const LetterInput = ({
                             ${cardStyle === 'midnight' ? "bg-slate-900 border border-slate-700 rounded-3xl shadow-[0_0_30px_-10px_rgba(56,189,248,0.2)]" : ""}
                             ${cardStyle === 'glass' ? "bg-black/5 dark:bg-white/10 backdrop-blur-xl border border-black/10 dark:border-white/20 rounded-3xl shadow-sm" : ""}
                             ${cardStyle === 'botanic' ? "bg-[#f2fceb] dark:bg-[#1a2f1c] rounded-[2rem] shadow-[0_10px_30px_-10px_rgba(22,101,52,0.15)] border border-[#c1e1c1] dark:border-green-900/50" : ""}
+                            ${cardStyle === 'vintage' ? "bg-[#e3d5c8] dark:bg-[#3e2723] rounded-[2px] shadow-[0_10px_30px_-10px_rgba(0,0,0,0.25)] border-4 border-double border-[#8d6e63] dark:border-[#795548]" : ""}
+                            ${cardStyle === 'cyberpunk' ? "bg-black rounded-sm shadow-[0_0_20px_rgba(236,72,153,0.3)] border border-pink-500/50" : ""}
+                            ${cardStyle === 'ocean' ? "bg-gradient-to-br from-cyan-900 via-blue-900 to-indigo-950 rounded-3xl shadow-[0_10px_30px_-10px_rgba(6,182,212,0.2)] border border-cyan-500/30" : ""}
                         `}>
                             {/* Textures & Effects based on style */}
                             {(!cardStyle || cardStyle === 'classic') && (
@@ -229,6 +235,32 @@ export const LetterInput = ({
                                 </>
                             )}
 
+                            {cardStyle === 'vintage' && (
+                                <>
+                                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/aged-paper.png')] opacity-80 mix-blend-multiply dark:mix-blend-overlay pointer-events-none" />
+                                    <div className="absolute top-2 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-[#8d6e63] to-transparent opacity-30" />
+                                    <div className="absolute bottom-2 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-[#8d6e63] to-transparent opacity-30" />
+                                </>
+                            )}
+
+                            {cardStyle === 'cyberpunk' && (
+                                <>
+                                    <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-20 pointer-events-none" />
+                                    <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-pink-500" />
+                                    <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-cyan-500" />
+                                    <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-cyan-500" />
+                                    <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-pink-500" />
+                                </>
+                            )}
+
+                            {cardStyle === 'ocean' && (
+                                <>
+                                    <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-cyan-400/10 to-transparent pointer-events-none" />
+                                    <div className="absolute -top-12 -left-12 w-24 h-24 bg-cyan-400/20 rounded-full blur-2xl pointer-events-none" />
+                                    <div className="absolute -bottom-12 -right-12 w-24 h-24 bg-blue-500/20 rounded-full blur-2xl pointer-events-none" />
+                                </>
+                            )}
+
                             <div className="relative z-10 flex flex-col items-center">
                                 <div className="mb-3">
                                     <span className={`text-2xl 
@@ -236,8 +268,11 @@ export const LetterInput = ({
                                         ${cardStyle === 'midnight' && "text-blue-400/80 drop-shadow-[0_0_8px_rgba(96,165,250,0.5)]"}
                                         ${cardStyle === 'glass' && "text-foreground/80"}
                                         ${cardStyle === 'botanic' && "text-green-600/80 dark:text-green-400/80"}
+                                        ${cardStyle === 'vintage' && "text-[#5d4037] dark:text-[#d7ccc8]"}
+                                        ${cardStyle === 'cyberpunk' && "text-pink-500 drop-shadow-[0_0_8px_rgba(236,72,153,0.8)]"}
+                                        ${cardStyle === 'ocean' && "text-cyan-400 drop-shadow-[0_0_12px_rgba(34,211,238,0.5)]"}
                                     `}>
-                                        {cardStyle === 'botanic' ? '❅' : cardStyle === 'midnight' ? '✧' : '❦'}
+                                        {cardStyle === 'botanic' ? '❅' : cardStyle === 'midnight' ? '✧' : cardStyle === 'vintage' ? '✉' : cardStyle === 'cyberpunk' ? '⚡' : cardStyle === 'ocean' ? '≈' : '❦'}
                                     </span>
                                 </div>
 
@@ -246,6 +281,9 @@ export const LetterInput = ({
                                     ${cardStyle === 'midnight' && "text-blue-100"}
                                     ${cardStyle === 'glass' && "text-foreground"}
                                     ${cardStyle === 'botanic' && "text-green-900 dark:text-green-100"}
+                                    ${cardStyle === 'vintage' && "text-[#4e342e] dark:text-[#efebe9]"}
+                                    ${cardStyle === 'cyberpunk' && "text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-cyan-400 font-sans tracking-widest not-italic"}
+                                    ${cardStyle === 'ocean' && "text-cyan-50"}
                                 `}>
                                     Dear {recipientName || 'You'}
                                 </h3>
@@ -255,6 +293,9 @@ export const LetterInput = ({
                                     ${cardStyle === 'midnight' && "text-blue-50/80"}
                                     ${cardStyle === 'glass' && "text-foreground/90"}
                                     ${cardStyle === 'botanic' && "text-green-800/80 dark:text-green-200/80"}
+                                    ${cardStyle === 'vintage' && "text-[#5d4037] dark:text-[#d7ccc8]"}
+                                    ${cardStyle === 'cyberpunk' && "text-pink-100 font-mono tracking-tight"}
+                                    ${cardStyle === 'ocean' && "text-cyan-100/90"}
                                 `}>
                                     {letter || "Start typing your note to see it here..."}
                                 </div>
@@ -265,8 +306,11 @@ export const LetterInput = ({
                                         ${cardStyle === 'midnight' && "text-blue-400"}
                                         ${cardStyle === 'glass' && "text-foreground"}
                                         ${cardStyle === 'botanic' && "text-green-600 dark:text-green-400"}
+                                        ${cardStyle === 'vintage' && "text-[#5d4037] dark:text-[#d7ccc8]"}
+                                        ${cardStyle === 'cyberpunk' && "text-cyan-500 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]"}
+                                        ${cardStyle === 'ocean' && "text-cyan-400 drop-shadow-[0_0_12px_rgba(34,211,238,0.5)]"}
                                     `}>
-                                        {cardStyle === 'botanic' ? '❅' : cardStyle === 'midnight' ? '✧' : '❦'}
+                                        {cardStyle === 'botanic' ? '❅' : cardStyle === 'midnight' ? '✧' : cardStyle === 'vintage' ? '✉' : cardStyle === 'cyberpunk' ? '⚡' : cardStyle === 'ocean' ? '≈' : '❦'}
                                     </span>
                                 </div>
                             </div>
@@ -281,7 +325,7 @@ export const LetterInput = ({
                     Add a Secret Surprise
                 </label>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
                     <div
                         onClick={() => setGiftType("envelope")}
                         className={`p-3 rounded-xl border cursor-pointer transition-all duration-300 group ${giftType === "envelope" ? "border-pink-500/50 bg-pink-500/10 shadow-[0_0_15px_-5px_rgba(236,72,153,0.3)]" : "border-border hover:bg-secondary/50 hover:border-primary/30"}`}
@@ -312,6 +356,14 @@ export const LetterInput = ({
                     >
                         <div className={`font-bold mb-0.5 text-sm transition-colors ${giftType === "none" ? "text-foreground" : "text-muted-foreground group-hover:text-foreground"}`}>None</div>
                         <p className="text-[10px] text-muted-foreground group-hover:text-muted-foreground/80 transition-colors leading-tight">Directly visible.</p>
+                    </div>
+
+                    <div
+                        onClick={() => setGiftType("surprise")}
+                        className={`p-3 rounded-xl border cursor-pointer transition-all duration-300 group ${giftType === "surprise" ? "border-purple-400/50 bg-purple-400/10 shadow-[0_0_15px_-5px_rgba(168,85,247,0.3)]" : "border-border hover:bg-secondary/50 hover:border-purple-400/30"}`}
+                    >
+                        <div className={`font-bold mb-0.5 text-sm transition-colors ${giftType === "surprise" ? "text-purple-600 dark:text-purple-200" : "text-muted-foreground group-hover:text-foreground"}`}>🎁 Surprise</div>
+                        <p className="text-[10px] text-muted-foreground group-hover:text-muted-foreground/80 transition-colors leading-tight">Magic gift box.</p>
                     </div>
                 </div>
 
