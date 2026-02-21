@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Sparkles, Heart, ArrowRight, Star, Flower2 } from "lucide-react";
 import Link from "next/link";
+import { Footer } from "@/components/Footer";
 
 export default function Home() {
   return (
@@ -150,16 +151,82 @@ export default function Home() {
         ))}
       </motion.div>
 
-      <div className="relative z-10 text-center py-10">
-        <div className="flex flex-col items-center gap-2">
-          <div className="h-4 w-px bg-gradient-to-b from-pink-500 to-transparent mb-2" />
-          <Link href="/">
-            <span className="text-[10px] text-muted-foreground/50 uppercase tracking-[0.5em] font-bold hover:text-pink-500 transition-colors duration-300">
-              Orchestrated by FORU
-            </span>
-          </Link>
+      {/* Step by Step Process */}
+      <section className="relative z-20 py-24 px-6 overflow-hidden">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1 }}
+            className="text-center mb-20 space-y-4"
+          >
+            <h2 className="text-4xl md:text-6xl font-serif text-foreground">The Art of Giving</h2>
+            <p className="text-muted-foreground/60 max-w-2xl mx-auto font-light tracking-wide uppercase text-xs">A three-step journey to eternity</p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
+            {/* Connection Lines (Desktop) */}
+            <div className="hidden md:block absolute top-1/2 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-pink-500/20 to-transparent -translate-y-1/2 -z-10" />
+
+            {[
+              { num: "01", title: "Select Your Bloom", desc: "Choose from an exquisite collection of 3D flowers, each modeled with poetic precision.", icon: <Flower2 className="w-6 h-6" /> },
+              { num: "02", title: "Sculpt Your Vision", desc: "Arrange, customize, and infuse your unique essence into a digital masterpiece.", icon: <Heart className="w-6 h-6" /> },
+              { num: "03", title: "Share the Eternal", desc: "Send a gift that never withers, preserved in the digital garden for all time.", icon: <Sparkles className="w-6 h-6" /> }
+            ].map((step, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.2 }}
+                className="flex flex-col items-center text-center space-y-6"
+              >
+                <div className="relative">
+                  <div className="w-20 h-20 rounded-full bg-background border border-pink-500/30 flex items-center justify-center text-pink-500 shadow-xl shadow-pink-500/5 backdrop-blur-3xl group transition-all duration-500 hover:scale-110 hover:border-pink-500">
+                    {step.icon}
+                    <span className="absolute -top-2 -right-2 text-[10px] font-bold bg-pink-500 text-white px-2 py-0.5 rounded-full">{step.num}</span>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-xl font-serif font-medium">{step.title}</h3>
+                  <p className="text-sm text-muted-foreground/70 leading-relaxed max-w-[250px]">{step.desc}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
-      </div>
+      </section>
+
+
+      {/* Testimonials / Emotional Section */}
+      <section className="relative z-20 py-32 px-6">
+        <div className="max-w-4xl mx-auto text-center space-y-12">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            className="inline-block p-3 rounded-full bg-pink-500/10 border border-pink-500/20"
+          >
+            <Star className="w-6 h-6 text-pink-500 fill-pink-500" />
+          </motion.div>
+          <motion.blockquote
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            className="text-3xl md:text-5xl font-serif italic text-foreground leading-tight"
+          >
+            "A gift that transcends the physical realm. Seeing my creation bloom in the digital garden brought a sense of peace I haven't felt in years."
+          </motion.blockquote>
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="space-y-1"
+          >
+            <p className="text-foreground font-bold uppercase tracking-widest text-[10px]">Elena Thorne</p>
+            <p className="text-muted-foreground/50 text-[10px] uppercase tracking-widest leading-none">Digital Art Curator</p>
+          </motion.div>
+        </div>
+      </section>
+
+      <Footer />
     </main>
   );
 }

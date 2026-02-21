@@ -270,16 +270,7 @@ function BouquetCreator() {
 
       <div className="container mx-auto px-4 py-8 flex-1 flex flex-col max-w-5xl relative z-10">
 
-        {!shareUrl && (
-          <div className="flex gap-3 mb-8 items-center justify-center">
-            {[1, 2, 3].map((s) => (
-              <div
-                key={s}
-                className={`h-1.5 rounded-full transition-all duration-500 ${s <= step ? "w-12 bg-pink-500 shadow-[0_0_10px_rgba(236,72,153,0.5)]" : "w-2 bg-white/10"}`}
-              />
-            ))}
-          </div>
-        )}
+        {/* Step Indicator Removed */}
 
         <AnimatePresence mode="wait">
           {shareUrl ? (
@@ -378,109 +369,188 @@ function BouquetCreator() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 20 }}
-                  className="space-y-6 flex flex-col h-full"
+                  className="space-y-8 flex flex-col h-full"
                 >
-
-                  {generatedImage ? (
-                    <div className="relative w-full h-[50vh] rounded-3xl overflow-hidden shadow-2xl border border-border bg-card/60 backdrop-blur-xl group">
-                      <Image
-                        src={generatedImage}
-                        alt="AI Generated Bouquet"
-                        fill
-                        className="object-cover transition-transform duration-700 group-hover:scale-105"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        priority
-                        unoptimized
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-8 pointer-events-none">
-                        <span className="text-white font-serif italic text-lg tracking-wide">AI Masterpiece</span>
+                  {/* Step Header */}
+                  <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-border/50 pb-6">
+                    <div className="space-y-2">
+                      <div className="inline-flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.4em] text-primary">
+                        <Sparkles className="w-3 h-3" /> Step 02
                       </div>
+                      <h2 className="text-4xl font-serif font-medium text-foreground tracking-tight">
+                        The <span className="italic text-primary">Arrangement</span>
+                      </h2>
                     </div>
-                  ) : (
-                    <BouquetCanvas
-                      items={bouquetItems}
-                      setItems={setBouquetItems}
-                      isEditable={!isGenerating}
-                      background={canvasBackground}
-                    />
-                  )}
 
-                  <div className="flex flex-wrap gap-2 justify-center py-2 px-1">
-                    {[
-                      { name: "Default", value: "" },
-                      { name: "Soft Pink", value: "linear-gradient(135deg, #fff5f5 0%, #ffe3e3 100%)" },
-                      { name: "Deep Rose", value: "linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%)" },
-                      { name: "Velvet Night", value: "#1a1a1a" },
-                      { name: "Midnight", value: "linear-gradient(to top, #30cfd0 0%, #330867 100%)" },
-                      { name: "Sweet Morning", value: "linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%)" },
-                      { name: "Gold Dust", value: "linear-gradient(to right, #f83600 0%, #f9d423 100%)" },
-                      { name: "Minty", value: "linear-gradient(to top, #9be15d 0%, #00e3ae 100%)" }
-                    ].map((bg) => (
-                      <button
-                        key={bg.name}
-                        onClick={() => setCanvasBackground(bg.value)}
-                        className={`w-8 h-8 rounded-full border-2 transition-all hover:scale-110 shadow-sm ${canvasBackground === bg.value ? 'border-primary ring-2 ring-primary/20' : 'border-border'}`}
-                        style={{ background: bg.value || 'rgba(255,255,255,0.1)', backdropFilter: bg.value ? 'none' : 'blur(12px)' }}
-                        title={bg.name}
-                      />
-                    ))}
-
-                    <div className="relative group">
-                      <input
-                        type="color"
-                        onChange={(e) => setCanvasBackground(e.target.value)}
-                        className="w-8 h-8 rounded-full border-2 border-border cursor-pointer opacity-0 absolute inset-0 z-20"
-                      />
-                      <div className={`w-8 h-8 rounded-full border-2 border-border flex items-center justify-center bg-card group-hover:scale-110 transition-all ${!['', '#1a1a1a'].includes(canvasBackground) && !canvasBackground.includes('gradient') ? 'ring-2 ring-primary/20 border-primary' : ''}`}>
-                        <Plus className="w-4 h-4 text-muted-foreground" />
-                      </div>
+                    <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/50 bg-secondary/30 border border-border rounded-full px-4 py-2 backdrop-blur-3xl">
+                      Drag to Position • Tap to Rotate
                     </div>
                   </div>
 
-                  <p className="text-center text-xs text-muted-foreground mb-2">NB: Drag to move • Tap to rotate</p>
-                  <div className="flex gap-3 justify-center">
-                    <button
-                      onClick={() => {
-                        setBouquetItems(prev => prev.map(item => {
-                          // Tighter cluster (35-65% width)
-                          const x = 35 + Math.random() * 30;
-                          const dist = Math.abs(x - 50);
-                          // Lower down: 55-75% Y range to sit closer to the ribbon
-                          const y = 55 + (dist * 0.5) + (Math.random() * 20);
-                          const rotation = (x - 50) * 2 + (Math.random() * 10 - 5);
-                          return {
-                            ...item,
-                            x,
-                            y,
-                            rotation,
-                            scale: 0.85 + Math.random() * 0.3,
-                            stemBend: (Math.random() * 40 - 20),
-                            stemType: Math.floor(Math.random() * 3)
-                          };
-                        }));
-                      }}
-                      className="flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-card hover:bg-secondary hover:text-foreground text-muted-foreground transition-colors text-xs font-medium uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed"
-                      disabled={isGenerating || !!generatedImage}
-                    >
-                      <Shuffle className="w-3.5 h-3.5" />
-                      Rearrange
-                    </button>
+                  {/* Main Canvas Area */}
+                  <div className="relative group/canvas">
+                    <div className="absolute -inset-4 bg-gradient-to-b from-pink-500/5 to-purple-500/5 rounded-[3rem] blur-3xl opacity-0 group-hover/canvas:opacity-100 transition-opacity duration-1000 -z-10" />
 
-                    <button
-                      onClick={() => {
-                        setBouquetItems(prev => prev.map(item => ({
-                          ...item,
-                          stemBend: (Math.random() * 60 - 30),
-                          stemType: Math.floor(Math.random() * 3)
-                        })));
-                      }}
-                      className="flex items-center gap-2 px-4 py-2 rounded-full border border-green-500/20 bg-green-500/5 hover:bg-green-500/10 text-green-600 dark:text-green-400 transition-colors text-xs font-medium uppercase tracking-wider"
-                      disabled={isGenerating || !!generatedImage}
-                    >
-                      <Sprout className="w-3.5 h-3.5" />
-                      Greenery
-                    </button>
+                    {generatedImage ? (
+                      <div className="relative w-full h-[55vh] rounded-[2.5rem] overflow-hidden shadow-2xl border border-border bg-card/40 backdrop-blur-3xl group">
+                        <Image
+                          src={generatedImage}
+                          alt="AI Generated Bouquet"
+                          fill
+                          className="object-cover transition-transform duration-1000 group-hover:scale-105"
+                          sizes="(max-width: 768px) 100vw, 800px"
+                          priority
+                          unoptimized
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end justify-center pb-12">
+                          <span className="text-white font-serif italic text-2xl tracking-wide">AI Masterpiece</span>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="p-1 bg-secondary/30 rounded-[2.5rem] border border-border backdrop-blur-3xl shadow-2xl">
+                        <BouquetCanvas
+                          items={bouquetItems}
+                          setItems={setBouquetItems}
+                          isEditable={!isGenerating}
+                          background={canvasBackground}
+                        />
+                      </div>
+                    )}
+                  </div>
 
+                  {/* Composer Tools */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+                    {/* Background Stage */}
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-3 text-muted-foreground/30 uppercase text-[9px] font-black tracking-[0.3em] pl-1">
+                        <div className="h-[1px] w-4 bg-border" />
+                        Stage Setting
+                      </div>
+                      <div className="bg-secondary/30 border border-border rounded-3xl p-5 space-y-6">
+                        {/* Row 1: Simple Colors */}
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-2 text-[8px] font-black uppercase tracking-[0.2em] text-muted-foreground/40">
+                            <div className="w-1.5 h-1.5 rounded-full bg-border" /> Solid Tones
+                          </div>
+                          <div className="grid grid-cols-6 gap-3">
+                            {[
+                              { name: "Glass", value: "" },
+                              { name: "Night", value: "#1a1a1a" },
+                              { name: "Mist", value: "#fdf8f8" },
+                              { name: "Sage", value: "#f0f4f0" },
+                              { name: "Ink", value: "#0a0a0c" }
+                            ].map((bg) => (
+                              <motion.button
+                                key={bg.name}
+                                whileHover={{ scale: 1.1, y: -2 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={() => setCanvasBackground(bg.value)}
+                                className={`aspect-square rounded-2xl border-2 transition-all shadow-xl flex items-center justify-center ${canvasBackground === bg.value ? 'border-primary ring-4 ring-primary/20 shadow-primary/20' : 'border-border'}`}
+                                style={{ background: bg.value || 'rgba(255,255,255,0.03)', backdropFilter: bg.value ? 'none' : 'blur(20px)' }}
+                                title={bg.name}
+                              />
+                            ))}
+
+                            <div className="relative group aspect-square">
+                              <input
+                                type="color"
+                                onChange={(e) => setCanvasBackground(e.target.value)}
+                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
+                              />
+                              <div className={`w-full h-full rounded-2xl border-2 border-border flex items-center justify-center bg-card/40 group-hover:bg-card/60 transition-all ${!['', '#1a1a1a', '#fdf8f8', '#f0f4f0', '#0a0a0c'].includes(canvasBackground) && !canvasBackground.includes('gradient') ? 'ring-4 ring-primary/20 border-primary' : ''}`}>
+                                <Plus className="w-4 h-4 text-muted-foreground/40 group-hover:text-muted-foreground/70" />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Row 2: Premium Gradients */}
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-2 text-[8px] font-black uppercase tracking-[0.2em] text-muted-foreground/40">
+                            <div className="w-1.5 h-1.5 rounded-full bg-primary/20" /> Atmospheric
+                          </div>
+                          <div className="grid grid-cols-6 gap-3">
+                            {[
+                              { name: "Dawn", value: "linear-gradient(135deg, #FF9A8B 0%, #FF6A88 55%, #FF99AC 100%)" },
+                              { name: "Bora Bora", value: "linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%)" },
+                              { name: "Cosmic", value: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" },
+                              { name: "Lush", value: "linear-gradient(135deg, #02aab0 0%, #00cdac 100%)" },
+                              { name: "Golden", value: "linear-gradient(135deg, #FAD961 0%, #F76B1C 100%)" }
+                            ].map((bg) => (
+                              <motion.button
+                                key={bg.name}
+                                whileHover={{ scale: 1.1, y: -2 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={() => setCanvasBackground(bg.value)}
+                                className={`aspect-square rounded-2xl border-2 transition-all shadow-xl flex items-center justify-center ${canvasBackground === bg.value ? 'border-primary ring-4 ring-primary/20 shadow-primary/20' : 'border-border'}`}
+                                style={{ background: bg.value }}
+                                title={bg.name}
+                              />
+                            ))}
+
+                            <div className="relative group aspect-square">
+                              <input
+                                type="color"
+                                onChange={(e) => setCanvasBackground(e.target.value)}
+                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
+                              />
+                              <div className={`w-full h-full rounded-2xl border-2 border-border flex items-center justify-center bg-card/40 group-hover:bg-card/60 transition-all ${!['', '#1a1a1a', '#fdf8f8', '#f0f4f0', '#0a0a0c'].includes(canvasBackground) && canvasBackground.includes('gradient') ? 'ring-4 ring-primary/20 border-primary' : ''}`}>
+                                <Plus className="w-4 h-4 text-muted-foreground/40 group-hover:text-muted-foreground/70" />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Arrangement Toolkit */}
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-3 text-muted-foreground/30 uppercase text-[9px] font-black tracking-[0.3em] pl-1">
+                        <div className="h-[1px] w-4 bg-border" />
+                        Studio Controls
+                      </div>
+                      <div className="bg-secondary/30 border border-border rounded-3xl p-4 flex gap-4">
+                        <button
+                          onClick={() => {
+                            setBouquetItems(prev => prev.map(item => {
+                              const x = 35 + Math.random() * 30;
+                              const dist = Math.abs(x - 50);
+                              const y = 55 + (dist * 0.5) + (Math.random() * 20);
+                              const rotation = (x - 50) * 2 + (Math.random() * 10 - 5);
+                              return {
+                                ...item,
+                                x,
+                                y,
+                                rotation,
+                                scale: 0.85 + Math.random() * 0.3,
+                                stemBend: (Math.random() * 40 - 20),
+                                stemType: Math.floor(Math.random() * 3)
+                              };
+                            }));
+                          }}
+                          className="flex-1 flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-card/40 border border-border hover:bg-card/60 hover:border-primary/30 transition-all group overflow-hidden relative"
+                          disabled={isGenerating || !!generatedImage}
+                        >
+                          <Shuffle className="w-4 h-4 text-primary group-hover:rotate-180 transition-transform duration-500" />
+                          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground group-hover:text-foreground transition-colors">Rearrange</span>
+                        </button>
+
+                        <button
+                          onClick={() => {
+                            setBouquetItems(prev => prev.map(item => ({
+                              ...item,
+                              stemBend: (Math.random() * 60 - 30),
+                              stemType: Math.floor(Math.random() * 3)
+                            })));
+                          }}
+                          className="flex-1 flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-card/40 border border-border hover:bg-card/60 hover:border-green-500/30 transition-all group overflow-hidden relative"
+                          disabled={isGenerating || !!generatedImage}
+                        >
+                          <Sprout className="w-4 h-4 text-green-500 group-hover:scale-125 transition-transform duration-500" />
+                          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground group-hover:text-foreground transition-colors">Refine Stems</span>
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </motion.div>
               )}
@@ -493,9 +563,6 @@ function BouquetCreator() {
                   exit={{ opacity: 0, x: 20 }}
                   className="space-y-6"
                 >
-                  <h2 className="text-2xl font-bold font-serif text-foreground">
-                    {creationType === 'bouquet' ? 'Add a Personal Touch' : 'Write Your Letter'}
-                  </h2>
                   <LetterInput
                     creationType={creationType || 'bouquet'}
                     letter={letter}
@@ -520,6 +587,8 @@ function BouquetCreator() {
                     setIsScheduled={setIsScheduled}
                     secretCode={secretCode}
                     setSecretCode={setSecretCode}
+                    onFinalize={handleSaveAndShare}
+                    isSaving={isSaving}
                   />
                 </motion.div>
               )}
@@ -529,40 +598,42 @@ function BouquetCreator() {
 
         {/* Navigation Buttons */}
         {!shareUrl && creationType && (
-          <div className="flex justify-between mt-4 pt-4 border-t border-border">
+          <div className="flex justify-between mt-8 pt-8 border-t border-border/50">
             <button
               onClick={handleBack}
-              className="px-4 py-2 text-sm rounded-full font-medium flex items-center gap-1.5 transition-colors hover:bg-secondary text-muted-foreground hover:text-foreground"
+              className="group px-6 py-3 text-[10px] font-black uppercase tracking-[0.2em] rounded-full border border-border bg-card/40 backdrop-blur-md flex items-center gap-2 transition-all duration-500 hover:bg-secondary hover:border-primary/20 text-muted-foreground hover:text-foreground shadow-sm"
             >
-              <ChevronLeft className="w-3.5 h-3.5" />
-              Back
+              <ChevronLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+              Retrace
             </button>
 
             {step < 3 ? (
               <button
                 onClick={handleNext}
                 disabled={creationType === 'bouquet' && totalItems < 3}
-                className="px-6 py-2 text-sm bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold rounded-full hover:shadow-[0_0_20px_rgba(236,72,153,0.4)] hover:scale-105 flex items-center gap-1.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:shadow-none"
+                className="group relative px-10 py-3 text-[10px] font-black uppercase tracking-[0.3em] bg-primary text-primary-foreground rounded-full hover:shadow-[0_10px_40px_-10px_rgba(236,72,153,0.5)] transform transition-all duration-500 hover:scale-105 active:scale-95 flex items-center gap-3 disabled:opacity-30 disabled:grayscale disabled:cursor-not-allowed overflow-hidden"
               >
-                Next
-                <ChevronRight className="w-3.5 h-3.5" />
+                <div className="absolute inset-x-0 bottom-0 h-1 bg-white/20 animate-shimmer" />
+                Proceed
+                <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
               </button>
             ) : (
-              <div className="flex gap-3 items-center">
+              <div className="flex gap-4 items-center">
                 <button
                   onClick={() => setIsPreviewing(true)}
-                  className="px-6 py-2 text-sm bg-secondary text-foreground font-bold rounded-full hover:bg-secondary/70 flex items-center gap-2 transition-all border border-border"
+                  className="px-8 py-3 text-[10px] font-black uppercase tracking-[0.2em] bg-secondary/80 text-foreground rounded-full hover:bg-secondary flex items-center gap-2 transition-all border border-border backdrop-blur-xl shadow-sm hover:border-primary/20"
                 >
                   <Eye className="w-4 h-4" />
-                  Preview
+                  Glimpse
                 </button>
                 <button
                   onClick={handleSaveAndShare}
                   disabled={isSaving}
-                  className="px-6 py-2 text-sm bg-gradient-to-r from-pink-500 to-amber-500 text-white font-bold rounded-full hover:shadow-[0_0_20px_rgba(251,191,36,0.4)] hover:scale-105 flex items-center gap-1.5 transition-all disabled:opacity-50 disabled:grayscale"
+                  className="group relative px-10 py-3 text-[10px] font-black uppercase tracking-[0.3em] bg-gradient-to-r from-primary to-amber-500 text-white rounded-full hover:shadow-[0_10px_40px_-10px_rgba(251,191,36,0.5)] transform transition-all duration-500 hover:scale-105 active:scale-95 flex items-center gap-3 disabled:opacity-30 disabled:grayscale overflow-hidden"
                 >
-                  {isSaving ? <Wand2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
-                  Create Gift
+                  <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  {isSaving ? <Wand2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4 animate-pulse" />}
+                  Finalize Gift
                 </button>
               </div>
             )}

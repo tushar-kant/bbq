@@ -2,7 +2,7 @@
 
 import { FLOWERS } from "@/lib/flowers";
 import { motion, AnimatePresence } from "framer-motion";
-import { Leaf, Flower2, Sparkles, Plus, Minus } from "lucide-react";
+import { Boxes, Sparkles, Feather, Plus, Minus, Flower2, Leaf } from "lucide-react";
 
 interface FlowerSelectorProps {
     flowerCounts: Record<string, number>;
@@ -20,23 +20,40 @@ export const FlowerSelector = ({ flowerCounts, onUpdateCount, maxTotal }: Flower
     const currentTotal = Object.values(flowerCounts).reduce((a, b) => a + b, 0);
 
     return (
-        <div className="space-y-5 py-2">
-            <div className="flex justify-between items-center mb-2">
-                <h2 className="text-2xl font-serif font-medium text-foreground">Pick Your Blooms</h2>
-                <span className={`text-xs font-medium px-3 py-1 rounded-full border ${currentTotal >= 3 ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30' : 'bg-muted text-muted-foreground border-border'}`}>
-                    {currentTotal} / {maxTotal} Items
-                </span>
+        <div className="space-y-8 py-4">
+            {/* Elegant Header Section */}
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-border/50 pb-6">
+                <div className="space-y-2">
+                    <div className="inline-flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.4em] text-primary">
+                        <Sparkles className="w-3 h-3" /> Step 01
+                    </div>
+                    <h2 className="text-4xl font-serif font-medium text-foreground tracking-tight">
+                        Curate your <span className="italic text-primary">Specimens</span>
+                    </h2>
+                </div>
+
+                <div className="flex items-center gap-3 bg-secondary/50 border border-border rounded-full px-4 py-2 backdrop-blur-3xl shadow-sm">
+                    <div className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_8px_rgba(236,72,153,0.5)]" />
+                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
+                        Selection: <span className="text-foreground">{currentTotal}</span> / {maxTotal}
+                    </span>
+                </div>
             </div>
 
             {Object.entries(categories).map(([key, items]) => (
-                <div key={key} className="space-y-2">
-                    <div className="flex items-center gap-2 text-muted-foreground uppercase text-[10px] font-bold tracking-widest pl-1">
-                        {key === "flowers" && <Flower2 className="w-3 h-3" />}
-                        {key === "leaves" && <Leaf className="w-3 h-3" />}
-                        {key === "accessories" && <Sparkles className="w-3 h-3" />}
-                        {key}
+                <div key={key} className="space-y-4">
+                    <div className="flex items-center gap-3 text-muted-foreground/40 uppercase text-[9px] font-black tracking-[0.3em] pl-1">
+                        <div className="h-[1px] w-4 bg-border" />
+                        <span className="flex items-center gap-2">
+                            {key === "flowers" && <Flower2 className="w-3 h-3 text-primary" />}
+                            {key === "leaves" && <Leaf className="w-3 h-3 text-green-500" />}
+                            {key === "accessories" && <Sparkles className="w-3 h-3 text-amber-500" />}
+                            {key}
+                        </span>
+                        <div className="h-[1px] flex-1 bg-border" />
                     </div>
-                    <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 gap-3">
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                         {items.map((flower) => {
                             const count = flowerCounts[flower.id] || 0;
                             const isSelected = count > 0;
@@ -44,49 +61,65 @@ export const FlowerSelector = ({ flowerCounts, onUpdateCount, maxTotal }: Flower
                             return (
                                 <motion.div
                                     key={flower.id}
-                                    whileHover={{ scale: 1.05 }}
+                                    whileHover={{ y: -2 }}
                                     className={`
-                                        relative aspect-square rounded-xl flex flex-col items-center justify-center gap-1.5
-                                        border transition-all duration-300 group select-none backdrop-blur-sm
+                                        relative rounded-2xl p-3 flex items-center gap-4
+                                        border transition-all duration-500 group select-none backdrop-blur-md
                                         ${isSelected
-                                            ? "border-primary/50 bg-primary/10 shadow-sm"
-                                            : "border-border bg-card/40 hover:bg-card/60 hover:border-primary/20"
+                                            ? "border-primary/30 bg-primary/10 shadow-[0_8px_30px_rgba(236,72,153,0.05)]"
+                                            : "border-border bg-card/40 hover:bg-secondary/50 hover:border-primary/20"
                                         }
                                     `}
                                 >
                                     <div
-                                        className="absolute inset-0 z-0 cursor-pointer"
+                                        className="absolute inset-0 z-0 cursor-pointer rounded-2xl"
                                         onClick={() => {
                                             if (count === 0 && currentTotal < maxTotal) onUpdateCount(flower.id, 1);
                                         }}
                                     />
 
-                                    {flower.image ? (
-                                        <img src={flower.image} alt={flower.name} className="w-10 h-10 object-contain drop-shadow-sm group-hover:drop-shadow-md transition-all pointer-events-none" />
-                                    ) : (
-                                        <span className="text-3xl filter drop-shadow-sm group-hover:drop-shadow-md transition-all pointer-events-none">
-                                            {flower.emoji}
-                                        </span>
-                                    )}
-                                    <span className={`text-[10px] font-medium pointer-events-none transition-colors ${isSelected ? "text-primary" : "text-muted-foreground group-hover:text-foreground"}`}>{flower.name}</span>
+                                    {/* Left Aligned Icon */}
+                                    <div className={`
+                                        w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-500 shrink-0
+                                        ${isSelected ? 'bg-primary shadow-[0_0_15px_rgba(236,72,153,0.3)]' : 'bg-secondary/50 border border-border'}
+                                    `}>
+                                        {flower.image ? (
+                                            <img src={flower.image} alt={flower.name} className={`w-8 h-8 object-contain transition-all pointer-events-none ${isSelected ? 'brightness-110' : ''}`} />
+                                        ) : (
+                                            <span className="text-2xl filter drop-shadow-sm pointer-events-none group-hover:scale-110 transition-transform">
+                                                {flower.emoji}
+                                            </span>
+                                        )}
+                                    </div>
 
-                                    <AnimatePresence>
-                                        {isSelected && (
-                                            <motion.div
-                                                initial={{ opacity: 0, y: 5 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                exit={{ opacity: 0, y: 5 }}
-                                                className="absolute -bottom-2 left-0 w-full flex items-center justify-center gap-2 z-10"
-                                            >
-                                                <div className="flex items-center gap-2 px-2 py-1 rounded-full bg-background border border-border shadow-lg scale-90">
+                                    {/* Middle Content */}
+                                    <div className="flex-1 min-w-0">
+                                        <h4 className={`text-sm font-medium transition-colors truncate ${isSelected ? "text-foreground font-bold" : "text-muted-foreground group-hover:text-foreground"}`}>
+                                            {flower.name}
+                                        </h4>
+                                        <p className="text-[10px] text-muted-foreground/40 uppercase tracking-tighter group-hover:text-muted-foreground/60 transition-colors">
+                                            Rare Breed
+                                        </p>
+                                    </div>
+
+                                    {/* Right Aligned Controls / Count */}
+                                    <div className="flex items-center gap-2 relative z-10 shrink-0">
+                                        <AnimatePresence mode="wait">
+                                            {isSelected ? (
+                                                <motion.div
+                                                    initial={{ opacity: 0, x: 10 }}
+                                                    animate={{ opacity: 1, x: 0 }}
+                                                    exit={{ opacity: 0, x: 10 }}
+                                                    className="flex items-center gap-2 bg-background/80 border border-border rounded-full px-1.5 py-1 backdrop-blur-xl shadow-sm"
+                                                >
                                                     <button
                                                         onClick={(e) => { e.stopPropagation(); onUpdateCount(flower.id, count - 1); }}
-                                                        className="w-4 h-4 rounded-full bg-secondary text-secondary-foreground flex items-center justify-center hover:bg-secondary/80 transition-colors"
+                                                        className="w-5 h-5 rounded-full bg-secondary flex items-center justify-center hover:bg-muted text-foreground transition-colors"
                                                     >
                                                         <Minus className="w-2.5 h-2.5" />
                                                     </button>
 
-                                                    <span className="font-bold text-xs text-foreground min-w-[10px] text-center">{count}</span>
+                                                    <span className="font-bold text-xs text-foreground min-w-[12px] text-center">{count}</span>
 
                                                     <button
                                                         onClick={(e) => {
@@ -94,14 +127,23 @@ export const FlowerSelector = ({ flowerCounts, onUpdateCount, maxTotal }: Flower
                                                             if (currentTotal < maxTotal) onUpdateCount(flower.id, count + 1);
                                                         }}
                                                         disabled={currentTotal >= maxTotal}
-                                                        className="w-4 h-4 rounded-full bg-primary text-primary-foreground flex items-center justify-center hover:bg-primary/90 transition-colors disabled:opacity-50"
+                                                        className="w-5 h-5 rounded-full bg-primary flex items-center justify-center hover:opacity-90 text-primary-foreground transition-all disabled:opacity-30"
                                                     >
                                                         <Plus className="w-2.5 h-2.5" />
                                                     </button>
+                                                </motion.div>
+                                            ) : (
+                                                <div className="w-8 h-8 rounded-full bg-secondary/50 border border-border flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <Plus className="w-3.5 h-3.5 text-muted-foreground" />
                                                 </div>
-                                            </motion.div>
-                                        )}
-                                    </AnimatePresence>
+                                            )}
+                                        </AnimatePresence>
+                                    </div>
+
+                                    {/* Selection Glow */}
+                                    {isSelected && (
+                                        <div className="absolute inset-x-0 bottom-0 h-[1px] bg-gradient-to-r from-transparent via-primary/50 to-transparent shadow-[0_0_20px_rgba(236,72,153,0.3)]" />
+                                    )}
                                 </motion.div>
                             );
                         })}

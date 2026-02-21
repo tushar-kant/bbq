@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { Gift, Heart, Cake, Calendar, Mail, User } from "lucide-react";
+import { Gift, Heart, Cake, Calendar, Mail, User, Sparkles, PenTool, Wand2, Plus, Info, Palette } from "lucide-react";
 import { useSession, signIn } from "next-auth/react";
 
 interface LetterInputProps {
@@ -28,6 +28,8 @@ interface LetterInputProps {
     secretCode: string;
     setSecretCode: (code: string) => void;
     creationType: "bouquet" | "message";
+    onFinalize?: () => void;
+    isSaving?: boolean;
 }
 
 export const LetterInput = ({
@@ -42,374 +44,261 @@ export const LetterInput = ({
     scheduledAt, setScheduledAt,
     isScheduled, setIsScheduled,
     secretCode, setSecretCode,
-    creationType
+    creationType,
+    onFinalize,
+    isSaving
 }: LetterInputProps) => {
     const { data: session } = useSession();
 
     return (
-        <div className="space-y-5 p-6 rounded-[2rem] border border-border bg-card/60 backdrop-blur-xl shadow-2xl transition-colors">
-            <div className="flex gap-3 mb-2">
-                <button
-                    onClick={() => setTheme("love")}
-                    className={`flex-1 flex gap-2 justify-center items-center py-3 rounded-xl border transition-all duration-300 ${theme === "love" ? "border-pink-500/50 bg-pink-500/10 text-pink-600 dark:text-pink-200 shadow-[0_0_15px_-5px_rgba(236,72,153,0.3)]" : "border-border text-muted-foreground hover:bg-secondary/50 hover:text-foreground"}`}
-                >
-                    <Heart className={`w-4 h-4 ${theme === "love" ? "fill-current animate-pulse" : ""}`} />
-                    <span className="font-medium tracking-wide text-sm">Love Theme</span>
-                </button>
-                <button
-                    onClick={() => setTheme("birthday")}
-                    className={`flex-1 flex gap-2 justify-center items-center py-3 rounded-xl border transition-all duration-300 ${theme === "birthday" ? "border-amber-400/50 bg-amber-400/10 text-amber-600 dark:text-amber-200 shadow-[0_0_15px_-5px_rgba(251,191,36,0.3)]" : "border-border text-muted-foreground hover:bg-secondary/50 hover:text-foreground"}`}
-                >
-                    <Cake className="w-4 h-4" />
-                    <span className="font-medium tracking-wide text-sm">Birthday Theme</span>
-                </button>
+        <div className="space-y-8 max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 pb-12">
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-border/70 pb-4">
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center">
+                        <PenTool className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                        <h2 className="text-xl font-serif font-semibold text-foreground">Draft your message</h2>
+                        <p className="text-[10px] text-foreground font-black uppercase tracking-widest">Personalization</p>
+                    </div>
+                </div>
             </div>
 
-            <div className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2 pl-1">
-                            <User className="w-3 h-3" /> From
-                        </label>
-                        <input
-                            type="text"
-                            value={senderName}
-                            onChange={(e) => setSenderName(e.target.value)}
-                            placeholder="e.g. Secret Admirer"
-                            className="w-full bg-secondary/30 border border-border rounded-xl px-4 py-2.5 focus:ring-1 focus:ring-primary/50 focus:border-primary/50 outline-none transition-all placeholder:text-muted-foreground/50 text-foreground hover:bg-secondary/50 text-sm"
-                        />
-                    </div>
-                    <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2 pl-1">
-                            <User className="w-3 h-3" /> To *
-                        </label>
-                        <input
-                            type="text"
-                            value={recipientName}
-                            onChange={(e) => setRecipientName(e.target.value)}
-                            placeholder="e.g. My Valentine"
-                            className="w-full bg-secondary/30 border border-border rounded-xl px-4 py-2.5 focus:ring-1 focus:ring-primary/50 focus:border-primary/50 outline-none transition-all placeholder:text-muted-foreground/50 text-foreground hover:bg-secondary/50 text-sm"
-                        />
-                    </div>
-                </div>
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                <div className="lg:col-span-7 space-y-8">
 
-                <div className="space-y-3">
-                    <div className="flex gap-2 p-1 bg-muted/30 rounded-xl border border-border">
-                        <button
-                            onClick={() => setIsScheduled(false)}
-                            className={`flex-1 py-2 px-3 rounded-lg text-xs font-medium transition-all duration-300 ${!isScheduled ? 'bg-background text-foreground shadow-sm border border-border' : 'text-muted-foreground hover:text-foreground hover:bg-background/50'}`}
-                        >
-                            Create Link Only
-                        </button>
-                        <button
-                            onClick={() => session ? setIsScheduled(true) : signIn("google")}
-                            className={`flex-1 py-2 px-3 rounded-lg text-xs font-medium transition-all duration-300 ${isScheduled ? 'bg-primary/10 text-primary shadow-sm border border-primary/20' : 'text-muted-foreground hover:text-foreground hover:bg-background/50'}`}
-                        >
-                            {session ? "Schedule Delivery" : "Login to Schedule"}
-                        </button>
-                    </div>
-
-                    <AnimatePresence>
-                        {isScheduled && (
-                            <motion.div
-                                initial={{ opacity: 0, height: 0, marginTop: 0 }}
-                                animate={{ opacity: 1, height: 'auto', marginTop: 12 }}
-                                exit={{ opacity: 0, height: 0, marginTop: 0 }}
-                                className="grid grid-cols-1 md:grid-cols-2 gap-4 overflow-hidden"
-                            >
-                                <div className="space-y-1.5">
-                                    <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2 pl-1">
-                                        <Mail className="w-3 h-3" /> Email *
-                                    </label>
-                                    <input
-                                        type="email"
-                                        required
-                                        value={recipientEmail}
-                                        onChange={(e) => setRecipientEmail(e.target.value)}
-                                        placeholder="recipient@example.com"
-                                        className="w-full bg-secondary/30 border border-border rounded-xl px-4 py-2.5 focus:ring-1 focus:ring-primary/50 focus:border-primary/50 outline-none transition-all placeholder:text-muted-foreground/50 text-foreground hover:bg-secondary/50 text-sm"
-                                    />
-                                </div>
-                                <div className="space-y-1.5">
-                                    <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2 pl-1">
-                                        <Calendar className="w-3 h-3" /> Time *
-                                    </label>
-                                    <input
-                                        type="datetime-local"
-                                        required
-                                        value={scheduledAt}
-                                        onChange={(e) => setScheduledAt(e.target.value)}
-                                        className="w-full bg-secondary/30 border border-border rounded-xl px-4 py-2.5 focus:ring-1 focus:ring-primary/50 focus:border-primary/50 outline-none transition-all placeholder:text-muted-foreground/50 text-foreground hover:bg-secondary/50 text-sm [color-scheme:light] dark:[color-scheme:dark]"
-                                    />
-                                </div>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-                </div>
-
-                <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest pl-1">
-                        Write a Heartfelt Note
-                    </label>
-                    <textarea
-                        value={letter}
-                        onChange={(e) => setLetter(e.target.value)}
-                        placeholder="Dear my love..."
-                        className="w-full h-32 bg-secondary/30 border border-border rounded-xl p-4 focus:ring-1 focus:ring-primary/50 focus:border-primary/50 outline-none transition-all placeholder:text-muted-foreground/50 resize-none font-serif text-base leading-relaxed show-scroll text-foreground hover:bg-secondary/50"
-                    />
-                </div>
-
-                <div className="space-y-1.5 pt-2">
-                    <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest pl-1">
-                        Card Style
-                    </label>
-                    <div className="flex gap-2 p-1 bg-muted/30 rounded-xl border border-border overflow-x-auto no-scrollbar">
-                        {[
-                            { id: "classic", label: "Classic" },
-                            { id: "midnight", label: "Midnight" },
-                            { id: "glass", label: "Frosted Glass" },
-                            { id: "botanic", label: "Botanic" },
-                            { id: "vintage", label: "Vintage" },
-                            { id: "cyberpunk", label: "Cyberpunk" },
-                            { id: "ocean", label: "Ocean Deep" }
-                        ].map((style) => (
+                    {/* Identity Grid */}
+                    <div className="bg-card/40 border border-border rounded-3xl p-6 space-y-6 shadow-sm">
+                        <div className="flex bg-secondary/30 p-1 rounded-xl border border-border/50">
                             <button
-                                key={style.id}
-                                onClick={() => setCardStyle(style.id)}
-                                className={`flex-1 py-2 px-3 rounded-lg text-xs font-medium transition-all duration-300 min-w-[80px] ${cardStyle === style.id ? 'bg-primary text-white shadow-sm' : 'text-muted-foreground hover:text-foreground hover:bg-background/50'}`}
+                                onClick={() => setTheme("love")}
+                                className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-xs font-bold transition-all ${theme === "love" ? "bg-background text-primary shadow-sm border border-border" : "text-foreground/40 hover:text-foreground"}`}
                             >
-                                {style.label}
+                                <Heart className={`w-3.5 h-3.5 ${theme === "love" ? "fill-current" : ""}`} />
+                                Lover's Muse
                             </button>
-                        ))}
-                    </div>
-                </div>
+                            <button
+                                onClick={() => setTheme("birthday")}
+                                className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-xs font-bold transition-all ${theme === "birthday" ? "bg-background text-amber-600 shadow-sm border border-border" : "text-foreground/40 hover:text-foreground"}`}
+                            >
+                                <Cake className="w-3.5 h-3.5" />
+                                Celebration
+                            </button>
+                        </div>
 
-                <div className="pt-4 mt-2">
-                    <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest pl-1 mb-3 block text-center">
-                        Live Preview
-                    </label>
-                    <div className="perspective-1000 max-w-sm mx-auto">
-                        <div className={`
-                            p-6 relative overflow-hidden transition-all duration-1000 outline-none
-                            ${(!cardStyle || cardStyle === 'classic') ? "bg-[#fffbf0] dark:bg-[#1e1e1e] rounded-[2px] shadow-[0_10px_30px_-10px_rgba(0,0,0,0.15)] border border-[#eaddcf] dark:border-white/10" : ""}
-                            ${cardStyle === 'midnight' ? "bg-slate-900 border border-slate-700 rounded-3xl shadow-[0_0_30px_-10px_rgba(56,189,248,0.2)]" : ""}
-                            ${cardStyle === 'glass' ? "bg-black/5 dark:bg-white/10 backdrop-blur-xl border border-black/10 dark:border-white/20 rounded-3xl shadow-sm" : ""}
-                            ${cardStyle === 'botanic' ? "bg-[#f2fceb] dark:bg-[#1a2f1c] rounded-[2rem] shadow-[0_10px_30px_-10px_rgba(22,101,52,0.15)] border border-[#c1e1c1] dark:border-green-900/50" : ""}
-                            ${cardStyle === 'vintage' ? "bg-[#e3d5c8] dark:bg-[#3e2723] rounded-[2px] shadow-[0_10px_30px_-10px_rgba(0,0,0,0.25)] border-4 border-double border-[#8d6e63] dark:border-[#795548]" : ""}
-                            ${cardStyle === 'cyberpunk' ? "bg-black rounded-sm shadow-[0_0_20px_rgba(236,72,153,0.3)] border border-pink-500/50" : ""}
-                            ${cardStyle === 'ocean' ? "bg-gradient-to-br from-cyan-900 via-blue-900 to-indigo-950 rounded-3xl shadow-[0_10px_30px_-10px_rgba(6,182,212,0.2)] border border-cyan-500/30" : ""}
-                        `}>
-                            {/* Textures & Effects based on style */}
-                            {(!cardStyle || cardStyle === 'classic') && (
-                                <>
-                                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')] opacity-50 mix-blend-multiply dark:mix-blend-overlay pointer-events-none" />
-                                    <div className="absolute top-3 left-3 w-8 h-8 border-t-2 border-l-2 border-primary/20 dark:border-primary/40 transition-colors" />
-                                    <div className="absolute top-3 right-3 w-8 h-8 border-t-2 border-r-2 border-primary/20 dark:border-primary/40 transition-colors" />
-                                    <div className="absolute bottom-3 left-3 w-8 h-8 border-b-2 border-l-2 border-primary/20 dark:border-primary/40 transition-colors" />
-                                    <div className="absolute bottom-3 right-3 w-8 h-8 border-b-2 border-r-2 border-primary/20 dark:border-primary/40 transition-colors" />
-                                </>
-                            )}
-
-                            {cardStyle === 'midnight' && (
-                                <>
-                                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30 pointer-events-none" />
-                                    <div className="absolute -top-12 -left-12 w-24 h-24 bg-blue-500/20 rounded-full blur-2xl pointer-events-none" />
-                                    <div className="absolute -bottom-12 -right-12 w-24 h-24 bg-purple-500/20 rounded-full blur-2xl pointer-events-none" />
-                                    <div className="absolute top-3 left-3 w-4 h-4 border-t border-l border-blue-400/30 rounded-tl-lg" />
-                                    <div className="absolute bottom-3 right-3 w-4 h-4 border-b border-r border-blue-400/30 rounded-br-lg" />
-                                </>
-                            )}
-
-                            {cardStyle === 'glass' && (
-                                <>
-                                    <div className="absolute top-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-black/20 dark:via-white/40 to-transparent" />
-                                    <div className="absolute bottom-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-black/10 dark:via-white/20 to-transparent" />
-                                </>
-                            )}
-
-                            {cardStyle === 'botanic' && (
-                                <>
-                                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')] opacity-60 mix-blend-multiply dark:mix-blend-overlay pointer-events-none" />
-                                    <div className="absolute -top-6 -right-6 text-6xl text-green-500/5 dark:text-green-500/10 transform rotate-45 pointer-events-none">🌿</div>
-                                    <div className="absolute -bottom-6 -left-6 text-6xl text-green-500/5 dark:text-green-500/10 transform -rotate-45 pointer-events-none">🌿</div>
-                                </>
-                            )}
-
-                            {cardStyle === 'vintage' && (
-                                <>
-                                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/aged-paper.png')] opacity-80 mix-blend-multiply dark:mix-blend-overlay pointer-events-none" />
-                                    <div className="absolute top-2 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-[#8d6e63] to-transparent opacity-30" />
-                                    <div className="absolute bottom-2 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-[#8d6e63] to-transparent opacity-30" />
-                                </>
-                            )}
-
-                            {cardStyle === 'cyberpunk' && (
-                                <>
-                                    <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-20 pointer-events-none" />
-                                    <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-pink-500" />
-                                    <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-cyan-500" />
-                                    <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-cyan-500" />
-                                    <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-pink-500" />
-                                </>
-                            )}
-
-                            {cardStyle === 'ocean' && (
-                                <>
-                                    <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-cyan-400/10 to-transparent pointer-events-none" />
-                                    <div className="absolute -top-12 -left-12 w-24 h-24 bg-cyan-400/20 rounded-full blur-2xl pointer-events-none" />
-                                    <div className="absolute -bottom-12 -right-12 w-24 h-24 bg-blue-500/20 rounded-full blur-2xl pointer-events-none" />
-                                </>
-                            )}
-
-                            <div className="relative z-10 flex flex-col items-center">
-                                <div className="mb-3">
-                                    <span className={`text-2xl 
-                                        ${(!cardStyle || cardStyle === 'classic') && "text-primary/80"}
-                                        ${cardStyle === 'midnight' && "text-blue-400/80 drop-shadow-[0_0_8px_rgba(96,165,250,0.5)]"}
-                                        ${cardStyle === 'glass' && "text-foreground/80"}
-                                        ${cardStyle === 'botanic' && "text-green-600/80 dark:text-green-400/80"}
-                                        ${cardStyle === 'vintage' && "text-[#5d4037] dark:text-[#d7ccc8]"}
-                                        ${cardStyle === 'cyberpunk' && "text-pink-500 drop-shadow-[0_0_8px_rgba(236,72,153,0.8)]"}
-                                        ${cardStyle === 'ocean' && "text-cyan-400 drop-shadow-[0_0_12px_rgba(34,211,238,0.5)]"}
-                                    `}>
-                                        {cardStyle === 'botanic' ? '❅' : cardStyle === 'midnight' ? '✧' : cardStyle === 'vintage' ? '✉' : cardStyle === 'cyberpunk' ? '⚡' : cardStyle === 'ocean' ? '≈' : '❦'}
-                                    </span>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="space-y-1.5 focus-within:text-primary transition-colors">
+                                <label className="text-[10px] font-black uppercase tracking-widest text-foreground ml-1">Sender Name</label>
+                                <div className="relative group">
+                                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-foreground/20 group-focus-within:text-primary transition-colors" />
+                                    <input
+                                        type="text"
+                                        value={senderName}
+                                        onChange={(e) => setSenderName(e.target.value)}
+                                        placeholder="Secret Admirer"
+                                        className="w-full bg-background border border-border rounded-xl pl-9 pr-4 py-3 text-sm outline-none focus:border-primary/50 transition-all text-foreground"
+                                    />
                                 </div>
-
-                                <h3 className={`font-serif text-xl font-bold mb-4 italic text-center tracking-wide leading-tight drop-shadow-sm transition-colors
-                                    ${(!cardStyle || cardStyle === 'classic') && "text-primary"}
-                                    ${cardStyle === 'midnight' && "text-blue-100"}
-                                    ${cardStyle === 'glass' && "text-foreground"}
-                                    ${cardStyle === 'botanic' && "text-green-900 dark:text-green-100"}
-                                    ${cardStyle === 'vintage' && "text-[#4e342e] dark:text-[#efebe9]"}
-                                    ${cardStyle === 'cyberpunk' && "text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-cyan-400 font-sans tracking-widest not-italic"}
-                                    ${cardStyle === 'ocean' && "text-cyan-50"}
-                                `}>
-                                    Dear {recipientName || 'You'}
-                                </h3>
-
-                                <div className={`font-serif text-xs leading-relaxed whitespace-pre-wrap text-center max-w-[200px] mx-auto transition-colors line-clamp-3
-                                    ${(!cardStyle || cardStyle === 'classic') && "text-[#4a4a4a] dark:text-neutral-300"}
-                                    ${cardStyle === 'midnight' && "text-blue-50/80"}
-                                    ${cardStyle === 'glass' && "text-foreground/90"}
-                                    ${cardStyle === 'botanic' && "text-green-800/80 dark:text-green-200/80"}
-                                    ${cardStyle === 'vintage' && "text-[#5d4037] dark:text-[#d7ccc8]"}
-                                    ${cardStyle === 'cyberpunk' && "text-pink-100 font-mono tracking-tight"}
-                                    ${cardStyle === 'ocean' && "text-cyan-100/90"}
-                                `}>
-                                    {letter || "Start typing your note to see it here..."}
-                                </div>
-
-                                <div className="mt-4 flex justify-center opacity-60">
-                                    <span className={`text-lg transform rotate-180
-                                        ${(!cardStyle || cardStyle === 'classic') && "text-primary"}
-                                        ${cardStyle === 'midnight' && "text-blue-400"}
-                                        ${cardStyle === 'glass' && "text-foreground"}
-                                        ${cardStyle === 'botanic' && "text-green-600 dark:text-green-400"}
-                                        ${cardStyle === 'vintage' && "text-[#5d4037] dark:text-[#d7ccc8]"}
-                                        ${cardStyle === 'cyberpunk' && "text-cyan-500 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]"}
-                                        ${cardStyle === 'ocean' && "text-cyan-400 drop-shadow-[0_0_12px_rgba(34,211,238,0.5)]"}
-                                    `}>
-                                        {cardStyle === 'botanic' ? '❅' : cardStyle === 'midnight' ? '✧' : cardStyle === 'vintage' ? '✉' : cardStyle === 'cyberpunk' ? '⚡' : cardStyle === 'ocean' ? '≈' : '❦'}
-                                    </span>
+                            </div>
+                            <div className="space-y-1.5 focus-within:text-primary transition-colors">
+                                <label className="text-[10px] font-black uppercase tracking-widest text-foreground ml-1">Recipient Name *</label>
+                                <div className="relative group">
+                                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-foreground/20 group-focus-within:text-primary transition-colors" />
+                                    <input
+                                        type="text"
+                                        value={recipientName}
+                                        onChange={(e) => setRecipientName(e.target.value)}
+                                        placeholder="My Dearest"
+                                        className="w-full bg-background border border-border rounded-xl pl-9 pr-4 py-3 text-sm outline-none focus:border-primary/50 transition-all text-foreground"
+                                    />
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    {/* Letter Body */}
+                    <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-foreground px-1">The Unspoken Words</label>
+                        <div className="relative group">
+                            <textarea
+                                value={letter}
+                                onChange={(e) => setLetter(e.target.value)}
+                                placeholder="Transcription of the soul..."
+                                className="relative w-full h-48 bg-card/60 border border-border rounded-3xl p-6 outline-none text-foreground font-serif text-lg leading-relaxed resize-none focus:border-primary/40 focus:ring-2 focus:ring-primary/5 transition-all shadow-inner placeholder:text-foreground/10"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Mechanism Selection */}
+                    <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-foreground px-1">Unlock Mechanism</label>
+                        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                            {[
+                                { id: "none", label: "Pure", icon: Plus },
+                                { id: "envelope", label: "Envelope", icon: Mail },
+                                { id: "scratch", label: "Scratch", icon: Sparkles },
+                                { id: "code", label: "Safe", icon: Gift },
+                                { id: "surprise", label: "Gift Box", icon: Wand2 },
+                            ].map((item) => (
+                                <button
+                                    key={item.id}
+                                    onClick={() => setGiftType(item.id)}
+                                    className={`flex flex-col items-center gap-2 p-2 rounded-xl border text-[9px] font-black uppercase tracking-wider transition-all ${giftType === item.id ? 'bg-primary/10 border-primary/40 text-primary' : 'bg-card/20 border-border text-foreground/20 hover:border-foreground/40'}`}
+                                >
+                                    <item.icon className="w-3.5 h-3.5" />
+                                    {item.label}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* SEPARATED STYLES: Unique Backgrounds & Logic */}
+                    <div className="space-y-3 pt-4">
+                        <div className="flex items-center gap-2 px-1">
+                            <Palette className="w-3 h-3 text-primary" />
+                            <label className="text-[10px] font-black uppercase tracking-widest text-foreground">Visual Aesthetic</label>
+                        </div>
+                        <div className="grid grid-cols-5 gap-2">
+                            {[
+                                { id: "classic", label: "Classic" },
+                                { id: "midnight", label: "Midnite" },
+                                { id: "botanic", label: "Verdant" },
+                                { id: "vintage", label: "Papyrus" },
+                                { id: "ocean", label: "Abyss" }
+                            ].map((style) => (
+                                <button
+                                    key={style.id}
+                                    onClick={() => setCardStyle(style.id)}
+                                    className={`relative py-2.5 rounded-xl border text-[8px] font-black uppercase tracking-widest transition-all ${cardStyle === style.id ? 'bg-foreground text-background border-foreground shadow-md scale-105' : 'bg-card/20 border-border text-foreground/40 hover:border-foreground/60'}`}
+                                >
+                                    {style.label}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* LIVE GLIMPSE INTEGRATED (More Compact) */}
+                    <div className="pt-4 space-y-2 lg:hidden">
+                        <div className="text-center">
+                            <p className="text-[9px] font-black uppercase tracking-[0.3em] text-foreground/40">Live Glimpse</p>
+                        </div>
+                        <div className="w-[80%] mx-auto scale-90">
+                            <div className="h-40 overflow-hidden rounded-3xl">
+                                <PreviewCard
+                                    cardStyle={cardStyle}
+                                    recipientName={recipientName}
+                                    letter={letter}
+                                    senderName={senderName}
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Delivery Logic */}
+                    <div className="space-y-4 pt-6">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-foreground px-1">Delivery Channel</label>
+                        <div className="bg-secondary/30 border border-border rounded-2xl p-2 flex gap-2">
+                            <button
+                                onClick={() => setIsScheduled(false)}
+                                className={`flex-1 py-3 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${!isScheduled ? 'bg-primary text-primary-foreground shadow-sm' : 'text-foreground/30 hover:text-foreground'}`}
+                            >
+                                Immortal Link
+                            </button>
+                            <div className="flex-1 py-3 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest text-foreground/10 bg-background/20 border border-border/10 cursor-not-allowed flex flex-col items-center justify-center leading-none">
+                                <span className="opacity-40">Scheduling</span>
+                                <span className="text-[6px] text-primary/60 mt-1 uppercase tracking-tighter">Coming Soon</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Desktop Sticky Preview */}
+                <div className="lg:col-span-1 hidden lg:block h-full w-px bg-border/50 mx-auto" />
+                <div className="lg:col-span-4 hidden lg:block sticky top-24">
+                    <div className="space-y-4">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-foreground/40 text-center">Live Glimpse</p>
+                        <PreviewCard
+                            cardStyle={cardStyle}
+                            recipientName={recipientName}
+                            letter={letter}
+                            senderName={senderName}
+                        />
+                    </div>
                 </div>
             </div>
+        </div>
+    );
+};
 
-            <div className="space-y-4 pt-4 border-t border-border">
-                <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2 pl-1">
-                    <Gift className="w-3 h-3" />
-                    Add a Secret Surprise
-                </label>
+const PreviewCard = ({ cardStyle, recipientName, letter, senderName }: any) => {
+    // Dynamic styles for the preview
+    const themes: any = {
+        classic: {
+            bg: "bg-[#fffef7] dark:bg-[#1a1a1a]",
+            border: "border-[#eaddcf] dark:border-white/10",
+            text: "text-stone-900 dark:text-stone-100",
+            muted: "text-stone-600 dark:text-stone-400",
+            icon: "❦"
+        },
+        midnight: {
+            bg: "bg-[#020617] text-white",
+            border: "border-white/10",
+            text: "text-slate-100",
+            muted: "text-slate-400",
+            overlay: "bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20",
+            icon: "✧"
+        },
+        botanic: {
+            bg: "bg-[#f2fcf0] dark:bg-[#0f1f0f]",
+            border: "border-[#cce1cc] dark:border-white/10",
+            text: "text-emerald-950 dark:text-emerald-50",
+            muted: "text-emerald-800/60 dark:text-emerald-300/40",
+            icon: "🌿"
+        },
+        vintage: {
+            bg: "bg-[#f4e4d4] dark:bg-[#2d1e1a]",
+            border: "border-[#a68a73] dark:border-white/10 shadow-inner",
+            text: "text-stone-950 dark:text-stone-100",
+            muted: "text-stone-800/50 dark:text-stone-400/30",
+            overlay: "bg-[url('https://www.transparenttextures.com/patterns/aged-paper.png')] opacity-60 mix-blend-multiply",
+            icon: "✉"
+        },
+        ocean: {
+            bg: "bg-gradient-to-br from-[#0c1a26] to-[#000000]",
+            border: "border-cyan-500/20",
+            text: "text-cyan-50",
+            muted: "text-cyan-400/40",
+            icon: "≈"
+        }
+    };
 
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-                    <div
-                        onClick={() => setGiftType("envelope")}
-                        className={`p-3 rounded-xl border cursor-pointer transition-all duration-300 group ${giftType === "envelope" ? "border-pink-500/50 bg-pink-500/10 shadow-[0_0_15px_-5px_rgba(236,72,153,0.3)]" : "border-border hover:bg-secondary/50 hover:border-primary/30"}`}
-                    >
-                        <div className={`font-bold mb-0.5 text-sm transition-colors ${giftType === "envelope" ? "text-pink-600 dark:text-pink-200" : "text-muted-foreground group-hover:text-foreground"}`}>💌 Envelope</div>
-                        <p className="text-[10px] text-muted-foreground group-hover:text-muted-foreground/80 transition-colors leading-tight">Digital envelope.</p>
-                    </div>
+    const s = themes[cardStyle] || themes.classic;
 
-                    <div
-                        onClick={() => setGiftType("scratch")}
-                        className={`p-3 rounded-xl border cursor-pointer transition-all duration-300 group ${giftType === "scratch" ? "border-amber-400/50 bg-amber-400/10 shadow-[0_0_15px_-5px_rgba(251,191,36,0.3)]" : "border-border hover:bg-secondary/50 hover:border-amber-400/30"}`}
-                    >
-                        <div className={`font-bold mb-0.5 text-sm transition-colors ${giftType === "scratch" ? "text-amber-600 dark:text-amber-200" : "text-muted-foreground group-hover:text-foreground"}`}>✨ Scratch</div>
-                        <p className="text-[10px] text-muted-foreground group-hover:text-muted-foreground/80 transition-colors leading-tight">Scratch-off layer.</p>
-                    </div>
+    return (
+        <div className={`relative w-full aspect-[4/5] rounded-[2.5rem] border-2 shadow-2xl overflow-hidden transition-all duration-700 ${s.bg} ${s.border}`}>
+            {s.overlay && <div className={`absolute inset-0 pointer-events-none ${s.overlay}`} />}
 
-                    <div
-                        onClick={() => setGiftType("code")}
-                        className={`p-3 rounded-xl border cursor-pointer transition-all duration-300 group ${giftType === "code" ? "border-blue-400/50 bg-blue-400/10 shadow-[0_0_15px_-5px_rgba(96,165,250,0.3)]" : "border-border hover:bg-secondary/50 hover:border-blue-400/30"}`}
-                    >
-                        <div className={`font-bold mb-0.5 text-sm transition-colors ${giftType === "code" ? "text-blue-600 dark:text-blue-200" : "text-muted-foreground group-hover:text-foreground"}`}>🔒 Safe</div>
-                        <p className="text-[10px] text-muted-foreground group-hover:text-muted-foreground/80 transition-colors leading-tight">Secret code.</p>
-                    </div>
+            <div className="relative z-10 h-full p-8 flex flex-col items-center justify-center text-center space-y-6">
+                <span className={`text-2xl transition-all duration-700 ${s.text} opacity-30`}>{s.icon}</span>
 
-                    <div
-                        onClick={() => setGiftType("none")}
-                        className={`p-3 rounded-xl border cursor-pointer transition-all duration-300 group ${giftType === "none" ? "border-border bg-card shadow-sm" : "border-border hover:bg-secondary/50 hover:border-primary/30"}`}
-                    >
-                        <div className={`font-bold mb-0.5 text-sm transition-colors ${giftType === "none" ? "text-foreground" : "text-muted-foreground group-hover:text-foreground"}`}>None</div>
-                        <p className="text-[10px] text-muted-foreground group-hover:text-muted-foreground/80 transition-colors leading-tight">Directly visible.</p>
-                    </div>
-
-                    <div
-                        onClick={() => setGiftType("surprise")}
-                        className={`p-3 rounded-xl border cursor-pointer transition-all duration-300 group ${giftType === "surprise" ? "border-purple-400/50 bg-purple-400/10 shadow-[0_0_15px_-5px_rgba(168,85,247,0.3)]" : "border-border hover:bg-secondary/50 hover:border-purple-400/30"}`}
-                    >
-                        <div className={`font-bold mb-0.5 text-sm transition-colors ${giftType === "surprise" ? "text-purple-600 dark:text-purple-200" : "text-muted-foreground group-hover:text-foreground"}`}>🎁 Surprise</div>
-                        <p className="text-[10px] text-muted-foreground group-hover:text-muted-foreground/80 transition-colors leading-tight">Magic gift box.</p>
-                    </div>
+                <div className="space-y-1">
+                    <p className={`text-[8px] font-black uppercase tracking-[0.4em] ${s.muted}`}>Destined for</p>
+                    <h3 className={`text-2xl font-serif italic ${s.text} truncate max-w-[220px]`}>
+                        {recipientName || "Someone"}
+                    </h3>
                 </div>
 
-                <AnimatePresence>
-                    {giftType === "scratch" && (
-                        <motion.div
-                            initial={{ height: 0, opacity: 0, marginTop: 0 }}
-                            animate={{ height: "auto", opacity: 1, marginTop: 12 }}
-                            exit={{ height: 0, opacity: 0, marginTop: 0 }}
-                            className="overflow-hidden"
-                        >
-                            <input
-                                type="text"
-                                value={scratchMessage}
-                                onChange={(e) => setScratchMessage(e.target.value)}
-                                placeholder="e.g. Will you be my Valentine? 💖"
-                                className="w-full bg-secondary/30 border border-amber-400/30 rounded-xl px-4 py-2.5 focus:ring-1 focus:ring-amber-400/50 focus:border-amber-400/50 outline-none text-center font-bold text-amber-600 dark:text-amber-100 placeholder:font-normal placeholder:text-muted-foreground/50 transition-all hover:bg-secondary/50 text-sm"
-                            />
-                        </motion.div>
-                    )}
+                <div className={`text-sm leading-relaxed ${s.text} opacity-80 font-serif line-clamp-6 px-4`}>
+                    {letter || "Start writing to see your soul's transcription manifested in this artifact."}
+                </div>
 
-                    {giftType === "code" && (
-                        <motion.div
-                            initial={{ height: 0, opacity: 0, marginTop: 0 }}
-                            animate={{ height: "auto", opacity: 1, marginTop: 12 }}
-                            exit={{ height: 0, opacity: 0, marginTop: 0 }}
-                            className="grid grid-cols-1 md:grid-cols-3 gap-3 overflow-hidden"
-                        >
-                            <input
-                                type="text"
-                                value={secretCode}
-                                onChange={(e) => setSecretCode(e.target.value)}
-                                placeholder="Set Code"
-                                className="bg-secondary/30 border border-blue-400/30 rounded-xl px-4 py-2.5 focus:ring-1 focus:ring-blue-400/50 focus:border-blue-400/50 outline-none text-center font-bold text-blue-600 dark:text-blue-100 placeholder:font-normal placeholder:text-muted-foreground/50 transition-all hover:bg-secondary/50 text-sm"
-                            />
-                            <input
-                                type="text"
-                                value={scratchMessage}
-                                onChange={(e) => setScratchMessage(e.target.value)}
-                                placeholder="Secret Message to Hide..."
-                                className="md:col-span-2 bg-secondary/30 border border-blue-400/30 rounded-xl px-4 py-2.5 focus:ring-1 focus:ring-blue-400/50 focus:border-blue-400/50 outline-none text-center font-bold text-blue-600 dark:text-blue-100 placeholder:font-normal placeholder:text-muted-foreground/50 transition-all hover:bg-secondary/50 text-sm"
-                            />
-                        </motion.div>
-                    )}
-                </AnimatePresence>
+                <div className="pt-6 border-t border-current opacity-10 w-16 mx-auto" />
+                <p className={`text-[10px] italic ${s.muted}`}>— {senderName || "Identity"}</p>
             </div>
+
+            {/* Design Detail */}
+            <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-primary/20 to-transparent opacity-50" />
         </div>
     );
 };
